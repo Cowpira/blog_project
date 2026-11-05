@@ -1,0 +1,57 @@
+{% block content %}
+    <div class="modal gen-mdl" id="mdl-system-msg-{{ msg.Id }}" tabindex="-1"
+        data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="systemMsgBackdrop" aria-hidden="true">
+        
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header d-flex justify-content-around position-relative">
+                    <a href="#" class="smaller-texts badge rounded-pill text-bg-light" 
+                        data-bs-toggle="tooltip" data-bs-animation="false" 
+                        data-bs-placement="top" title="{{msg.Id}}">View ID
+                    </a>
+
+                    <h1 class="col-10 title-headers text-center">
+                        <i class="bi bi-chat-dots" style="font-size: 2rem;"></i> Message
+                    </h1>
+
+                    <a href="{{ url_for('msg_viewed', msg_id=msg.Id, msg_by=msg_by|urlencode) }}" 
+                        class="gen-mdl-close btn-close-modal position-absolute p-1 top-0 end-0">
+                        <i class="bi bi-x-circle-fill" style="font-size: 1.7rem;"></i>
+                    </a>
+                </div> 
+            
+                <div class="row justify-content-around mt-3">
+                    <div class="col-4">
+                            <p class="fw-light text-dark fs-6 col align-self-start"> By: 
+                            <b class="fw-bolder fs-5 text-marine">FP Support</b>
+                        </p>
+                    </div>
+
+                    <div class="col-4">
+                        <span class="smaller-texts badge rounded-pill bg-dark col align-self-end">{{msg.Send_Date.strftime('%B, %d %Y @ %H:%M')}}</span>
+                    </div>
+                    <hr class="text-muted col-10">
+                </div>
+
+                <div class="modal-body col-12">
+                    <div class="fw-light lh-base question_answer_response">{{- msg.Message_Content| safe -}}</div>
+                </div>
+        
+                <div class="col-12 modal-footer d-flex justify-content-center">
+                    <span class="col-12 text-center fw-light small-texts text-warning animate__animated animate__flash animate__repeat-3">
+                        <i class="bi bi-exclamation-triangle-fill"></i> Delete can't be undone
+                    </span>
+                
+                    <div class="row py-2">
+                        <form action="{{ url_for('delete_message', msg_id=msg.Id, msg_by=msg_by|urlencode) }}" method="GET">
+                            <button type="submit" tabindex="2" 
+                                class="fp-buttons fp-red-btn ms-2">
+                                <i class="bi bi-trash" style="font-size: 1.3rem;"></i> Delete Message
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

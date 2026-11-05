@@ -1,0 +1,610 @@
+{% extends "base.html" %}
+{% set active_page = "jobs" %}
+
+{% block title %}
+    <title>FP - Jobs</title>
+{% endblock %}
+
+{% block content %}
+    <!-- include alert page to handle alert messages -->
+    {% if result.status_code %}
+        {% include "alerts.html" ignore missing with context %}
+    {% endif %}
+
+    <main class="container-fluid start-content">
+        {% if jobs.get('jobs', [])|length == 0 %}
+            <div class="col-12 text-center py-5">
+                <div class="animate__animated animate__fadeInUp animate__slow mt-5">
+                    <i class="bi bi-calendar2-week" style="font-size: 8rem;"></i>
+                </div>
+
+                <span class="page_title animate__animated animate__fadeIn animate__delay-2s">
+                    No jobs available!
+                </span>
+            </div>
+
+            <div class="row smaller-texts fw-light lh-lg text-center text-dark py-3 animate__animated 
+                animate__fadeInUp animated__slow" style="background-color: #F5F5F5; margin-top: 9rem;">
+                <span>We are working with companies to bring the best positions to</span> <br>
+                <b class="text-orange fs-6">Future Programmers</b>
+            </div>
+        {% else %}
+            <div class="col-12 py-3 header-bg mb-4 d-flex justify-content-around">
+                <div class="dropdown">
+                    <a class="btn btn-sm msg-btn {{ 'msg-active' if msg_by == 'state' }} dropdown-toggle" 
+                        href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">View
+                    </a>
+                    
+                    <ul class="dropdown-menu px-3" aria-labelledby="dropdownMenuCheck">
+                        {% for item in limit_items %}
+                            <div class="form-check ms-3 mb-3">
+                                <input class="form-check-input" type="radio" name="jobs" value="{{item}}" id="{{item}}_jobs">
+                                <p class="small-texts fw-light text-light" for="{{item}}_jobs">
+                                    {{item}} jobs
+                                </p>
+                            </div>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <div class="dropdown">
+                    <a class="btn btn-sm msg-btn {{ 'msg-active' if job_param in locations }} dropdown-toggle" 
+                        href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                        Location
+                    </a>
+                    
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                        {% for location in locations %}
+                            <li>
+                                <a href="{{url_for("seach_jobs", page=1, list=total_items, job_param=location)}}" 
+                                    class="small-texts dropdown-item {{ 'text-orange' if job_param == location }}">
+                                    {{location}}
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <div class="dropdown">
+                    <a class="btn btn-sm msg-btn {{ 'msg-active' if job_param in contracts }} dropdown-toggle" 
+                        href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                        Contract
+                    </a>
+                    
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                        {% for contract in contracts %}
+                            <li>
+                                <a href="{{url_for("seach_jobs", page=1, list=total_items, job_param=contract)}}" 
+                                    class="small-texts dropdown-item {{ 'text-orange' if job_param == contract }}">
+                                    {{contract}}
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <div class="dropdown">
+                    <a class="btn btn-sm msg-btn {{ 'msg-active' if job_param in durations }} dropdown-toggle" 
+                        href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                        Duration
+                    </a>
+                    
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                        {% for duration in durations %}
+                            <li>
+                                <a href="{{url_for("seach_jobs", page=1, list=total_items, job_param=duration)}}" 
+                                    class="small-texts dropdown-item {{ 'text-orange' if job_param == duration }}">
+                                    {{duration}}
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <div class="dropdown">
+                    <a class="btn btn-sm msg-btn {{ 'msg-active' if job_param in states }} dropdown-toggle" 
+                        href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                        State
+                    </a>
+
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                        {% for state in states %}
+                            <li>
+                                <a href="{{url_for("seach_jobs", page=1, list=total_items, job_param=state)}}" 
+                                    class="small-texts dropdown-item {{ 'text-orange' if job_param == state }}">
+                                    {{state}}
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+
+            <!-- div container to list all jobs card -->
+            <div class="row d-flex justify-content-evenly">
+                {% for job in jobs.get('jobs', []) %}
+                    <div class="job-card my-4">
+                        <div class="row job-card-body">
+                            <div class="d-flex justify-content-between border-bottom mt-2">
+                                <img src="{{ url_for('uploaded_comp_images', path=job.job_belongs_company.Image) }}" class="col-2 mb-2"
+                                    alt="{{ job.job_belongs_company.Company }}" height="50" width="50" loading="lazy">
+                                
+                                <div class="col-10 text-center">
+                                    <a href="#" class="text-start fp-font text-orange fs-5" data-bs-toggle="modal" 
+                                        data-bs-target="#fullJob-{{ job.Id }}">
+                                        <b>{{ job.Title[:19] }}</b>
+                                    </a> <br>
+
+                                    <span class="fs-6 text-start text-dark fw-bolder mb-1">
+                                        {{ job.job_belongs_company.Company }}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="p-0 mt-3 text-center">
+                                <div class="d-flex justify-content-around mt-2">
+                                    <div class="smaller-texts text-muted mb-1">Country <br>
+                                        <p class="small-texts text-dark fw-bold">{{ job.job_belongs_company.Country }}</p>
+                                    </div>
+
+                                    <div class="smaller-texts text-muted mb-1">State <br>
+                                        <p class="small-texts text-dark fw-bold">{{job.job_belongs_company.State}}</p>
+                                    </div>
+
+                                    <div class="smaller-texts text-muted mb-1">Duration <br>
+                                        <p class="small-texts text-dark fw-bold">{{job.Duration}}</p>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex py-2 mt-1 justify-content-around">
+                                    <div class="smaller-texts text-muted mb-1">Location <br>
+                                        <p class="small-texts text-dark fw-bold">{{job.Location}}</p>
+                                    </div>
+
+                                    <div class="smaller-texts text-muted mb-1">Contract <br>
+                                        <p class="small-texts text-dark fw-bold">{{job.Contract}}</p>
+                                    </div>
+
+                                    <div class="smaller-texts text-muted mb-1">Payment <br>
+                                        <p class="small-texts text-dark fw-bold">{{job.Payment_Type}}</p>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex justify-content-around">
+                                    <div class="smaller-texts text-muted mb-1">Min Salary <br>
+                                        <span class="fs-5 fp-font fw-bolder text-orange">${{ (job.Salary_Start | string).split('.')[0] or '-' }}</span>
+                                    </div>
+
+                                    <div class="smaller-texts text-muted mb-1">Max Salary * <br>
+                                        <span class="fs-5 fp-font fw-bolder text-orange">
+                                            ${{ (job.Salary_End | string).split('.')[0] }}
+
+                                            {% if (job.Salary_End | string).split('.')[0] | length <= 3 %}
+                                                <span class="text-muted smaller-texts">hour</span>
+                                            {% endif %}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="col-12 mt-2">
+                                    <span class="smaller-texts text-muted">Required Skills</span> <br>
+
+                                    {# Prevents crash if Lang_Requirements is None #}
+                                    {% for tag in (job.Lang_Requirements or '').split() %}
+                                        <small class="fw-bolder language-badges badge bg-{{ tag | lower }} bg-none">
+                                            {% if tag == 'Null' %} None {% else %} {{ tag }} {% endif %}
+                                        </small>
+                                    {% endfor %}
+                                </div>
+                            </div>
+
+                            <span class="col text-end small-texts text-muted fw-lighter">
+                                <span class="bi bi-calendar-week" 
+                                    data-bs-toggle="tooltip" data-bs-placement="left" data-bs-animation="false"
+                                    title="Posted {{ job.Posted_Date.strftime('%B, %d %Y') }}"></span>
+                            </span>
+                          
+                            <div class="border-top mt-auto py-2 d-flex justify-content-around">
+                                {% if not job.Closed %}
+                                    {% if user_in.Id == job.employeer_id %}
+                                        <div class="col-12 d-flex justify-content-around">
+                                            <a href="#" class="fp-btn-posts fp-btn-post-view" data-bs-toggle="modal" 
+                                                data-bs-target="#fullJob-{{ job.Id }}">
+                                                <i class="bi bi-eye" style="font-size: 1rem;"></i> View
+                                            </a>
+
+                                            <a href="#" class="fp-btn-posts fp-btn-post-close" data-bs-toggle="modal" 
+                                                data-bs-target="#closeJob-{{ job.Id }}">
+                                                <i class="bi bi-door-closed" style="font-size: 1rem;"></i> Close
+                                            </a>
+
+                                            <a href="{{ url_for('update_job', job_id=job.Id) }}" class="fp-btn-posts fp-btn-post-edit">
+                                                <i class="bi bi-pen" style="font-size: 1rem;"></i> Edit
+                                            </a>
+                                        </div>
+                                    {% else %}
+                                        {# Fixed target ID #}
+                                        <div class="col-12 d-flex justify-content-center">
+                                            {% if job.Id | string in jobs_applied | map('string') | list %}
+                                                <a href="#" class="ms-2 btn btn-sm job-applied-btn animate__animated 
+                                                    animate__swing animate__delay-1s animate__repeat-2" 
+                                                    data-bs-toggle="modal" data-bs-target="#fullJob-{{ job.Id }}">
+                                                    <i class="bi bi-hand-thumbs-up-fill" style="font-size: 1.2rem;"></i> Applied
+                                                </a>
+                                            {% else %}
+                                                <a href="#" class="ms-2 btn btn-sm job-apply-btn" data-bs-toggle="modal" 
+                                                    data-bs-target="#fullJob-{{ job.Id }}">
+                                                    {% if user_in.Type == 'developer' %}
+                                                        <i class="bi bi-clipboard-check-fill" style="font-size: 1rem;"></i>  Apply
+                                                    {% else %}
+                                                        <i class="bi bi-eye-fill" style="font-size: 1rem;"></i> View
+                                                    {% endif %} 
+                                                </a>
+                                            {% endif %}
+                                        </div>
+                                    {% endif %}
+                                {% else %}
+                                    <p class="smaller-texts mt-2 py-2 badge rounded-pill bg-danger animate__animated 
+                                        animate__flash animate__repeat-2 m-0">
+                                        &nbsp; Job Closed &nbsp;
+                                    </p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- MODAL TO SEE FULL JOB ROLE AND APPLY (Fixed ID context per-job loop) -->
+                    <div class="modal gen-mdl animate__animated animate__slow" id="fullJob-{{ job.Id }}" data-bs-backdrop="static" 
+                        data-bs-keyboard="false" tabindex="-1" aria-labelledby="jobBackdrop-{{ job.Id }}" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                            <div class="modal-content">
+                                <div class="modal-header d-flex justify-content-around">
+                                    <a href="#" class="text-decoration-none small-texts badge rounded-pill text-bg-light" 
+                                        data-bs-toggle="tooltip" data-bs-animation="false" data-bs-placement="top" title="{{job.Id}}">
+                                        <b><span>ID</span></b>
+                                    </a>
+
+                                    <div class="col-11 text-center">
+                                        <div class="modal-header-title text-center">
+                                            {{ job.Title[:22] }}
+                                            <p class="fs-6 text-light mb-0">
+                                                <i class="bi bi-buildings-fill"></i> {{ job.job_belongs_company.Company }}
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <a href="#" class="gen-mdl-close btn-close-modal position-absolute p-1 top-0 end-0">
+                                        <i class="bi bi-x-circle-fill" style="font-size: 1.7rem;"></i>
+                                    </a>
+                                </div>
+
+                                <!-- Modal Body -->
+                                <div class="modal-body">
+                                    <ul class="nav mb-3 d-flex justify-content-center sticky-top" style="background-color: #EBEBEB;" id="pills-tab" role="tablist">
+                                        <li class="nav-item" role="presentation">
+                                            <a href="/overview" class="nav-link navlink-tab-menu active" id="overview-tab-{{ job.Id }}" data-bs-toggle="pill" 
+                                                data-bs-target="#pills-overview-{{ job.Id }}" role="tab" aria-controls="pills-overview-{{ job.Id }}" aria-selected="true">
+                                                <i class="bi bi-aspect-ratio"></i> Overview
+                                            </a>
+                                        </li>
+
+                                        <li class="nav-item" role="presentation">
+                                            <a href="/description" class="nav-link navlink-tab-menu" id="description-tab-{{ job.Id }}" data-bs-toggle="pill"
+                                                data-bs-target="#pills-description-{{ job.Id }}" role="tab" aria-controls="pills-description-{{ job.Id }}" aria-selected="false">
+                                                <i class="bi bi-file-text"></i> Description
+                                            </a>
+                                        </li>
+
+                                        <li class="nav-item" role="presentation">
+                                            <a href="/benefits" class="nav-link navlink-tab-menu" id="benefits-tab-{{ job.Id }}" data-bs-toggle="pill" role="tab"
+                                                data-bs-target="#pills-benefits-{{ job.Id }}" aria-controls="pills-benefits-{{ job.Id }}" aria-selected="false">
+                                                <i class="bi bi-award"></i> Benefits
+                                            </a>
+                                        </li>
+                                    </ul>
+
+                                    <!-- job tabs list view -->
+                                    <div class="tab-content d-flex justify-content-center" id="pills-tabContent">
+                                        <!-- tab to list job overview data -->
+                                        <div class="tab-pane show active" id="pills-overview-{{ job.Id }}" role="tabpanel" aria-labelledby="overview-tab-{{ job.Id }}">
+                                            <div class="row text-center alert alert-{{'success' if 'Receiving' in job.Status}} alert-{{'info' if 'Analyzing' in job.Status}} 
+                                            alert-{{'danger' if 'Closed' in job.Status}} animate__animated animate__flash animate__repeat-2">
+                                            
+                                            <div class="text-muted">
+                                                Status: 
+                                                <label class="text-dark fw-bolder">{{job.Status}}</label>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-12 py-2 d-flex justify-content-around">
+                                                <div class="mb-3 text-muted small-texts">
+                                                    Country: 
+                                                    <label class="fs-6 text-dark fw-bolder fp-font">{{job.job_belongs_company.Country}}</label>
+                                                </div>
+
+                                                <div class="mb-3 text-muted small-texts">
+                                                    State: 
+                                                    <label class="fs-6 text-dark fw-bolder fp-font">{{job.job_belongs_company.State}}</label>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-12 py-2 d-flex justify-content-around">
+                                                <div class="mb-3 text-muted small-texts">
+                                                    Location: 
+                                                    <label class="fs-6 text-dark fw-bolder fp-font">{{job.Location}}</label>
+                                                </div>
+
+                                                <div class="mb-3 text-muted small-texts">
+                                                    Contract: 
+                                                    <label class="fs-6 text-dark fw-bolder fp-font">{{job.Contract}}</label>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-12 py-2 d-flex justify-content-around">
+                                                <div class="mb-3 text-muted small-texts">
+                                                    Duration: 
+                                                    <label class="fs-6 text-dark fw-bolder fp-font">{{job.Duration}}</label>
+                                                </div>
+
+                                                <div class="mb-3 text-muted small-texts">
+                                                    Payment: 
+                                                    <label class="fs-6 text-dark fw-bolder fp-font">{{job.Payment_Type}}</label>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-12 py-2 d-flex justify-content-around">
+                                                <span class="mb-3 text-muted small-texts text-center">
+                                                    {% if job.Salary_Start %}
+                                                        Range:
+                                                        <span class="fp-font fs-6 badge rounded-pill text-bg-primary">
+                                                            ${{ (job.Salary_Start | string).split('.')[0] }}
+                                                        </span> to 
+                                                    {% else %}
+                                                        Salary:
+                                                    {% endif %}
+                                                        <span class="fp-font fs-6 badge rounded-pill text-bg-primary">
+                                                            ${{ (job.Salary_End | string).split('.')[0] }}
+                                                        </span>
+                                                        {% if (job.Salary_End | string).split('.')[0] | length <= 3 %}
+                                                            <b class="text-muted smaller-texts">hour</b>
+                                                        {% endif %}
+
+                                                    <p class="text-center fw-lighter text-primary smaller-texts">
+                                                        * Salary may vary according to experience
+                                                    </p>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- tab to list job overview data -->
+                                    <div class="tab-pane show" id="pills-description-{{ job.Id }}" role="tabpanel" aria-labelledby="description-tab-{{ job.Id }}">
+                                        <label class="col-12 fs-5 text-dark fw-bolder mb-1">
+                                            Skills Required
+                                        </label>
+                                        <div class="mb-2">
+                                            {% for tag in job.Lang_Requirements.split(' ') %}
+                                                <p class="language-badges badge bg-{{tag | lower}}">{{tag}}</p>
+                                            {% endfor %}
+                                        </div>
+
+                                        <div class="row mt-3">
+                                            <label class="mb-3 fs-5 text-dark fw-bolder">
+                                                Requirements good to have
+                                            </label>
+
+                                            <pre class="fw-light fp-font" style="white-space: pre-line; text-align: justify;">
+                                                {{job.Other_Requirements}}
+                                            </pre>
+                                        </div>
+
+                                        <div class="row mt-3">
+                                            <label class="mb-3 fs-5 text-dark fw-bolder">
+                                                Job Role & Description 
+                                            </label>
+
+                                            <pre class="fw-light fp-font" style="white-space: pre-line; text-align: justify;">
+                                                {{job.Description}}
+                                            </pre>
+                                        </div>
+                                    </div>
+
+                                    <!-- tab to list job overview data -->
+                                        <div class="tab-pane show" id="pills-benefits-{{ job.Id }}" role="tabpanel" aria-labelledby="benefits-tab-{{ job.Id }}">
+                                            <div class="row mt-1">
+                                                <label class="mb-3 fs-5 text-dark fw-bolder">
+                                                    Benefits offered by {{job.job_belongs_company.Company}}
+                                                </label>
+
+                                                <pre class="fw-light fp-font" style="white-space: pre-line; text-align: justify;">
+                                                    {{job.Benefits}}
+                                                </pre>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+            
+                                <form class="needs-validation p-3 border-top text-center" novalidate method="POST"
+                                    action="{{url_for("job_apply", job_id= job.Id)}}">
+                                    {% if not user_in %}
+                                        <div class="py-2 fw-bold fs-5 text-marine">
+                                            Log in to apply
+                                        </div>
+                                    {% elif user_in.Type == "developer" %}
+                                        {% if not job.Closed %}
+                                            {% if user_in.Has_Resume %}
+                                                {% if job.Id | string in jobs_applied | map('string') | list %}
+                                                    <label class="fs-4 fw-bolder animate__animated animate__fadeInDown 
+                                                        animate__delay-1s animate__slow" style="color: #FF2400;;">
+                                                        You alredy applied
+                                                    </label>
+                                                {% else %}
+                                                    <button type="submit" name="action" class="fp-buttons fp-orange-btn">
+                                                        <i class="bi bi-bullseye" style="font-size: 1.3rem;"></i> Apply
+                                                    </button>
+                                                {% endif %}
+                                            {% else %}
+                                                <span class="text-center text-dark fw-bolder">
+                                                    <a href="{{url_for("dev_account")}}" class="text-primary">Fill up </a>
+                                                    your resume profile before applying
+                                                </span>
+                                            {% endif %}
+                                        {% else %}
+                                            <div class="row">
+                                                <span class="fs-3 text-dark fp-font">Job closed</span>
+                                            </div>
+                                        {% endif %}
+                                    {% else %}
+                                        <div class="py-2 fw-bold fs-5 text-marine">
+                                            Only developer can apply
+                                        </div>
+                                    {% endif %}
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- MODAL CLOSE JOB -->
+                    <div class="modal gen-mdl animate__animated animate__slow" id="closeJob-{{job.Id}}" data-bs-backdrop="static" 
+                        data-bs-keyboard="false" tabindex="-1" aria-labelledby="closeJobBackdrop" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header d-flex justify-content-around">
+                                    <h1 class="col-10 title-headers text-center">
+                                        <i class="bi bi-door-closed-fill" style="font-size: 2.2rem;"></i>
+                                        Close Job
+                                    </h1>
+
+                                    <a href="#" class="gen-mdl-close btn-close-modal position-absolute p-1 top-0 end-0">
+                                        <i class="bi bi-x-circle-fill" style="font-size: 1.7rem;"></i>
+                                    </a>
+                                </div>
+
+                                <form class="needs-validation" novalidate method="POST">
+                                    <div class="modal-body">
+                                        <div class="col-10 offset-1 p-2 text-center">
+                                            <b><label class="fs-4 text-danger">
+                                                Closing job <span class="text-dark">{{job.Title}}</span><br>
+                                                Will not allow developers to submit applications!
+                                            </label></b>
+                                        </div>
+                                    </div>
+
+                                    <div class="modal-footer d-flex justify-content-center">
+                                        <a href="{{url_for("close_job", job_id=job.Id)}}" type="submit" name="action" 
+                                            class="fp-buttons fp-orange-btn">
+                                            <i class="bi bi-door-closed" style="font-size: 1.3rem;"></i> Close
+                                        </a>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+
+                <!-- jobs pagination -->
+                {% if jobs.get('items_per_page', 0) > limit_items[-1] + 1 %}
+                    <div class="py-3" data-spy="scroll" data-bs-offset="0">
+                        <div id="error_limit" class="col-12 text-center text-warning py-5">
+                            <div class="animate__animated animate__bounce animate__slower animate__repeat-2">
+                                <i class="bi bi-grid-3x3-gap-fill" style="font-size: 7rem;"></i>
+                            </div>
+                            
+                            <span class="page_title animate__animated animate__fadeInUp animate__delay-1s animate__slow">
+                                {{ jobs.get('items_per_page') }} items per page not permitted!
+                            </span>
+                        </div>
+                    </div>
+                {% else %}
+                    <!-- pagination block -->
+                    {% if jobs.get('cur_page') not in jobs.get('total', []) %}
+                        <div class="py-5">
+                            <div id="error_404" class="col-12 text-center text-danger py-5">
+                                <div class="animate__animated animate__bounce animate__slower animate__repeat-2">
+                                    <i class="bi bi-file-earmark-excel-fill " style="font-size: 7rem;"></i>
+                                </div>
+                                
+                                <h1 class="page_title animate__animated animate__fadeInUp animate__delay-1s animate__slow">
+                                    Page {{ jobs.get('cur_page') }} not found!
+                                </h1>
+                            </div>
+                        </div>
+                    {% elif jobs.get('total')|length > 1 %}
+                        <nav class="mt-5 mb-1">
+                            <ul class="pagination justify-content-center">
+                                {% if jobs.get('cur_page') >= 2 %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="{{ url_for("list_jobs") }}?page={{ jobs.get('cur_page', 1) - 1 }}&list={{ jobs.get('items_per_page', 10) }}">
+                                            Previous
+                                        </a>
+                                    </li>
+                                {% else %}
+                                    <li class="page-item disabled">
+                                        <span class="page-link">Previous</span>
+                                    </li>
+                                {% endif %}
+                                    
+                                {% for page in jobs.get('total', []) %}
+                                    <li class="page-item {% if page == jobs.get('cur_page') %}page-active{% endif %} ">
+                                        <a class="page-link {% if page == jobs.get('cur_page') %} page-active {% endif %}" 
+                                            href="{{ url_for("list_jobs") }}?page={{ page }}&list={{ jobs.get('items_per_page', 10) }}">
+                                            {{page}}
+                                        </a>
+                                    </li>
+                                {% endfor %}
+                                
+                                {% if jobs.get('cur_page') == jobs.get('total')|length %}
+                                    <li class="page-item disabled">
+                                        <span class="page-link">Next</span>
+                                    </li>
+                                {% else %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="{{ url_for("list_jobs") }}?page={{ jobs.get('cur_page', 1) + 1 }}&list={{ jobs.get('items_per_page', 10) }}">
+                                            Next
+                                        </a> 
+                                    </li>
+                                {% endif %}
+                            </ul>
+
+                            <span class="d-flex justify-content-center fs-6 fw-lighter">
+                                Page: <b class="px-2"> {{ jobs.get('cur_page', 1) }} </b> out of <b class="px-2"> {{ jobs.get('total', [])|length }}.</b>
+                                &nbsp;&nbsp; Total of &nbsp;<b>{{ jobs.get('items_found', 0) }}</b> &nbsp; jobs found.
+                            </span>
+                        </nav>
+                    {% endif %}
+                {% endif %}
+            </div>
+        {% endif %}
+
+        <script>
+            //get the value user selected to load total items per page
+            document.addEventListener('DOMContentLoaded', function() {
+                const radio_selected = document.querySelectorAll('input[name="jobs"]');
+
+                radio_selected.forEach(function(radio) {
+                    radio.addEventListener('change', function() {
+                        if (this.checked) {
+                            localStorage.clear;
+                            const total_jobs = this.value;
+                            localStorage.setItem('total_jobs', total_jobs);
+                            window.location.href = "http://127.0.0.1:8000/jobs?page=1&list="+localStorage.getItem('total_jobs');
+                            return localStorage;
+                        }
+                    });
+                });
+            });
+
+            // keep total items radio selected after reload the page
+            window.addEventListener('load', function() {
+                const storedValue = localStorage.getItem('total_jobs');
+                if (storedValue) {
+                    const radioToSelect = document.querySelector(`input[type="radio"][name="jobs"][value="${storedValue}"]`);
+                    if (radioToSelect) {
+                        radioToSelect.checked = true;
+                    }
+                }
+            });
+        </script>
+    </main>
+{% endblock %}

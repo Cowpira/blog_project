@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <title>FP - Error page</title>
+        <!-- adding css styles -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">	
+        <link href="https://fonts.googleapis.com/css2?family=Exo:ital,wght@0,100..900;1,100..900&family=Supermercado+One&display=swap" rel="stylesheet">
+        <link href="{{ url_for('static', path='styles/bootstrap.min.css') }}" rel="stylesheet">
+        <link href="{{ url_for('static', path='styles/app.css') }}" rel="stylesheet">
+        <link href="{{ url_for('static', path='styles/prism.css') }}" rel="stylesheet">
+        <link href="{{ url_for('static', path='favicon.ico') }}" rel="shortcut icon">
+    </head>
+
+    <style>
+        body{
+            min-height: 100vh;   
+            max-height: 100%; 
+            width: 100%; 
+            overflow-x: hidden; 
+            overflow-y: auto; 
+            background: #333333;
+            background: linear-gradient(0deg,rgba(51, 51, 51, 0.85) 8%, rgba(163, 163, 163, 1) 34%, rgba(209, 207, 207, 1) 53%, rgba(245, 245, 245, 1) 76%);
+        }
+        .menu{
+            background-color: rgba(205, 205, 205, 0.877);
+            box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
+        }
+    </style>
+
+    <body>
+        <nav class="navbar menu">
+            <div class="container-fluid">
+                <img class="ms-3" src="{{ url_for('static', path='images/future_prog.png') }}" alt="" width="85" height="70">
+                    
+                <a class="nav-link fs-5 fw-light" href="/">
+                    <i class="bi bi-house-fill px-2" style="font-size: 2rem;"></i>
+                </a>
+            </div>
+        </nav>
+
+        <main class="py-5 mt-5">
+            <div class="d-flex justify-content-center">
+                <img class="rounded" src="{{ url_for("static", path='images/error-404.png') }}" alt="" width="215" height="235">
+                
+                <div class="error mt-2 fw-bolder text-center animate__animated animate__flash animate__delay-3s animate__slower animate__infinite">
+                    Error <br> {{result.status_code}}
+                </div>
+            </div>
+
+            <div class="row mt-5 fs-2 text-center fw-lighter text-dark ">
+                <div class="animate__animated animate__fadeInUp animate__delay-2s">
+                    {{result.detail}}
+                </div>
+
+                <div class="animate__animated animate__fadeInUp animate animate__slow animate__delay-3s">
+                    The page you try to reach does not exist <br> Or the request is invalid!!
+                </div>
+            </div>
+        </main>
+    </body>
+</html>

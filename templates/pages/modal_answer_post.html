@@ -1,0 +1,128 @@
+{% block content %}
+    <div class="modal gen-mdl" id="mdl-answer-post-{{post.Id}}" data-bs-backdrop="static" style="overflow-y: scroll;"
+        data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticAnswerPost" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header -flex justify-content-around">
+                    <a href="#" class="smaller-texts badge rounded-pill bg-danger text-start"
+                        data-bs-toggle="tooltip" data-bs-animation="false" 
+                        data-bs-placement="top" title="{{post.Id}}">View ID
+                    </a>
+                    
+                    <b class="col-10 title-headers text-center" id="staticAnswerPost">
+                        <i class="bi bi-chat-dots animate__animated animate__fadeIn animate__delay-1s" 
+                            style="font-size: 2rem;"></i> Answer Question
+                    </b>
+
+                    <a href="#" class="gen-mdl-close btn-close-modal text-orange position-absolute p-1 top-0 end-0">
+                        <i class="bi bi-x-circle-fill" style="font-size: 1.7rem;"></i>
+                    </a>
+                </div>
+
+                <div class="accordion accordion-flush" id="accordion-modal">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="flush-heading-post">
+                            <button id="modal-accordion-button" tabindex="1" class="accordion-button collapsed modal-accordion-button" 
+                                type="button" data-bs-toggle="collapse" data-bs-target="#collapse-modal-answer" 
+                                aria-expanded="false" aria-controls="collapse-answer">
+                                
+                                <div class="col-12 post_title text-light fw-light text-center">
+                                    <p class="mt-2 animate__animated animate__flipInX animate__duration-1s animate__delay-1s">
+                                        {{post.Title}}
+                                    </p>
+                                    
+                                    <p class="smaller-texts animate__animated animate__swing animate__repeat-3 animate__delay-2s">
+                                        click to see question
+                                    </p>
+                                </div>
+                            </button>
+                        </h2>
+
+                        <div id="collapse-modal-answer" class="accordion-collapse collapse accordion-content 
+                            accordion-bottom-content" aria-labelledby="flush-heading-post" data-bs-parent="#accordion-modal">
+                            
+                            <div class="accordion-body accordion-body-modals">
+                                <!-- LISTING ANSWERS AND ADD CODE HIGHLIGHT TO THE CODE PORTION -->
+                                {% include "code_highlight.html" ignore missing with context %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <form class="needs-validation" novalidate action="{{url_for("answer_post", post_id= post.Id)}}" method="POST">
+                    <div class="modal-body">
+                        <div class="row d-flex justify-content-around">
+                            <div class="col-10">
+                                <label for="question" class="form-label fw-light text-dark">Answer 
+                                    <span class="fw-bolder text-danger">*</span>
+                                </label>
+                            </div>
+
+                            <div class="col-1">
+                                <a href="#" class="fp-btn-posts" data-bs-toggle="tooltip" data-bs-animation="false" data-bs-placement="top" 
+                                    title="To highlighted your code select the language and code inside the backthick: ``` ´´´">
+                                    <b><i class="bi bi-question-circle" style="font-size: 1.5rem;"></i></b>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-center justify-content-between bg-light border border-bottom-0 rounded-top p-2">
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="dropdown">
+                                    <!-- Visual Dropdown Trigger Button -->
+                                    <a href="#" class="fp-btn-posts fp-btn-post-view dropdown-toggle" tabindex="3"
+                                        id="tagsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="bi bi-code-slash" style="font-size: 13px;"></i> Add Code Block...
+                                    </a>
+                                    
+                                    <!-- Pure Clickable Dropdown Options (Allows clicking the same language infinitely) -->
+                                    <ul class="dropdown-menu py-1" aria-labelledby="tagsDropdown" 
+                                        style="min-width: 180px; max-height: 370px; overflow-y: auto;">
+                                        {% for language in languages %}
+                                            <li>
+                                                <button type="button" class="dropdown-item snippet-lang-btn fw-light py-1.5" value="{{ language }}">
+                                                    {{ language }}
+                                                </button>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <span class="text-muted smaller-texts fw-light d-sm-inline">
+                                * code inside the backticks
+                            </span>
+                        </div>
+
+                        <textarea id="mdl-textarea" type="text" tabindex="2" class="form-control question-textarea mt-1 rounded-0 rounded-bottom" 
+                            style="height: 350px; border-top: none; white-space: pre-wrap;" name="answer_post" maxlength="1500"
+                            oninput="updateCount(this, 'answer-counter', 'answer-bars')"
+                            required placeholder="Describe your question or use the dropdown to inject syntax blocks..."></textarea>
+
+                        <progress class="col-12" id="answer-bars" value="0"></progress>
+                        <span id="answer-counter" class="col-12 d-flex text-muted smaller-texts justify-content-end">0 / 1500</span>
+
+                        <div class="col-12">
+                            <p class="col-10 small text-primary p-1">
+                                * if you remove a Tag remove the backticks and the code inside it
+                            </p>
+                            <input name="answer_tags" class="form-control smaller-texts text-muted input-tag-list"
+                                value="" tabindex="4" placeholder="Selected languages will display here automatically">
+                        </div>
+
+                        <span class="smaller-texts text-danger">* required field</span>
+                        <div id="form_valid" class="col-6 offset-3 mb-3 mt-3 d-none alert-field animate__animated animate__fadeInUp">
+                            <b>You must enter your answer!</b>
+                        </div>
+                    </div>
+            
+                    <div class="col-12 modal-footer d-flex justify-content-center">
+                        <button type="submit" name="action" tabindex="5" class="fp-buttons fp-orange-btn" onclick="validate_answer_post();">
+                            <i class="bi bi-filter-left" style="font-size: 1.3rem;"></i> Answer
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

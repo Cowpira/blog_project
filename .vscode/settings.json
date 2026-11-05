@@ -1,0 +1,16 @@
+{
+    "python.testing.pytestArgs": [
+        "tests"
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true,
+    "liveServer.settings.root": "/|/[^\/]",
+    "liveServer.settings.port": 8000,
+    "liveServer.settings.AdvanceCustomBrowserCmdLine": "",
+    "liveServer.settings.ChromeDebuggingAttachment": false,
+    "liveServer.settings.proxy": {
+        "proxyUri": "http://127.0.0.1:8000"
+    },
+    "python-envs.defaultEnvManager": "ms-python.python:system",
+    "sqlite3-editor.connection.runtimeLoadableExtensions": {}
+}

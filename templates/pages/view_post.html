@@ -1,0 +1,198 @@
+{% extends "base.html" %}
+{% set active_page = "posts" %}
+
+{% block title %}
+    <title>FP - Post View</title>
+{% endblock %}
+
+{% block content %}
+    <!-- include alert page to handle alert messages -->
+    {% if result.status_code %}
+        {% include "alerts.html" ignore missing with context %}
+    {% endif %}
+
+    <main class="container-fluid start-content">
+        {% if post.status_code == 404 %}
+            <!-- if post ID parameter does not exist -->
+            <div class="row py-3" data-spy="scroll" data-bs-offset="0">
+                <div class="col-12 text-center text-info py-3">
+                    <div class="animate__animated animate__bounce animate__slower animate__repeat-2 py-5">
+                        <i class="bi bi-exclamation-diamond" style="font-size: 7rem;"></i>
+                    </div>
+                    
+                    <span class="page_title animate__animated animate__fadeInUp animate__delay-1s animate__slow">
+                        No post found!
+                    </span>
+                </div>
+            </div>
+        {% else %}
+            <div class="container-fluid mb-5">
+                <div class="row" style="z-index: 1;">
+                    <!-- div to display post content -->
+                    <div class="card mb-5 mt-2 col-12 col-md-10 col-lg-8 offset-lg-2
+                        {% if answers | length < 1 %} offset-md-1 offset-lg-2 {% endif %}">
+                        <div class="row card-header header-bg">
+                            {% if not post.Opened %}
+                                <span class="post-closed text-center animate__animated animate__fadeInDown animate__slower">
+                                    Closed post
+                                </span>
+                            {% endif %}
+                            
+                            <div class="d-flex justify-content-between fs-2 py-3 fw-light text-orange">
+                                {{post.Title}}
+                    
+                                <img class="ms-5 post-img" width="55" height="55" alt="{{post.author.First_Name}}"
+                                    src="{{url_for('uploaded_dev_images', path=post.author.Image)}}">
+                            </div>
+                            
+                            <div class="col d-flex justify-content-between">
+                                <div>
+                                    {% for tag in post.Tag.split(' ')|unique %}
+                                        <span class="language-badges badge bg-{{tag | lower}}">{{tag}}</span>
+                                    {% endfor %}
+                                </div>
+
+                                <span class="text-light small-texts fw-lighter">
+                                    By: <a href="{{url_for("search_posts")}}?search_post=Null&author_id={{post.author.Id}}&page=1&list={{total_items}}" 
+                                        class="fs-5 text-light">
+                                        {{post.author.First_Name}}
+                                    </a>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="card-body">
+                            <!-- GETTING QUESTIONS AND TAGS FOR CODE HIGHLIGHT LAYOUT -->
+                            {% set text = post.Question.split('``') %}
+                            {% set tags = post.Tag.split(' ') %}
+                            {% include "code_highlight.html" with context %}
+                            
+                            <hr class="col-8 offset-2 text-muted">
+                            <div class="py-1">
+                                {% if user_in and post.Opened %}
+                                    <!-- check if developer logged in is listed in answer -->
+                                    {% if post.dev_id != user_in.Id and user_in.Id not in answers|map(attribute='dev_id') %}
+                                        <a href="#" data-bs-toggle="modal" class="fp-btn-posts fp-btn-post-answer" 
+                                            data-bs-target="#mdl-answer-post-{{post.Id}}">
+                                            <i class="bi bi-chat-square-text"></i> Answer
+                                        </a>
+                                    {%elif user_in.Id == post.dev_id %}
+                                        <a href="{{url_for("post_question", post_id=post.Id)}}" class="fp-btn-posts fp-btn-post-edit">
+                                            <i class="bi bi-pencil-fill"></i> Edit
+                                        </a>
+
+                                        <a href="#" class="ms-2 fp-btn-posts fp-btn-post-close" data-bs-toggle="modal"
+                                            data-bs-target="#mdl-close-post" data-bs-post-id="{{post.Id}}" data-bs-title="{{post.Title}}"
+                                            data-bs-action="{{ url_for('close_post', post_id=post.Id) }}">
+                                            <i class="bi bi-x-circle-fill"></i> Close
+                                        </a>
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+
+                            <div class="col d-flex justify-content-between ms-3"  style="font-size: .8px">
+                                <i class="text-muted">
+                                    Posted: {{post.Posted.strftime('%B, %d %Y @ %H:%M')}}
+                                </i>
+
+                                {% if not post.Opened %}
+                                    <i class="badge rounded-pill bg-warning text-dark">
+                                        Closed: {{post.Closed_Date.strftime('%B, %d %Y')}}
+                                    </i>
+                                {% endif %}
+
+                                <i class="text-muted">
+                                    Updated: {{post.Last_Update.strftime('%B, %d %Y @ %H:%M')}}
+                                </i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- MODAL TO ALLOW DEVELOPER TO ANSWER POSTS -->
+                    {% include "modal_answer_post.html" ignore missing with context %}
+
+                    <!-- sidebar menu to lscroll spy to answers -->
+                    {% if answers | length > 0 %}
+                        <div class="col d-none d-md-block">
+                            <div class="answers-sidebar-menu text-center py-2 mt-2">
+                                <label class="text-light small-texts header-bg p-3"> Answered by </label>
+                                <!-- LISTING ALL DEVELOPERS WHO ANSWERED THE POST -->  
+                                {% for answer in answers  %}
+                                    <nav id="navbar-answers-{{answer.Id}}" class="mt-2">
+                                        <a class="nav-link small-texts mb-1" href="#item-{{answer.Id}}">
+                                            {{answer.write_answer.First_Name.split(" ")[0]}}
+                                        </a>
+                                    </nav>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endif %}
+                   
+                    <!-- ##################################################################################### -->
+                    <!-- ADDING POST ANSWERS LAYOUT -->
+                    {% include "view_post_answers.html" with context %}
+                </div>
+            </div>
+        {% endif %}
+
+        <!-- ================== MODAL TO CLOSE A POST ================== -->
+        <div class="modal gen-mdl" id="mdl-close-post" data-bs-backdrop="static" 
+            data-bs-keyboard="false" tabindex="-1" aria-labelledby="closePostBackdrop" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header d-flex justify-content-around">
+                        <h1 class="col-10 title-headers text-center">
+                            <i class="bi bi-clipboard2-x-fill px-2 animate__animated animate__fadeIn animate__delay-1s" 
+                                style="font-size: 2rem;"></i> Close Post 
+                        </h1>
+
+                        <a href="#" class="gen-mdl-close btn-close-modal text-orange position-absolute p-1 top-0 end-0">
+                            <i class="bi bi-x-circle-fill" style="font-size: 1.7rem;"></i>
+                        </a>
+                    </div>
+
+                    <form id="form-close-post" class="needs-validation" novalidate method="POST">
+                        <div class="modal-body">
+                            <div class="col-10 offset-1 p-2 text-center">
+                                <div class="py-2">
+                                    <i class="text-muted fs-6 fw-light">Closing post:</i><br>
+                                    <b id="post-title" class="text-dark fs-4 fw-light"></b>
+                                </div>
+
+                                <b class="row lh-base badge bg-danger fs-4 mt-2 animate__animated animate__flash animate__repeat-2 animate__slow">
+                                    Developers won't be able to answer it <br> 
+                                    This action can only be undone by support
+                                </b>
+                            </div>
+                        </div>
+
+                        <div class="modal-footer d-flex justify-content-center">
+                            <button type="submit" class="fp-buttons fp-orange-btn">
+                                <i class="bi bi-file-earmark-lock" style="font-size: 1.3rem;"></i> Close Post
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <script>
+            // setting active class style for answers link
+            const links= document.querySelectorAll('.nav-link');
+            
+            // loop through the link list and watch link event click
+            links.forEach(link => {
+                link.addEventListener('click', () => {
+
+                    // loop through links and remove all active class
+                    links.forEach(cls => {
+                        cls.classList.remove('navlink-tab-menu');
+                    });
+
+                    // check wich link is clicked and add active class
+                    link.classList.add('navlink-tab-menu');
+                });
+            });
+        </script>
+    </main>
+{% endblock %}

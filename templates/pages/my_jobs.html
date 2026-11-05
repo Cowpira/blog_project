@@ -1,0 +1,267 @@
+{% extends "base.html" %}
+{% set active_page = "job_posted" %}
+
+{% block title %}
+    <title>List Jobs I Added</title>
+{% endblock %}
+
+{% block content %}
+    <!-- include alert page to handle alert messages -->
+    {% if result.status_code %}
+        {% include "alerts.html" ignore missing with context %}
+    {% endif %}
+
+    <main class="container-fluid start-content">
+        {% if result and result.status_code == 204 %}
+            <div class="col-12 text-center mt-5">
+                <div class="animate__animated animate__fadeInUp animate__slow text-warning">
+                    <i class="bi bi-sign-no-parking-fill" style="font-size: 8rem;"></i> <br>
+                
+                    <label class="fs-1 fw-bolder py-3">
+                        You haven't posted jobs yet!!
+                    </label>
+                </div>
+
+                <div class="animate__animated animate__fadeInUp animate__delay-2s">
+                    <a href="{{ url_for("add_job") }}" class="fp-buttons fp-orange-btn d-inline-flex align-items-center gap-2">
+                        <i class="bi bi-person-workspace" style="font-size: 1rem;"></i>
+                        <span>Post new Job</span>
+                    </a>
+                </div>
+            </div>
+        
+        {% else %}
+            <!-- this id is used to force accordion to close when another is opened -->
+            <div class="accordion accordion-flush" id="view-full-job">
+                {% for job in result %}
+                    <div class="row justify-content-center  mt-3 mb-5">
+                        <div class="col-11 col-sm-10 col-md-8 col-xxl-7">
+                            <div class="job-card-body">
+                                <div class="col-12 d-flex justify-content-around">
+                                    <img src="{{ url_for("uploaded_comp_images", path=job.job_belongs_company.Image) }}" 
+                                        alt="{{ job.job_belongs_company.Company }}" class="mt-2 ms-3" loading="lazy" width="60" height="60">
+                
+                                    <div class="col-11">
+                                        <h3 class="col-10 mt-3 text-center">
+                                            <a href="#" class="h5 mt-2 card-title">{{job.Title[:23]}}</a>
+                                        </h3>
+                                    </div>
+                                </div>
+                                    
+                                <!-- listing job required tags -->
+                                <div class="col-12 text-center">
+                                    <span class="small-texts text-dark mb-1">Required Skills</span>
+                                    
+                                    <div class="mb-2">
+                                        {% for tag in job.Lang_Requirements.split(' ') %}
+                                            <p class="language-badges badge bg-{{ tag | lower }}">{{ tag }}</p>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+
+                                <!-- listing job title and description -->
+                                <div class="col-12 pt-1">                
+                                    <b class="fs-6 text-dark mb-1 ms-3 accordion-header" id="job-head-{{ job.Id }}">
+                                        {{job.job_belongs_company.Company}}
+                                    </b> <br>
+
+                                    <label class="mx-2 text-dark fw-light fp-font" style="text-align: justify; height: 50px;">
+                                        {{ job.Description | truncate(120, True, '...', 0) }}
+                                    </label>
+
+                                    <!-- listing action buttons to view, edit or close job -->
+                                    <div class="d-flex justify-content-center py-3">
+                                        <a href="{{ url_for("update_job", job_id=job.Id) }}" class="fp-btn-posts fp-btn-post-edit ms-2">
+                                            <i class="bi bi-pencil-fill"></i> Edit
+                                        </a>
+                                        
+                                        {% if job.Closed %}
+                                            <div class="ms-2 mt-1">
+                                                <span class="badge rounded-pill bg-danger
+                                                    animate__animated animate__flash animate__repeat-2">
+                                                    &nbsp; Closed &nbsp;
+                                                </span>
+                                            </div>
+                                        {% else %}
+                                            <a href="#" class="fp-btn-posts fp-btn-post-close ms-2" 
+                                                data-bs-toggle="modal" data-bs-target="#closeJob-{{ job.Id }}">
+                                                <i class="bi bi-x-circle-fill"></i> Close
+                                            </a>
+                                        {% endif %}
+
+                                        <a href="{{ url_for("job_applicants", job_id= job.Id) }}" class="fp-btn-posts fp-btn-post-view ms-2">
+                                            <i class="bi bi-pencil-fill"></i> Candidates
+                                        </a>
+                                    </div>
+
+                                    <div class="col-12 py-1 d-flex justify-content-evenly" style="background: lightgray;">
+                                        <div class="col-4">
+                                            <a href="#" class="mt-2 badge rounded-pill text-bg-dark" data-bs-toggle="tooltip" 
+                                                data-bs-animation="false" data-bs-placement="top" title="{{job.Id}}">View ID
+                                            </a>
+                                        </div>
+
+                                        <div class="col-1 text-end">
+                                            <div class="animate__animated animate__flash animate__repeat-2 
+                                                animate__slow animate__delay-1s" data-bs-toggle="tooltip" data-bs-animation="false" 
+                                                data-bs-placement="top" title="View Full Job">
+                                                    
+                                                <a id="job-{{ job.Id }}" href="#" class="text-orange fw-bolder accordion-flush collapsed" 
+                                                    aria-expanded="true" data-bs-toggle="collapse" data-bs-target="#job-collapse-{{ job.Id }}" 
+                                                    aria-controls="job-collapse-{{ job.Id }}">
+                                                        
+                                                    <i class="bi bi-chevron-double-down" style="font-size: 1.5rem;"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+
+                                        <span class="col-5 mt-2 text-muted text-end fw-light" style="font-size: .5rem;">
+                                            Posted: <strong class="text-dark fw-normal">{{ job.Posted_Date.strftime('%B, %d %Y') }}</strong>
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <!-- listing the full position ACCORDION -->
+                                <div id="job-collapse-{{ job.Id }}" class="accordion-scrollable accordion-collapse collapse" 
+                                    aria-labelledby="job-{{ job.Id }}" data-bs-parent="#view-full-job">
+                                    
+                                    <div class="accordion-body accordion-scrollable">
+                                        <div class="row text-center mt-2 alert alert-{{'success' if 'Receiving' in job.Status}} 
+                                            alert-{{'info' if 'Analyzing' in job.Status}} alert-{{'danger' if 'Closed' in job.Status}} 
+                                            animate__animated animate__flash animate__repeat-2">
+                                            
+                                            <span class="text-dark fw-lighter">
+                                                Current: <b class="text-dark">{{job.Status}}</b>
+                                            </span>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-12 d-flex justify-content-around">
+                                                <label class="mb-3 text-dark fw-lighter">
+                                                    Country: <b class="fs-6 fp-font">{{job.job_belongs_company.Country}}</b>
+                                                </label>
+
+                                                <label class="mb-3 text-dark fw-lighter">
+                                                    State: <b class="fs-6 fp-font">{{job.job_belongs_company.State}}</b>
+                                                </label>
+                                            </div>
+
+                                            <div class="col-12 d-flex justify-content-around">
+                                                <label class="mb-3 text-dark fw-lighter">
+                                                    Location: <b class="fs-6 fp-font">{{job.Location}}</b>
+                                                </label>
+
+                                                <label class="mb-3 text-dark fw-lighter">
+                                                    Contract: <b class="fs-6 fp-font">{{job.Contract}}</b>
+                                                </label>
+                                            </div>
+
+                                            <div class="col-12 d-flex justify-content-around">
+                                                <label class="mb-3 text-dark fw-lighter">
+                                                    Duration: <b class="fs-6 fp-font">{{job.Duration}}</b>
+                                                </label>
+
+                                                <label class="mb-3 text-dark fw-lighter">
+                                                    Payment: <b class="fs-6 fp-font">{{job.Payment_Type}}</b>
+                                                </label>
+                                            </div>
+
+                                            <div class="col-12 d-flex justify-content-around">
+                                                <label class="mb-3 text-dark fw-lighter text-center">
+                                                    {% if job.Salary_Start %}
+                                                        Range: <b class="fs-6 fp-font">${{job.Salary_Start}}</b> to 
+                                                    {% else %} Salary:
+                                                    {% endif %}
+                                                    
+                                                    <b class="fs-6 fp-font">${{job.Salary_End}}</b>
+
+                                                    <p class="text-center fw-lighter text-primary smaller-texts">
+                                                        * Salary may vary according to experience
+                                                    </p>
+                                                </label>
+                                            </div>
+                                        </div>
+
+                                        <b class="col-12 fs-6 text-dark mb-1">Code Skills Required</b>
+                                        <div class="mb-2">
+                                            {% for tag in job.Lang_Requirements.split(' ') %}
+                                                <p class="language-badges badge bg-{{tag | lower}}">{{tag}}</p>
+                                            {% endfor %}
+                                        </div>
+
+                                        <div class="row mt-3">
+                                            <label class="mb-3 text-dark fw-bolder">
+                                                Requirements good to have
+                                            </label>
+
+                                            <pre class="fw-light fp-font" style="white-space: pre-line; text-align: justify;">
+                                                {{job.Other_Requirements}}
+                                            </pre>
+                                        </div>
+
+                                        <div class="row mt-3">
+                                            <label class="mb-3 text-dark fw-bolder">
+                                                Job Role & Description 
+                                            </label>
+
+                                            <pre class="fw-light fp-font" style="white-space: pre-line; text-align: justify;">
+                                                {{job.Description}}
+                                            </pre>
+                                        </div>
+
+                                        <div class="row mt-3 mb-5">
+                                            <label class="mb-3 text-dark fw-bolder">
+                                                Benefits offered by {{job.job_belongs_company.Company}}
+                                            </label>
+
+                                            <pre class="fw-light fp-font" style="white-space: pre-line; text-align: justify;">
+                                                {{job.Benefits}}
+                                            </pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- MODAL CLOSE JOB -->
+                    <div class="modal gen-mdl" id="closeJob-{{ job.Id }}" data-bs-backdrop="static" 
+                        data-bs-keyboard="false" tabindex="-1" aria-labelledby="closeJobBackdrop-{{ job.Id }}" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header d-flex justify-content-around">
+                                    <h1 class="col-10 title-headers text-center">
+                                        <i class="bi bi-door-closed-fill" style="font-size: 2.2rem;"></i>
+                                        Close Job
+                                    </h1>
+
+                                    <a href="#" class="gen-mdl-close btn-close-modal position-absolute p-1 top-0 end-0">
+                                        <i class="bi bi-x-circle-fill" style="font-size: 1.7rem;"></i>
+                                    </a>
+                                </div>
+
+                                <form class="needs-validation" novalidate method="POST">
+                                    <div class="modal-body">
+                                        <div class="col-10 offset-1 p-2 text-center">
+                                            <b><label class="fs-4 text-danger">
+                                                Closing job <span class="text-dark">{{ job.Title }}</span><br>
+                                                Will not allow developers to submit applications!
+                                            </label></b>
+                                        </div>
+                                    </div>
+
+                                    <div class="modal-footer d-flex justify-content-center">
+                                        <a href="{{ url_for("close_job", job_id=job.Id) }}" name="action" 
+                                            class="fp-buttons fp-orange-btn">
+                                            <i class="bi bi-door-closed" style="font-size: 1.3rem;"></i> Close
+                                        </a>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </main>
+{% endblock %}

@@ -1,0 +1,101 @@
+{% block footer %}
+    <div class="footer py-5">
+        <div class="col-12 col-lg-10 offset-lg-1 d-flex justify-content-evenly">
+            <div class="col ms-5">
+                <a href="{{url_for("home")}}" target="_parent">
+                    <img src="{{ url_for('static', path='images/future_prog.png') }}" alt="Future Programmers" 
+                    class="ms-3" width="85" height="70">
+                </a>
+
+                <span class="row fs-4 text-gray footer_title ms-2">Future </span>
+                <span class="row fs-4 text-gray footer_title">Programmers </span>
+            </div>
+            
+            <div class="col text-center">
+                <ul style="list-style-type: none;">
+                    <li class="mb-2"><span class="text-light footer_title fs-5"><b>Links</b></span></li>
+
+                    <li class="mt-2">
+                            <a type="button" class="footer-link py-1" href="{{url_for("list_posts")}}" target="_parent">
+                            <i>Posts</i>
+                        </a>
+                    </li>
+                    <li class="mt-3">
+                            <a class="footer-link py-1" href="{{url_for("users")}}" target="_parent">
+                            <i>Developers</i>
+                        </a>
+                    </li>
+                    <li class="mt-3">
+                            <a class="footer-link py-1" href="{{url_for("list_jobs")}}" target="_parent">
+                            <i>Jobs</i>
+                        </a>
+                    </li>
+
+                    <li class="mt-3">
+                        {% if user_in %}
+                            <a class="footer-link py-1" href="{{url_for("logout")}}" target="_parent">
+                                <i>Logout</i>
+                            </a>
+                        {% else %}
+                            <a class="footer-link py-1" href="#" target="_parent" data-bs-toggle="modal" 
+                                data-bs-target="#loginModal">
+                                <i>Login</i>
+                            </a>
+                        {% endif %}
+                    </li>
+                </ul>
+            </div>
+
+            <div class="col text-center">
+                <ul style="list-style-type: none;">
+                    <li class="mb-2"><span class="text-light footer_title fs-5"><b>Help</b></span></li>
+
+                    <li class="mt-2">
+                        <a type="button" class="footer-link py-1" href="{{url_for("contact")}}" target="_parent">
+                            <i>Contact</i>
+                        </a>
+                    </li>
+                    <li class="mt-3">
+                        <a type="button" class="footer-link py-1" href="{{url_for("help_page")}}" target="_parent">
+                            <i>Help</i>
+                        </a>
+                    </li>
+                    <li class="mt-3">
+                        <a type="button" class="footer-link py-1" href="{{url_for("help_page")}}" target="_parent">
+                            <i>Policy</i>
+                        </a>
+                    </li>
+                    <li class="mt-3">
+                        <a type="button" class="footer-link py-1" href="#" target="_parent">
+                            <i>Cookies</i>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="col text-center">
+                <ul style="list-style-type: none;">
+                    <li class="mb-2"><span class="text-light footer_title fs-5"><b>Social</b></span></li>
+                    
+                    <li>
+                        <a type="button" class="youtube text-gray" href="#" target="_parent" title="Future Programmers - YouTube">
+                            <i class="bi bi-youtube" style="font-size: 1.7rem;"></i>
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a type="button" class="github text-gray" href="#" target="_parent" title="Future Programmers - Github">
+                            <i class="bi bi-github github" style="font-size: 1.7rem;"></i>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center py-2" style="background-color: rgb(61, 61, 61);">
+        <sapn class="author">Developed by 
+            <a href="https://deliveryti.com" class="text-orange" target="_blank">Delivery-TI</a>. &copy;2025
+        </sapn>
+    </div>
+{% endblock %}

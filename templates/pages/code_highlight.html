@@ -1,0 +1,55 @@
+{% block content %}
+    {% set ns = namespace(index=0) %}
+    {# Descobre o tamanho máximo da lista de tags para evitar erros #}
+    {% set total_tags = tags | length %}
+
+    {% for snippet in text %}
+        {% set parts = snippet.split('´´´') %}
+        {% set code_part = parts[0] | trim %}
+        {% set text_part = parts[1] | default('') %}
+        {% set has_backtick = '`' in code_part %}
+
+        <div class="row mb-3">
+            {% if not has_backtick %}
+                <pre class="fw-light question_answer_response pt-2 mb-0" style="white-space: pre-wrap;">{{ code_part }}</pre>
+            {% else %}
+                {# does not allow index to go over 'tags' list #}
+                {% set tag_idx = ns.index if ns.index < total_tags else -1 %}
+                {% set current_tag = tags[tag_idx] if tag_idx >= 0 else 'code' %}
+                {% if current_tag == 'Bootstrap' %}
+                    {% set lang_class = 'language-html' %}
+                {% elif current_tag == 'FastAPI' %}
+                    {% set lang_class = 'language-python' %}
+                {% else %}
+                    {% set lang_class = 'language-' ~ current_tag | lower %}
+                {% endif %}
+                <!-- Container relativo para posicionar o botão de copiar -->
+                <div class="position-relative code-block-container mb-0 p-0">
+                    <div class="d-flex justify-content-between align-items-center gap-2 p-2 code-block-header-bg">
+                        <!-- button to copy code block -->
+                        <button class="btn btn-sm btn-light fw-light smaller-texts text-marine py-0 px-2 btn-copy" 
+                            onclick="copyCode(this)"> 
+                            <i class="bi bi-copy"></i> Copy
+                        </button>
+
+                        <!-- code language Badge -->
+                        <span style="font-size: 10px !important;" class="language-badges badge bg-{{ current_tag | lower }}">
+                            {{ current_tag }}
+                        </span>
+                    </div>
+
+                    <pre class="mb-0 p-2">
+                        <code class="{{ lang_class }}">{{ code_part[1:] | trim }}</code>
+                    </pre>
+                </div>
+                {% set ns.index = ns.index + 1 %}
+            {% endif %}
+
+            {% if text_part %}
+                <div class="fw-light question_answer_response mt-2">
+                    {{ text_part }}
+                </div>
+            {% endif %}
+        </div>
+    {% endfor %}
+{% endblock %}

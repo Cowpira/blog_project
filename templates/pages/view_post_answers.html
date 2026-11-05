@@ -1,0 +1,571 @@
+{% block content %}
+    {% if answers %} 
+        <div class="col-12 col-md-10 col-lg-8 offset-lg-2 mb-5 card">
+            <div class="row title-answers-container text-center py-2 header-bg">
+                <span class="fs-4 fw-lighter text-light">Post {{post.Title}}</span> <br> 
+                
+                <p class="smaller-texts text-warning">
+                    has {{post.Total_Answer}} answer{% if post.Total_Answer > 1 %}s {% endif %}
+                </p>
+            </div>
+
+            <!-- LISTING ALL DEVELOPERS WHO ANSWERED THE POST -->
+            {% for answer in answers %}
+                <div class="py-2 mx-2" data-bs-spy="scroll" data-bs-target="#navbar-answers-{{ answer.Id }}" 
+                    data-bs-smooth-scroll="true" tabindex="0">
+            
+                <!-- Answer Header Block -->
+                <div class="row py-2 mt-1" style="background-color: #afafafca; border-radius: 6px;">
+                    <div id="item-{{ answer.Id }}" class="col-8 col-md-9 answers-content">By 
+                        <span class="fs-2 text-orange mt-2">{{ answer.write_answer.First_Name }}</span>
+                    </div>
+                    <i class="col-4 col-md-3 text-end text-muted mt-3"  style="font-size: .8px">
+                        Posted: {{ answer.Posted.strftime('%B, %d %Y') }}
+                    </i>
+                </div>
+
+                {# getting answer and tags to add code highlight #}
+                {% set text = answer.Answer.split('``') %}
+                {% set tags = answer.Tag.split(' ') if answer.Tag else [] %}
+                
+                {% include "code_highlight.html" with context %}
+            
+                <!-- Action Interactions Bar -->
+                <div class="container-fluid d-flex justify-content-around mt-2 mb-4">
+                    <hr class="text-muted col-4">
+
+                    {% if post.Opened and user_in.Id == answer.dev_id %}
+                        <a href="#" class="btn-sm btn-post-interaction" data-bs-toggle="modal" style="z-index: 1;"
+                            data-bs-target="#mdl-edit-answer" data-bs-answer-id="{{answer.Id}}"
+                            data-bs-answer-tag="{{answer.Tag}}" data-bs-answer-text="{{answer.Answer}}">
+                            <i class="bi bi-pencil-square" style="font-size: .8rem;"></i> Edit Answer
+                        </a>
+                    {% endif %}
+
+                    <!-- this peace of code is only used to be copied inside reply answer modal accordion to list the answer -->
+                    <div class="d-none" id="highlighted-answer-{{ answer.Id }}">
+                        {% include "code_highlight.html" with context %}
+                    </div>
+                    
+                    {% if answer.Id not in replies_ids and user_in.Id == post.dev_id and post.Opened %}
+                        <a href="#" class="btn-post-interaction" data-bs-toggle="modal" style="z-index: 1;" 
+                            data-bs-target="#mdl-reply-answer" data-bs-answer-id="{{answer.Id}}">
+                            <i class="bi bi-reply-all-fill" style="font-size: .6rem;"></i> Reply
+                        </a>
+                       
+                        <hr class="text-muted col-4">
+                    {% else %}
+                        {% for item in replies_by_answer.get(answer.Id, []) %}
+                            {% if item.dev_id == user_in.Id and post.Opened %}
+                                <a href="#" class="btn-post-interaction" data-bs-toggle="modal" style="z-index: 1;"
+                                    data-bs-target="#mdl-edit-reply" data-bs-reply-id="{{item.Id}}" 
+                                    data-bs-reply-tag="{{item.Tag}}" data-bs-reply-text="{{item.Response}}">
+                                    <i class="bi bi-pen-fill" style="font-size: .6rem;"></i> Edit Reply
+                                </a>
+                            {% endif %}
+                        {% endfor %}
+                        <hr class="text-muted col-4">
+                    {% endif %}
+                </div>
+
+                <!-- Render Target Replies Fragment -->
+                {% for reply in replies_by_answer.get(answer.Id, []) %}
+                    {% include "view_post_replies.html" with context %}
+                {% endfor %}
+            {% endfor %}
+        </div>
+        <span class="col-2 col-sm-3 col-md-2 col-lg-2 d-none d-sm-block"></span>
+    {% else %}
+        <!-- if post listed does not have any answer -->
+        <div class="row text-center">
+            <span class="fw-light fs-3 text-muted fp-font">
+                This post has no answer yet!  
+            </span>
+        </div>
+    {% endif %}
+
+
+    <!-- ================================================================= -->
+    <!-- GLOBAL MODALS PLACEHOLDERS (LOADED ONCE AT THE BOTTOM OF THE PAGE)-->
+    <!-- ================================================================= -->
+
+    <!-- ================== MODAL TO REPLY ANSWER ================== -->
+    <div class="modal gen-mdl" id="mdl-reply-answer" data-bs-backdrop="static" 
+        data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticReplyAnswer" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header d-flex justify-content-around">
+                    <h1 class="col-10 title-headers text-center">
+                        <i class="bi bi-chat-square-text animate__animated animate__fadeIn animate__delay-1s" 
+                            style="font-size: 2rem;"></i> Reply Answer
+                    </h1>
+
+                    <a href="#" class="gen-mdl-close btn-close-modal text-orange position-absolute p-1 top-0 end-0">
+                        <i class="bi bi-x-circle-fill" style="font-size: 1.7rem;"></i>
+                    </a>
+                </div>
+
+                <div class="accordion accordion-flush" id="accordion-modal-reply">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="flush-heading-reply">
+                            <button type="button" id="modal-accordion-button" class="accordion-button collapsed modal-accordion-button" tabindex="1"
+                                data-bs-toggle="collapse" aria-expanded="false" data-bs-target="#collapse-modal-reply" aria-controls="collapse-modal-reply">
+                                
+                                <div class="col-12 post_title text-light fw-light text-center">
+                                    <p class="mt-3 animate__animated animate__flipInX animate__duration-1s animate__delay-1s">
+                                        {{post.Title}}
+                                    </p>
+                                    
+                                    <p class="smaller-texts fw-light text-center animate__animated animate__swing 
+                                        animate__repeat-3 animate__delay-2s">
+                                        click to see answer
+                                    </p>
+                                </div>
+                            </button>
+                        </h2>
+
+                        <div id="collapse-modal-reply" class="accordion-collapse collapse accordion-content 
+                            accordion-bottom-content" aria-labelledby="flush-heading-reply" data-bs-parent="#accordion-modal-reply">
+                            <div id="highlight-answer-accordion" class="accordion-body accordion-body-modals"> </div>
+                        </div>
+                    </div>
+                </div>
+
+                <form id="form-reply-answer" class="needs-validation" novalidate method="POST">
+                    <div class="modal-body">
+                        <div class="row d-flex justify-content-around">
+                            <div class="col-10">
+                                <label for="question" class="form-label fw-light text-dark">Your Response 
+                                    <span class="fw-bolder text-danger">*</span>
+                                </label>
+                            </div>
+
+                            <div class="col-1">
+                                <a href="#" class="fp-btn-posts" data-bs-toggle="tooltip" data-bs-animation="false" data-bs-placement="top" 
+                                    title="To highlighted your code select the language and code inside the backthick: ``` ´´´">
+                                    <b><i class="bi bi-question-circle" style="font-size: 1.5rem;"></i></b>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-center justify-content-between bg-light border border-bottom-0 rounded-top p-2">
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="dropdown">
+                                    <!-- Visual Dropdown Trigger Button -->
+                                    <a href="#" class="fp-btn-posts fp-btn-post-view dropdown-toggle" tabindex="3"
+                                        id="tagsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="bi bi-code-slash" style="font-size: 13px;"></i> Add Code Block...
+                                    </a>
+                                    
+                                    <!-- Pure Clickable Dropdown Options (Allows clicking the same language infinitely) -->
+                                    <ul class="dropdown-menu py-1" aria-labelledby="tagsDropdown" 
+                                        style="min-width: 180px; max-height: 370px; overflow-y: auto;">
+                                        {% for language in languages %}
+                                            <li>
+                                                <button type="button" class="dropdown-item snippet-lang-btn fw-light py-1.5" value="{{ language }}">
+                                                    {{ language }}
+                                                </button>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <span class="text-muted smaller-texts fw-light d-sm-inline">
+                                * code inside the backticks
+                            </span>
+                        </div>
+
+                        <textarea id="mdl-textarea" type="text" tabindex="2" class="form-control question-textarea mt-1 rounded-0 rounded-bottom" 
+                            style="height: 350px; border-top: none; white-space: pre-wrap;" name="replying_answer" maxlength="1500"
+                            oninput="updateCount(this, 'reply-counter', 'reply-bars')"
+                            required placeholder="Enter your reply and use the 'Add Code Block' dropdown to add code blocks..."></textarea>
+
+                        <progress class="col-12" id="reply-bars" value="0"></progress>
+                        <span id="reply-counter" class="col-12 d-flex text-muted smaller-texts justify-content-end">0 / 1500</span>
+
+                        <div class="col-12">
+                            <p class="col-10 small text-primary p-1">
+                                * if you remove a Tag remove the backticks and the code inside it
+                            </p>
+                            <input name="answer_tags" class="form-control smaller-texts text-muted input-tag-list"
+                                value="" tabindex="4" placeholder="Selected languages will display here automatically">
+                        </div>
+
+                        <span class="smaller-texts text-danger">* required field</span>
+                        <div id="form_valid" class="col-6 offset-3 mb-3 d-none alert-field animate__animated">
+                            <b>You must enter a response!!</b>
+                        </div>
+                    </div>
+
+                    <div class="col-12 modal-footer d-flex justify-content-center">
+                        <button type="submit" tabindex="5" name="action" class="fp-buttons fp-orange-btn">
+                            <i class="bi bi-repeat-1" style="font-size: 1.3rem;"></i> Reply
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ================== MODAL TO EDIT REPLY ================== -->
+    <div class="modal gen-mdl" id="mdl-edit-reply" data-bs-backdrop="static" 
+        data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticEditReply" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header d-flex justify-content-around">
+                    <span id="reply-id" class="smaller-texts badge rounded-pill bg-danger text-start"></span>
+                    
+                    <h1 class="col-10 text-center title-headers">
+                        <i class="bi bi-pencil-square" style="font-size: 2rem;"></i> Edit Reply
+                    </h1>
+
+                    <a href="#" class="gen-mdl-close btn-close-modal text-orange position-absolute p-1 top-0 end-0">
+                        <i class="bi bi-x-circle-fill" style="font-size: 1.7rem;"></i>
+                    </a>
+                </div>
+
+                <form id="form-edit_reply" class="needs-validation" novalidate method="POST">
+                    <div class="modal-body">
+                        <div class="row d-flex justify-content-around">
+                            <div class="col-10">
+                                <label for="question" class="form-label fw-light text-dark">Previous Answer 
+                                    <span class="fw-bolder text-danger">*</span>
+                                </label>
+                            </div>
+
+                            <div class="col-1">
+                                <a href="#" class="fp-btn-posts" data-bs-toggle="tooltip" data-bs-animation="false" data-bs-placement="top" 
+                                    title="To highlighted your code select the language and code inside the backthick: ``` ´´´">
+                                    <b><i class="bi bi-question-circle" style="font-size: 1.5rem;"></i></b>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-center justify-content-between bg-light border border-bottom-0 rounded-top p-2">
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="dropdown">
+                                    <!-- Visual Dropdown Trigger Button -->
+                                    <a href="#" class="fp-btn-posts fp-btn-post-view dropdown-toggle" tabindex="2"
+                                        id="tagsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="bi bi-code-slash" style="font-size: 13px;"></i> Add Code Block...
+                                    </a>
+                                    
+                                    <!-- Pure Clickable Dropdown Options (Allows clicking the same language infinitely) -->
+                                    <ul class="dropdown-menu py-1" aria-labelledby="tagsDropdown" 
+                                        style="min-width: 180px; max-height: 370px; overflow-y: auto;">
+                                        {% for language in languages %}
+                                            <li>
+                                                <button type="button" class="dropdown-item snippet-lang-btn fw-light py-1.5" value="{{ language }}">
+                                                    {{ language }}
+                                                </button>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <span class="text-muted smaller-texts fw-light d-sm-inline">
+                                * code inside the backticks
+                            </span>
+                        </div>
+
+                        <textarea id="mdl-textarea" type="text" tabindex="1" class="form-control question-textarea mt-1 rounded-0 rounded-bottom" 
+                            style="height: 350px; border-top: none; white-space: pre-wrap;" name="edit_reply" maxlength="1500"
+                            oninput="updateCount(this, 'counter-edit-reply', 'bars-edit-reply')"
+                            required placeholder="Describe your question or use the dropdown to inject syntax blocks..."></textarea>
+
+                        <progress class="col-12" id="bars-edit-reply" value="0"></progress>
+                        <span id="counter-edit-reply" class="col-12 d-flex text-muted smaller-texts justify-content-end">0 / 1500</span>
+
+                        <div class="col-12">
+                            <p class="col-10 small text-primary p-1">
+                                * if you remove a Tag remove the backticks and the code inside it
+                            </p>
+                            <input id="edit_reply_tags" name="edit_reply_tags" class="form-control smaller-texts text-muted input-tag-list"
+                                value="" tabindex="3" placeholder="Selected languages will display here automatically">
+                        </div>
+
+                        <span class="smaller-texts text-danger">* required field</span>
+                        <div id="form_valid" class="col-6 offset-3 mb-3 mt-3 d-none alert-field animate__animated">
+                            <b>You must enter a response!!</b>
+                        </div>
+                    </div>
+
+                    <div class="col-12 modal-footer d-flex justify-content-center">
+                        <button type="submit" tabindex="4" name="action" class="fp-buttons fp-orange-btn">
+                            <i class="bi bi-file-earmark-arrow-up" style="font-size: 1.3rem;"></i> Update
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    
+    <!-- ================== MODAL TO EDIT ANSWER ================== -->
+    <div class="modal gen-mdl" id="mdl-edit-answer" data-bs-backdrop="static" 
+        data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticEditAnswer" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header d-flex justify-content-around">
+                    <a id="answer-id" href="#" class="smaller-texts badge rounded-pill bg-danger text-start"
+                        data-bs-toggle="tooltip" data-bs-animation="false" data-bs-placement="top">
+                        View ID
+                    </a>
+
+                    <h1 class="col-10 text-center title-headers">
+                        <i class="bi bi-pencil-square animate__animated animate__fadeIn animate__delay-1s" 
+                            style="font-size: 2rem;"></i>
+                        Edit Answer
+                    </h1>
+                    
+                    <a href="#" class="gen-mdl-close btn-close-modal text-orange position-absolute p-1 top-0 end-0">
+                        <i class="bi bi-x-circle-fill" style="font-size: 1.7rem;"></i>
+                    </a>
+                </div>
+
+                <form id="form-edit_answer" class="needs-validation" novalidate method="POST">
+                    <div class="modal-body">
+                        <div class="row d-flex justify-content-around">
+                            <div class="col-10">
+                                <label for="question" class="form-label fw-light text-dark"> Previous Answer 
+                                    <span class="fw-bolder text-danger">*</span>
+                                </label>
+                            </div>
+
+                            <div class="col-1">
+                                <a href="#" class="fp-btn-posts" data-bs-toggle="tooltip" data-bs-animation="false" data-bs-placement="top" 
+                                    title="To highlighted your code select the language and code inside the backthick: ``` ´´´">
+                                    <b><i class="bi bi-question-circle" style="font-size: 1.5rem;"></i></b>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-center justify-content-between bg-light border border-bottom-0 rounded-top p-2">
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="dropdown">
+                                    <!-- Visual Dropdown Trigger Button -->
+                                    <a href="#" class="fp-btn-posts fp-btn-post-view dropdown-toggle" tabindex="2"
+                                        id="tagsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="bi bi-code-slash" style="font-size: 13px;"></i> Add Code Block...
+                                    </a>
+                                    
+                                    <!-- Pure Clickable Dropdown Options (Allows clicking the same language infinitely) -->
+                                    <ul class="dropdown-menu py-1" aria-labelledby="tagsDropdown" 
+                                        style="min-width: 180px; max-height: 370px; overflow-y: auto;">
+                                        {% for language in languages %}
+                                            <li>
+                                                <button type="button" class="dropdown-item snippet-lang-btn fw-light py-1.5" value="{{ language }}">
+                                                    {{ language }}
+                                                </button>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <span class="text-muted smaller-texts fw-light d-sm-inline">
+                                * code inside the backticks
+                            </span>
+                        </div>
+
+                        <textarea id="mdl-textarea" type="text" tabindex="1" class="form-control question-textarea mt-1 rounded-0 rounded-bottom" 
+                            style="height: 350px; border-top: none; white-space: pre-wrap;" name="edit_answer" maxlength="1500"
+                            oninput="updateCount(this, 'counter-edit-answer', 'bars-edit-answer')"
+                            required placeholder="Describe your question or use the dropdown to inject syntax blocks..."></textarea>
+
+                        <progress class="col-12" id="bars-edit-answer" value="0"></progress>
+                        <span id="counter-edit-answer" class="col-12 d-flex text-muted smaller-texts justify-content-end">0 / 1500</span>
+
+
+                        <div class="col-12">
+                            <p class="col-10 small text-primary p-1">
+                                * if you remove a Tag remove the backticks and the code inside it
+                            </p>
+                            <input id="edit_answer_tags" name="edit_answer_tags" class="form-control smaller-texts text-muted input-tag-list"
+                                value="" tabindex="3" placeholder="Selected languages will display here automatically">
+                        </div>
+
+                        <span class="smaller-texts text-danger">* required field</span>
+                        <div id="form_valid" class="col-6 offset-3 mb-3 mt-3 d-none alert-field animate__animated">
+                            <b>You must enter your answer!!</b>
+                        </div>
+                    </div>
+
+                    <div class="col-12 modal-footer d-flex justify-content-center">
+                        <button type="submit" name="action" class="fp-buttons fp-orange-btn" tabindex="4">
+                            <i class="bi bi-file-earmark-arrow-up" style="font-size: 1.3rem;"></i> Update
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // CHECK SELECTED AND UNSELECTED CHECKBOXES TAGS AND LIST VALUES INTO INPUT
+            document.addEventListener('change', function (event) {
+                // Verifica se o elemento alterado é uma checkbox de tag
+                if (event.target.classList.contains('tag-checkbox')) {
+                    const checkbox = event.target;
+                    const activeModal = checkbox.closest('.modal');
+                    if (!activeModal) return;
+
+                    // Locates the correct text input field inside the current active modal
+                    const tagsInput = activeModal.querySelector('#edit_answer_tags') || activeModal.querySelector('.input-tag-list');
+                    if (!tagsInput) return;
+
+                    // Get current tags from the input field, filter out empty elements
+                    let currentTags = tagsInput.value.trim() ? tagsInput.value.trim().split(' ') : [];
+
+                    if (checkbox.checked) {// CASE 1: User checked a box -> Append it strictly to the end of the array
+                        if (!currentTags.includes(checkbox.value)) {
+                            currentTags.push(checkbox.value);
+                        }
+                    } else {// CASE 2: User unchecked a box -> Remove it from its specific position
+                        currentTags = currentTags.filter(tag => tag !== checkbox.value);
+                    }
+
+                    // Join them right back into a space-separated string sequence
+                    tagsInput.value = currentTags.join(' ');
+                }
+            });
+        });
+   
+        // SCRIPT TO DYNAMICALLY OPEN MODALS TO REPLY AN ANSWER, EDIT REPLY, 
+        document.addEventListener('DOMContentLoaded', function () {
+            // === 1. CONTROL MODAL TO REPLY TO AN ANSWER ===
+            const replyModal = document.getElementById('mdl-reply-answer');
+        
+            if (replyModal) {
+                replyModal.addEventListener('show.bs.modal', function (event) {
+                    // Botão que disparou o clique
+                    const button = event.relatedTarget; 
+                    // Extrai o ID da resposta do atributo data-*
+                    const answerId = button.getAttribute('data-bs-answer-id'); 
+
+                    // this variable gets the div with code-highlight to copy inside the modal accordion
+                    const sourceAnswerText = document.getElementById(`highlighted-answer-${answerId}`);
+                    const modataAccordionTarget = document.getElementById('highlight-answer-accordion');
+
+                    // here we copy the div with codehighlight inside the accordion div
+                    modataAccordionTarget.innerHTML = sourceAnswerText.innerHTML;
+  
+                    // Seleciona o formulário dentro do modal único
+                    const form = replyModal.querySelector('#form-reply-answer');
+                    
+                    // Gera a URL base usando o Jinja2 substituindo temporariamente o answer_id por 0
+                    const baseUrl = "{{ url_for('reply_answer', answer_id='MASCARA_ANSWER', post_id='MASCARA_POST') | safe }}";
+                    
+                    if (form){ 
+                        let finalUrl= baseUrl.replace('MASCARA_ANSWER', answerId);
+                        finalUrl= finalUrl.replace('MASCARA_POST', "{{ post.Id }}");
+                        form.action = finalUrl; 
+                    }
+                });
+            }
+
+
+            // === 2. CONTROL MODAL TO EDIT A REPLY ===
+            const editReplyModal = document.getElementById('mdl-edit-reply');
+
+            if (editReplyModal) {
+                editReplyModal.addEventListener('show.bs.modal', function (event) {
+                    const button = event.relatedTarget;
+                    
+                    // 1. Coleta os atributos data- passados pelo botão clicado
+                    const replyId = button.getAttribute('data-bs-reply-id');
+                    const replyText = button.getAttribute('data-bs-reply-text');
+                    const replyTags = button.getAttribute('data-bs-reply-tag') || ""; // in case is empty
+
+                    // 2. getting form to add its form action (Form Action)
+                    const form = editReplyModal.querySelector('#form-edit_reply');
+                    // Altere 'edit_answer' abaixo se o nome da sua rota Flask de edição for diferente
+                    const baseUrl = "{{ url_for('update_reply', reply_id='TARGET_ID', post_id=post.Id) }}";
+                    
+                    if (form){ form.action = baseUrl.replace('TARGET_ID', replyId); }
+
+                    // 3. Preenche dinamicamente o campo de texto e o input de visualização das tags
+                    editReplyModal.querySelector('#reply-id').innerHTML= 'ID: ' + replyId;
+                    editReplyModal.querySelector('#mdl-textarea').value = replyText;
+                    editReplyModal.querySelector('#edit_reply_tags').value = replyTags;
+
+                    // 4. Marca automaticamente as checkboxes com as linguagens corretas
+                    const checkboxes = editReplyModal.querySelectorAll('.tag-checkbox');
+                    checkboxes.forEach(checkbox => {
+                        // Checa se o valor do checkbox (Ex: 'Python') está contido na string de tags da resposta
+                        if (replyTags.includes(checkbox.value)) {
+                            checkbox.checked = true;
+                        } else {
+                            checkbox.checked = false;
+                        }
+                    });
+
+                    // Dispara a contagem de caracteres inicial para atualizar o contador/barra
+                    const textarea= document.getElementById('#text-edit-reply');
+
+                    if (textarea && typeof updateCount === "function") {
+                        updateCount(textarea, 'counter-edit-reply', 'bars-edit-reply');
+                    }
+                });
+            }
+
+
+            // === 3. CONTROL MODAL TO EDIT ANSWER ===
+            const editAnswerModal = document.getElementById('mdl-edit-answer');
+
+            if (editAnswerModal) {
+                editAnswerModal.addEventListener('show.bs.modal', function (event) {
+                    const button = event.relatedTarget;
+                    
+                    // 1. Coleta os atributos data- passados pelo botão clicado
+                    const answerId = button.getAttribute('data-bs-answer-id');
+                    const answerText = button.getAttribute('data-bs-answer-text');
+                    const answerTags = button.getAttribute('data-bs-answer-tag') || ""; // in case is empty
+
+                    // 2. getting form to add its form action (Form Action)
+                    const form = editAnswerModal.querySelector('#form-edit_answer');
+                    const baseUrl = "{{ url_for('update_answer', answer_id='MASCARA_ANSWER', post_id='MASCARA_POST') | safe }}";
+
+                    if (form){ 
+                        let finalURL= baseUrl.replace('MASCARA_ANSWER', answerId);
+                        finalURL = finalURL.replace('MASCARA_POST', "{{ post.Id }}");
+                        form.action = finalURL;
+                    }
+
+                    // 3. Preenche dinamicamente o campo de texto e o input de visualização das tags
+                    editAnswerModal.querySelector('#mdl-textarea').value = answerText;
+                    editAnswerModal.querySelector('#edit_answer_tags').value = answerTags;
+
+
+                    // setting answer ID into the tooltip
+                    id_title= editAnswerModal.querySelector('#answer-id');
+                    id_title.setAttribute('data-bs-original-title', answerId);
+                    id_title.title = answerId;
+
+                    // 4. Marca automaticamente as checkboxes com as linguagens corretas
+                    const checkboxes = editAnswerModal.querySelectorAll('.tag-checkbox');
+                    checkboxes.forEach(checkbox => {
+                        // Checa se o valor do checkbox (Ex: 'Python') está contido na string de tags da resposta
+                        if (answerTags.includes(checkbox.value)) {
+                            checkbox.checked = true;
+                        } else {
+                            checkbox.checked = false;
+                        }
+                    });
+
+                    // Dispara a contagem de caracteres inicial para atualizar o contador/barra
+                    const textarea= document.getElementById('#text-edit-answer');
+
+                    if (textarea && typeof updateCount === "function") {
+                        updateCount(textarea, 'counter-edit-answer', 'bars-edit-answer');
+                    }
+                });
+            }
+        });
+    </script>
+{% endblock %}

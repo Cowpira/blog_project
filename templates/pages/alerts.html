@@ -1,0 +1,113 @@
+{% block content %}
+    <div class="container-fluid d-flex justify-content-center" style="z-index: 1000;">
+        <!-- Status: 200 Success - Status: 201 CREATED -->
+        {% if result.status_code == 200 or result.status_code == 201  %}
+            <div class="col-10 alert-dismissible alert alert-success global-alerts text-center animate__animated animate__fadeInDown" 
+                style="color: rgb(66, 127, 40);">
+
+                <button type="button" class="btn-close text-muted animate__animated animate__fadeIn animate__delay-1s" 
+                    data-bs-dismiss="alert" aria-label="Close"></button>
+                    
+                <i class="{{result.detail[0]}} fw-bolder animate__animated animate__flash animate__delay-2s animate__repeat-3" 
+                    style="font-size: 1.7rem;"></i> <br> {{result.detail[1] | safe}}
+            </div>
+        {% endif %}
+
+        <!-- Status: 202 Accepted -->
+        {% if result.status_code == 202 %}
+            <div class="col-10 alert alert-light alert-dismissible global-alerts text-center animate__animated animate__fadeInDown" 
+                style="color: rgb(64, 104, 235);">
+                
+                <i class="{{result.detail[0]}} fw-bolder animate__animated animate__flash animate__delay-2s animate__repeat-3" 
+                    style="font-size: 2.5rem"></i> <br> {{result.detail[1] | safe}}
+                
+                <a href="#" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></a>
+            </div>
+        {% endif %}
+
+        <!-- WARNING THIS ALERT WILL LOG THE USER OUT OF THE SESSION -->
+        <!-- Status: 301 Moved Permanently -->
+        {% if result.status_code == 301 %}
+            <div class="col-10 alert alert-dismissible alert-moved-permanently global-alerts text-center animate__animated animate__fadeInDown">
+                <i class="{{result.detail[0]}} fw-bolder animate__animated animate__flash animate__delay-2s animate__repeat-3" 
+                    style="font-size: 2.7rem"></i>
+
+                <div class="fs-6 fw-light">
+                    {{result.detail[1] | safe}} <br>
+                    <b class="fw-bold text-dark"> You'll be logged out in <span id="sec"></span> seconds</b>
+                </div>
+            </div>
+
+            <!-- logout the user after 5 sec if account is deleted or deactivated -->
+            <script>
+                let count = 5;
+                const elem = document.getElementById('sec'); 
+                if (elem != null){
+                    elem.innerText = count;
+
+                    const timer= setInterval(() => {
+                        count--;
+                        elem.innerText = count;
+
+                        if (count <= 0) {
+                            clearInterval(timer);
+                            // redirect user to update the password
+                            window.location.href = "{{url_for('logout')}}";
+                        }
+                    }, 1000)
+                }
+            </script>
+        {% endif %}
+
+        <!-- Status: 401 UNAUTHORIZED -->
+        {% if result.status_code == 401 %}
+            <div class="col-10 alert-dismissible alert alert-info global-alerts text-center animate__animated animate__fadeInDown" 
+                style="color: rgb(63, 157, 223);">
+                
+                <button type="button" class="btn-close text-muted animate__animated animate__fadeIn animate__delay-1s" 
+                    data-bs-dismiss="alert" aria-label="Close"></button>
+
+                <i class="{{result.detail[0]}} fw-bolder animate__animated animate__flash animate__delay-2s animate__repeat-3" 
+                    style="font-size: 1.7rem;"></i> <br> {{result.detail[1] | safe}}
+            </div>
+        {% endif %}
+
+        <!-- Status: 302 FOUND -  Status: 404 NOT_FOUND - Status: 400 SERVER_ERROR  -->
+        {% if result.status_code == 302 or result.status_code == 404 or result.status_code == 500 %}
+            <div class="col-10 alert-dismissible alert alert-dark global-alerts text-dark text-center animate__animated animate__fadeInDown">
+                
+                <button type="button" class="btn-close text-muted animate__animated animate__fadeIn animate__delay-1s" 
+                    data-bs-dismiss="alert" aria-label="Close"></button>
+
+                <i class="{{result.detail[0]}} fw-bolder animate__animated animate__flash animate__delay-2s animate__repeat-3" 
+                    style="font-size: 1.7rem;"></i> <br> {{result.detail[1]}}
+            </div>
+        {% endif %}
+
+        <!--  Status: 204 NO_CONTENT - Status: 406 NOT_ACCEPTABLE  -->
+        {% if result.status_code == 204 or result.status_code == 406 %}
+            <div class="col-10 alert alert-warning global-alerts alert-dismissible text-center animate__animated animate__fadeInDown" 
+                style="color: rgb(185, 127, 46);">
+                
+                <button type="button" class="btn-close text-muted animate__animated animate__fadeIn animate__delay-1s" 
+                    data-bs-dismiss= "alert" aria-label="Close"></button>
+
+                <i class="{{result.detail[0]}} fw-bolder animate__animated animate__flash animate__delay-2s animate__repeat-3" 
+                    style="font-size: 1.7rem;"></i> <br> {{result.detail[1] | safe}}
+            </div>
+        {% endif %}
+    
+        <!-- Status: 503 SERVICE_UNAVAILABLE -->
+        {% if result.status_code == 403 or result.status_code == 503 %}
+            <div class="col-10 alert alert-danger global-alerts alert-dismissible text-center animate__animated animate__fadeInDown"
+                style="color: rgb(207, 75, 75)">
+                
+                <button type="button" class="btn-close text-muted animate__animated animate__fadeIn animate__delay-1s" 
+                    data-bs-dismiss="alert" aria-label="Close"></button>
+
+                <i class="{{result.detail[0]}} fw-bolder animate__animated animate__flash animate__delay-2s animate__repeat-3" 
+                    style="font-size: 1.7rem;"></i> <br> {{result.detail[1] | safe}}
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

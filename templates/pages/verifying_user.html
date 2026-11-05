@@ -1,0 +1,55 @@
+{% extends "base_help.html" %}
+
+{% block title %}
+    <title>Verifying E-mail</title>
+{% endblock %}
+
+{% block content %} 
+    <!-- include alert page to handle alert messages -->
+    {% if result.status_code %}
+        {% include "alerts.html" ignore missing with context %}
+    {% endif %}
+
+    <main class="container-fluid">
+        {% if result.status_code == 406 %}
+            <div class="col-12 mb-5">
+                <div style="margin-top: 12rem;">
+                    <p class="col-12 text-center fs-2 animate__animated animate__fadeInUp animate__delay-1s">What would you like to do?</p>
+                
+                    <div class="col-6 offset-3 py-3 d-flex justify-content-evenly animate__animated animate__fadeInUp animate__delay-2s">
+                        <a href="{{url_for("home")}}" class="fp-buttons fp-orange-btn px-4">Home</a>
+                        <a href="{{url_for("login")}}" class="fp-buttons fp-orange-btn px-4">Login</a>
+                    </div>
+                </div>
+            </div>
+
+            <img class="waves-img" src="{{url_for("static", path="/images/backgrounds/waves.jpeg")}}" alt="">
+        {% else %}
+            <div class="col-12 text-center text-success mt-5 py-5">
+                <h1 class="py-5">
+                    <b class="lh-lg">Validating token <br> You'll be redirect in <span id="sec"></span> seconds</b>
+                </h1>
+                <div class="spinner-border" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        {% endif %}
+    </main>
+
+    <script>
+        let count = 5;
+        const elem = document.getElementById('sec');
+        elem.innerText = count;
+
+        const timer= setInterval(() => {
+            count--;
+            elem.innerText = count;
+
+            if (count <= 0) {
+                clearInterval(timer);
+                // redirect user to update the password
+                window.location.href = "{{url_for('reset_password', user_email=user_email)}}";
+            }
+        }, 1000)
+    </script>
+{% endblock%}

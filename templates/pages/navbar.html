@@ -1,0 +1,304 @@
+{% block navbar %}
+    <nav class="navbar navbar-expand-md sticky-top navbar-style" id="navbar">
+        <div class="container-fluid">
+            <a class="navbar-brand ms-4" href="{{url_for("home")}}" style="z-index: 1;">
+                <img class="rounded navbar-logo" src="{{ url_for('static', path='images/future_prog.png') }}" alt="">
+            </a>
+
+            <!-- LINK FOR SMALL SCREEN HAMBURGUER MENU -->
+            <a class="link_menu" href="#" aria-controls="primary-navigation" aria-expanded="false" data-bs-target="#navbarNavDropdown"
+                aria-controls="navbarNavDropdown" data-bs-toggle="collapse" aria-label="Toggle navigation">
+                <svg class="hamburger" viewBox="0 0 100 100" width="35">
+                    <rect class="line top" width="82" height="6" x="10" y="22" rx="5"></rect>
+                    <rect class="line middle" width="82" height="6" x="10" y="47" rx="5"></rect>
+                    <rect class="line bottom" width="82" height="6" x="10" y="72" rx="5"></rect>
+                </svg>        
+            </a>
+
+            <!-- setting total items per page -->
+            {% set total_items = 4 %}
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNavDropdown">
+                <ul class="navbar-nav text-center"> 
+                    {% if user_in and user_in.Type == 'developer' %}
+                        <li class="nav-item dropdown">
+                            <a href="#" id="post-pages" role="button" data-bs-toggle="dropdown" aria-expanded="false" 
+                                class="nav-link nav-menu dropdown-toggle fs-5 fw-light
+                                {{'active' if active_page == 'posts' or active_page == 'ask' or active_page == 'my_posts'}}">
+                                Posts
+                            </a>
+                            
+                            <ul class="dropdown-menu" arial-labelledby="post-pages">
+                                <li>
+                                    <a href="{{url_for("list_posts")}}?page=1&list={{total_items}}" 
+                                        class="dropdown-item small-texts {{'active' if active_page == 'posts'}}">
+                                        <i class="bi bi-postcard-fill ms-2"></i>&nbsp; View Posts
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{url_for("post_question", post_id=0)}}" 
+                                        class="dropdown-item small-texts {{'active' if active_page == 'ask'}}">
+                                        <i class="bi bi-person-raised-hand ms-2"></i>&nbsp; Ask Question
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a href="{{url_for("list_posts")}}" class="nav-link nav-menu fs-5 fw-light 
+                                {{'active' if active_page == 'posts'}}"> Posts
+                            </a>
+                        </li>
+                    {% endif %} 
+
+                    <li class="nav-item">
+                        <a href="{{url_for("list_jobs")}}" class="nav-link nav-menu fs-5 fw-light 
+                            {{'active' if active_page == 'jobs'}}"> Jobs
+                        </a>
+                    </li>
+
+                    {% if user_in %}
+                        <li class="nav-item">
+                            <a href="{{url_for("users")}}" class="nav-link nav-menu fs-5 fw-light 
+                                {{'active' if active_page == 'developers'}}"> Developers
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item dropdown">
+                            <a href="#" id="users-pages" role="button" data-bs-toggle="dropdown" aria-expanded="false" 
+                                class="nav-link nav-menu fs-5 fw-light dropdown-toggle 
+                                {{'active' if active_page == 'developers' or active_page == 'new_employeer' or active_page == 'new_developer'}}">
+                                Users
+                            </a>
+
+                            <ul class="dropdown-menu">
+                                <li class="text-center text-light fw-normal animate__animated animate__zoomIn"><b>I'm new</b></li>
+                                
+                                <a href="{{url_for("add_employeer")}}" 
+                                    class="dropdown-item small-texts {{'active' if active_page == 'new_employeer'}}">
+                                    <i class="bi bi-person-workspace ms-2"></i>&nbsp; Employeer
+                                </a>
+                                
+                                <a href="{{url_for("add_developer")}}?new_user=1" class="dropdown-item small-texts {{'active' if active_page == 'new_developer'}}">
+                                    <i class="bi bi-code-slash ms-2"></i>&nbsp; Developer
+                                </a>
+                                <li><hr class="dropdown-divider"></li>
+
+                                <li class="text-center text-light fw-normal animate__animated animate__zoomIn"><b>List</b></li>
+
+                                <a href="{{url_for("users")}}?page=1&list={{total_items}}" 
+                                    class="dropdown-item small-texts {{'active' if active_page == 'developers'}}">
+                                    <i class="bi bi-person-video3 ms-2"></i> &nbsp; Developers
+                                </a>
+                            </ul>
+                        </li>
+                    {% endif %}
+                    
+
+                    <li class="nav-item">
+                        <a href="{{url_for("contact_page")}}" class="nav-link nav-menu fs-5 fw-light 
+                            {{'active' if active_page == 'contact'}}">Contact
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a href="{{url_for("help_page")}}" class="nav-link nav-menu fs-5 fw-light 
+                            {{'active' if active_page == 'help'}}">Help
+                        </a>
+                    </li>
+
+                   
+                    {% if not user_in %}
+                        <li class="nav-item">
+                            <a href="#" class="open_login nav-link nav-menu" data-bs-toggle="modal" data-bs-target="#loginModal">
+                                <i class="bi bi-lock" style="font-size: 1.7rem;"></i>
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item dropdown">
+                            <a href="#" id="user_in-pages" role="button" data-bs-toggle="dropdown" aria-expanded="false" 
+                                class="nav-link nav-menu fw-light dropdown-toggle {{'active' if active_page == 'account' 
+                                or active_page == 'my_posts' or active_page == 'applied' or active_page == 'job_posted' 
+                                or active_page == 'messages'}}">
+                                
+                                <i class="bi bi-person-badge fw-light" style="font-size: 1.1rem;">
+                                    <span style="font-size: 12px;">Hi, {{ user_in.First_Name }}</span>
+                                </i>
+                            </a>
+
+                            <ul class="dropdown-menu dropdown-menu-end user_settings">
+                                <li>
+                                    <a {% if user_in.Type == 'developer' %} href="{{url_for("dev_account")}}" {% else %} 
+                                        href="{{url_for("employee_account")}}" {% endif %}
+                                        class="dropdown-item small-texts {{'active' if active_page == 'account'}}">
+                                        <i class="bi bi-sliders ms-2"></i>&nbsp; Account
+                                    </a>
+                                </li>
+                                {% if user_in.Type == 'developer' %}
+                                    <li>
+                                        <a href="{{url_for("my_posts", page=1, list=3)}}" 
+                                            class="dropdown-item small-texts {{'active' if active_page == 'my_posts'}}">
+                                            <i class="bi bi-question-circle ms-2"></i>&nbsp; My Questions
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="{{url_for("my_applications")}}" class="dropdown-item small-texts {{'active' if active_page == 'applied'}}">
+                                            <i class="bi bi-file-text ms-2"></i>&nbsp; Jobs Applied
+                                        </a>
+                                    </li>
+                                {% elif user_in.Type == 'employeer' %}
+                                    <li>
+                                        <a href="{{url_for("add_job")}}" class="dropdown-item small-texts {{'active' if active_page == 'add_job'}}">
+                                            <i class="bi bi-megaphone ms-2"></i>&nbsp; Post a Job
+                                        </a>
+                                    </li>
+
+                                    <li>
+                                        <a href="{{url_for("my_jobs")}}" class="dropdown-item small-texts {{'active' if active_page == 'job_posted'}}">
+                                            <i class="bi bi-inboxes ms-2"></i>&nbsp; Jobs Posted
+                                        </a>
+                                    </li>
+                                {% endif %}
+
+                                <li>
+                                    <a href="{{url_for("my_messages", page=1, list=total_items, msg_by="all")}}" class="dropdown-item small-texts 
+                                        {{'active' if active_page == 'messages'}}">
+                                        <i class="bi bi-chat-right-dots ms-2"></i>&nbsp; Messages
+
+                                        {% if user_in.Total_Messages > 0 %}
+                                            <span class="ms-2 badge rounded-pill bg-danger">
+                                                {{user_in.Total_Messages}}
+                                                <span class="visually-hidden">unread messages</span>
+                                            </span>
+                                        {% endif %}
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a class="dropdown-item small-texts" href="{{url_for("logout")}}">
+                                        <i class="bi bi-lock ms-2"></i>&nbsp; Log out
+                                    </a>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                
+                                <li class="text-center text-light fw-normal animate__animated animate__zoomIn"><b>Actions</b></li>
+                                <li>
+                                    {% if user_in.Active %}
+                                        <a href="#" class="dropdown-item small-texts" data-bs-toggle="modal" data-bs-target="#deactivateAccount">
+                                            <i class="bi bi-person-slash ms-2"></i>&nbsp; Deactivate
+                                        </a>
+                                    {% endif %}
+                                </li>
+                                
+                                <li>
+                                    <a href="#" class="dropdown-item small-texts" data-bs-toggle="modal" data-bs-target="#deleteAccount">
+                                        <i class="bi bi-trash ms-2"></i>&nbsp; Delete
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+     <!-- INCLUDE MODAL FOR LOGIN -->
+    {% include "login.html" %}
+
+    <!-- MODAL DEACTIVATE ACCOUNT -->
+    <div class="modal gen-mdl" id="deactivateAccount" tabindex="-1"
+        data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="deactivateBackdrop" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header d-flex justify-content-around">
+                    <h1 class="col-10 title-headers text-center">
+                        <i class="bi bi-person-slash" style="font-size: 2.2rem;"></i>
+                        Deactivate Account
+                    </h1>
+
+                    <a href="#" class="gen-mdl-close btn-close-modal position-absolute p-1 top-0 end-0">
+                        <i class="bi bi-x-circle-fill" style="font-size: 1.7rem;"></i>
+                    </a>
+                </div>
+
+                <form class="needs-validation" novalidate method="POST" action="{{url_for("deactivate_account")}}">
+                    <div class="modal-body text-center">
+                        <span class="mb-3 text-dark fw-light">Are you sure you want to continue?</span>
+
+                        <div class="col-10 offset-1 p-2">
+                            <b><label class="fs-4 text-danger">
+                                To re-activate your account <br>
+                                You'll need to contact our support
+                            </label></b>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer d-flex justify-content-center">
+                        <button type="submit" name="action" class="fp-buttons fp-orange-btn">
+                            <i class="bi bi-person-slash" style="font-size: 1.3rem;"></i> Deactivate
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- MODAL DELETE ACCOUNT -->
+    <div class="modal gen-mdl" id="deleteAccount" tabindex="-1"
+        data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="deleteBackdrop" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header d-flex justify-content-around">
+                    <h1 class="col-10 title-headers text-center">
+                        <i class="bi bi-person-x" style="font-size: 2.2rem;"></i>
+                        Delete my Account
+                    </h1>
+
+                    <a href="#" class="gen-mdl-close btn-close-modal position-absolute p-1 top-0 end-0">
+                        <i class="bi bi-x-circle-fill" style="font-size: 1.7rem;"></i>
+                    </a>
+                </div>
+
+                <form class="needs-validation" novalidate method="POST">
+                    <div class="modal-body">
+                        <div class="col-10 offset-1 p-2 text-center">
+                            <b><label class="fs-4 text-danger">
+                                You want to delete your account?<br>
+                                This action cannot be undone
+                            </label></b>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer d-flex justify-content-center">
+                        <a href="#" type="submit" name="action" class="fp-buttons fp-orange-btn">
+                            <i class="bi bi-person-x" style="font-size: 1.3rem;"></i> Delete
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        //change the navbar and hamburger when page scroll
+        document.addEventListener('scroll', () =>{
+            let navbar = document.querySelector('.navbar-style');
+            let links = document.querySelectorAll('.nav-link');
+
+            if(window.scrollY > 250){
+                navbar.classList.add('navbar-scrolled');
+
+                for (var i=0; i < links.length; i++){
+                    links[i].classList.add('nav-link-scrolled');
+                }
+            }else{
+                navbar.classList.remove('navbar-scrolled');
+
+                for (var i=0; i < links.length; i++){
+                    links[i].classList.remove('nav-link-scrolled');
+                }
+            }
+        });
+    </script>
+{% endblock %}

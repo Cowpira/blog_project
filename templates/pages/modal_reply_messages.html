@@ -1,0 +1,170 @@
+{% block content %}
+    <div class="modal gen-mdl" id="mdl-reply-msg-{{msg.Id}}" data-bs-backdrop="static" 
+        data-bs-keyboard="false" tabindex="-1" aria-labelledby="replyBackdrop" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg"> <!-- Mudado para modal-lg para melhor leitura do histórico -->
+            <div class="modal-content">
+                <div class="modal-header d-flex justify-content-around">
+                    <a href="#" class="badge rounded-pill bg-danger smaller-texts"
+                        data-bs-toggle="tooltip" data-bs-animation="false" 
+                        data-bs-placement="top" title="{{msg.Id}}">View ID
+                    </a>
+                    
+                    <h1 class="col-10 text-center title-headers">
+                        <i class="bi bi-chat-dots fs-3 me-2"></i> Reply Message
+                    </h1>
+
+                    <a href="{{url_for("msg_viewed", msg_id=msg.Id, msg_by=msg_by)}}" 
+                        class="gen-mdl-close btn-close-modal text-orange position-absolute p-1 top-0 end-0">
+                        <i class="bi bi-x-circle-fill fs-3"></i>
+                    </a>
+                </div>
+        
+                <!-- defining the correct receiver (logic of BACKEND NO JINJA2) -->
+                {% set out_sender = msg.replies[0].msg_sender if msg.replies and msg.replies[0].msg_sender.Id != user_in.Id else msg.msg_sender %}
+                {% set destination_id = msg.Person_Id if msg.Person_Id != user_in.Id else out_sender.Id %}
+
+                <form class="needs-validation" action="{{url_for('reply_msg', msg_id=msg.Id, msg_to=destination_id, msg_by=msg_by)}}" 
+                method="post" novalidate>
+                    
+                    <!-- messags metadata -->
+                    <div class="container-fluid mt-3">
+                        <div class="row justify-content-between align-items-center px-4">
+                            <div class="col-auto">
+                                <p class="fw-light text-dark m-0 small"> 
+                                    Chat with: <b class="fw-bolder fs-6 text-marine">{{ out_sender.First_Name }}</b>
+                                </p>
+                            </div>
+
+                            <div class="col-auto">
+                                <span class="badge rounded-pill bg-warning text-dark smaller-texts">
+                                    On: {{msg.Send_Date.strftime('%B, %d %Y @ %H:%M')}}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="row justify-content-center mt-2">
+                            <hr class="text-muted col-11 my-1">
+                        </div>
+                    </div>
+
+                    <!-- message history (SCROLLABLE) -->
+                    <div class="scrollable-div mx-3 my-2 py-2">       
+                        <!-- Mensagem Inicial -->
+                        <div class="container d-flex flex-column {% if msg.Person_Id == user_in.Id %} align-items-start 
+                        {% else %} align-items-end {% endif %} mb-3">
+                            
+                            <pre class="fw-light lh-base msg_bubble {% if msg.Person_Id == user_in.Id %} msg_reply 
+                            {% else %} msg_sender {% endif %} 
+                            m-0 px-2 py-2 rounded">{{- msg.Message_Content | safe -}}</pre>
+                            
+                            <small class="text-muted fw-lighter mx-3" style="font-size: 0.70rem;">
+                                <span class="msg_pointer msg_sender_pointer"></span>
+                                {{msg.msg_sender.First_Name}} • {{msg.Send_Date.strftime('%b %d, %H:%M')}}
+                            </small>
+                        </div>
+            
+                        <!-- Loop de Replies -->
+                        {% set parameter = namespace(parentId=-1) %}
+                        {% if msg.replies %}
+                            {% for reply in msg.replies %}
+                                {% set parameter.parentId = reply.Parent_Id %}
+                                <div class="container d-flex flex-column {% if reply.Person_Id == user_in.Id %} 
+                                align-items-start {% else %} align-items-end {% endif %} mb-3">
+                                    
+                                    <pre class="fw-light lh-base msg_bubble {% if reply.Person_Id == user_in.Id %} msg_reply 
+                                    {% else %} msg_sender {% endif %} m-0 px-2 py-2 rounded">{{- reply.Message_Content | safe -}}</pre>
+                                    
+                                    <small class="text-muted fw-lighter mx-2" style="font-size: 0.75rem;">
+                                        <span class="msg_pointer msg_reply_pointer"></span>
+                                        {{reply.msg_sender.First_Name}} • {{reply.Send_Date.strftime('%b %d, %H:%M')}}
+                                    </small>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                
+                    <!-- textarea to reply message -->
+                    <div class="modal-body px-4">
+                        <div class="mb-2">
+                            <textarea id="text-{{msg.Id}}" class="form-control answer_{{msg.Id}}" tabindex="1" 
+                                style="height: 120px; white-space: pre-wrap;" name="reply_msg" required
+                                oninput="updateCount(this, 'rep-{{msg.Id}}-counter', 'rep-{{msg.Id}}-bars')" 
+                                maxlength="500" placeholder="Type your reply here..."></textarea>
+                        </div>
+
+                        <progress class="w-100" id="rep-{{msg.Id}}-bars" value="0" max="500"></progress>
+                        <div class="row d-flex justify-content-around smaller-texts fw-light">
+                            <span class="col-6 text-danger">* required fields</span>
+                            <span id="rep-{{msg.Id}}-counter" class="col-6 text-muted text-end">0 / 500</span>
+                        </div>
+
+                        <div id="msg_valid-{{msg.Id}}" class="invalid-feedback animate__animated animate__fadeInUp">
+                            <b>You must enter a reply before sending!</b>
+                        </div>
+                    </div>
+    
+                    <!-- button to submite message reply -->
+                    <div class="modal-footer d-flex justify-content-center border-top-0 pt-0 pb-4">
+                        <button type="submit" id="reply-msg-{{msg.Id}}" tabindex="2" class="fp-buttons fp-orange-btn px-4">
+                            <i class="bi bi-send-fill me-2"></i> Reply Message
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- <div class="scrollable-div mx-3 my-2 py-2 border rounded bg-light">       
+            <!-- Mensagem Inicial --
+            <div class="container d-flex flex-column {% if msg.Person_Id == user_in.Id %} align-items-start 
+            {% else %} align-items-end {% endif %} mb-3">
+                
+                <pre class="fw-light lh-base msg_bubble {% if msg.Person_Id == user_in.Id %} msg_reply 
+                {% else %} msg_sender {% endif %} 
+                m-0 px-3 py-2 rounded">{{- msg.Message_Content | safe -}}</pre>
+                
+                <small class="text-muted fw-lighter mx-2" style="font-size: 0.70rem;">
+                    {{msg.msg_sender.First_Name}} • {{msg.Send_Date.strftime('%b %d, %H:%M')}}
+                </small>
+            </div>
+            
+            <!-- Loop de Replies --
+            {% set parameter = namespace(parentId=-1) %}
+            {% if msg.replies %}
+                {% for reply in msg.replies %}
+                    {% set parameter.parentId = reply.Parent_Id %}
+                    <div class="container d-flex flex-column {% if reply.Person_Id == user_in.Id %} 
+                    align-items-start {% else %} align-items-end {% endif %} mb-3">
+                        
+                        <pre class="fw-light lh-base msg_bubble {% if reply.Person_Id == user_in.Id %} msg_reply 
+                        {% else %} msg_sender {% endif %} m-0 px-3 py-2 rounded">{{- reply.Message_Content | safe -}}</pre>
+                        
+                        <small class="text-muted fw-lighter mx-2" style="font-size: 0.75rem;">
+                            {{reply.msg_sender.First_Name}} • {{reply.Send_Date.strftime('%b %d, %H:%M')}}
+                        </small>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div> -->
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const button = document.getElementById("reply-msg-{{msg.Id}}");
+
+            button.addEventListener("click", function() {
+                // script to validate form to create employee account
+                let form = document.getElementById("msg_valid-{{msg.Id}}");
+                var reply_msg = document.getElementById("text").value;
+
+                if (reply_msg === "") {
+                    form.classList.remove('d-none');
+                }
+
+                setTimeout(() => {
+                    $("#msg_valid-{{msg.Id}}").fadeTo(3000, 800).slideUp(800, function() {
+                        $("msg_valid-{{msg.Id}}").slideUp(800);
+                    });
+                }, 6000);
+            });
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,1384 @@
+{% extends "base.html" %}
+{% set active_page = "account" %}
+
+{% block content %}
+    <!-- include alert page to handle alert messages -->
+    {% if result.status_code %}
+        {% include "alerts.html" ignore missing with context %}
+    {% endif %}
+
+    <style>
+        .nav-pills .nav-link.active, .nav-pills .show>.nav-link{
+            background-color: #393939;  
+            color: white;
+            font-size: 15px;
+        }
+        .active{ color: rgb(100, 100, 100); font-weight: bolder; }
+        .accordion-button:not(.collapsed) { background-color: rgba(37, 37, 37, 0.93); }
+        .accordion-button:hover { background-color: rgb(105, 104, 104); }
+    </style>
+
+    <main class="container-fluid start-content">
+        {% if user_in %}
+            {% if not user_in.Has_Resume %}
+                <div class="col-10 offset-1 alert alert-primary global-alerts text-center alert-dismissible animate__animated animate__flipInX animate__slow" 
+                    role="alert" style="margin-top: 0 !important; z-index: 1;">
+                    <span class="smaller-text text-dark">
+                        <i class="bi bi-info-circle-fill alert-link" style="font-size: 1.2rem;"></i> 
+                        Resume not filled
+                        <a href="#" onclick="portfolio_tab();" class="alert-link">fill up resume</a> 
+                        so you can start appy for jobs!
+                    </span>
+
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endif %}
+
+            <div class="col-12 col-lg-8 offset-lg-2 mb-3 mt-2">
+                <ul class="nav mb-2 mt-4 d-flex justify-content-center" id="pills-tab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <a href="/me" class="nav-link navlink-tab-menu active" id="profile-tab" data-bs-toggle="pill" 
+                        data-bs-target="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="true">Profile</a>
+                    </li>
+
+                    <li class="nav-item" role="presentation">
+                        <a href="/me/edit" id="edit-data-tab" data-bs-toggle="pill" 
+                        data-bs-target="#pills-edit-data" role="tab" aria-controls="pills-profile" aria-selected="false"></a>
+                    </li>
+
+                    <li class="nav-item" role="presentation">
+                        <a href="/me/portfolio" id="portfolio-tab" data-bs-toggle="pill" 
+                        data-bs-target="#pills-portfolio" role="tab" aria-controls="pills-portfolio" aria-selected="false"></a>
+                    </li>
+                    
+                    <li class="nav-item" role="presentation">
+                        <a href="/me/change_password" class="nav-link navlink-tab-menu" id="change-pass-tab" data-bs-toggle="pill" 
+                        data-bs-target="#pills-change-pass" role="tab" aria-controls="pills-change-pass" aria-selected="false">Change Password</a>
+                    </li>
+                </ul>
+
+                <!-- user and resume tabs list view -->
+                <div class="tab-content d-flex justify-content-center" id="pills-tabContent">
+                    <!-- tab to list user data and resume profile -->
+                    <div class="tab-pane show active" id="pills-profile" role="tabpanel" aria-labelledby="profile-tab">
+                        <!-- internal tab menu -->
+                        <div class="container-fluid d-flex align-items-start">
+                            <div class="col-1 col-sm-2 nav nav-pills text-center mt-4 portfolio_menu" id="v-pills-tab" 
+                                role="tablist" aria-orientation="vertical">
+                                
+                                <a href="#" class="nav-link fw-light link-portfolio active" id="v-pills-profile-data" data-bs-toggle="pill" 
+                                    data-bs-target="#v-profile-data" role="tab" aria-controls="v-profile-data" aria-selected="true">
+                                    Data
+                                </a>
+                                                        
+                                <a href="/my_portfolio" class="nav-link fw-light link-portfolio" id="v-pills-profile-portfolio" data-bs-toggle="pill" 
+                                    data-bs-target="#v-profile-portfolio" role="tab" aria-controls="v-profile-portfolio" aria-selected="false">
+                                    Portfolio
+                                </a>
+                            </div>
+
+                            <div class="col-11 col-sm-10 tab-content" id="v-list-data">
+                                <!-- tab user profile data -->
+                                <div class="tab-pane show active pt-2" id="v-profile-data" role="tabpanel" aria-labelledby="v-pills-profile-data">
+                                    <h1 class="col-12 page_title text-center">User Info</h1>
+
+                                    <div class="col-12 text-muted text-center d-block d-sm-none">ID <br>
+                                        <p class="badge bg-light text-marine fw-normal">{{user_in.Id}}</p>
+                                    </div>
+
+                                    <div class="col-12 py-2 d-flex justify-content-between">
+                                        <div class="text-muted text-center fs-6">Type <br>
+                                            <p class="badge bg-success">Developer</p>
+                                        </div>
+
+                                        <div class="text-muted text-center d-none d-sm-block">ID <br>
+                                            <p class="badge bg-light text-marine fw-normal">{{user_in.Id}}</p>
+                                        </div>
+
+                                        <div class="text-muted text-center fs-6">Status <br>
+                                            {% if user_in.Active %}
+                                                <p class="badge bg-success">Active</p>
+                                            {% else %}
+                                                <p class="badge text-dark bg-warning">Not Activated</p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+
+                                    <div class="row fs-6">
+                                        <label class="col-6 py-2 text-muted">Name
+                                            <p class="fw-light text-marine">{{user_in.First_Name}} {{user_in.Last_Name}}</p>
+                                        </label>
+                                        
+                                        <label class="col-12 py-2 text-muted">Address
+                                            <p class="fw-light text-marine">{{user_in.Address}}</p>
+                                        </label>
+                                
+                                        <div class="row py-2">
+                                            <label class="col-6 text-muted">Phone
+                                                <p class="fw-light text-marine">{{user_in.Phone}}</p>
+                                            </label>
+
+                                            <label class="col-6 text-muted text-end">Email
+                                                <p class="fw-light text-marine">{{user_in.Email}}</p>
+                                            </label>
+                                        </div>
+                            
+                                        <div class="row py-2">
+                                            <label class="col-6 text-muted">Created
+                                                <p class="fw-light text-marine">{{user_in.Created.strftime('%B, %d %Y @ %H:%M')}}</p>
+                                            </label>
+
+                                            <label class="col-6 text-muted text-end">Activated
+                                                <p class="fw-light text-marine">{{user_in.Activated_Date.strftime('%B, %d %Y @ %H:%M')}}</p>
+                                            </label>
+                                        </div>
+
+                                        <!-- tab navigation buttons -->
+                                        <div class="d-flex justify-content-between py-4">
+                                            <a href="#" onclick="edit_data_tab();" type="submit" class="fp-buttons fp-orange-btn" tabindex="7">
+                                                <i class="bi bi-person-up" style="font-size: 1.2rem;"></i> Update
+                                            </a>
+                                    
+                                            <a href="#" onclick="resume_tab();" class="fp-buttons fp-gray-btn p-2" tabindex="7">
+                                                &nbsp; Next <i class="bi bi-arrow-right-circle-fill px-2" style="font-size: 1.3rem;"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- tab user resume data -->
+                                <div class="tab-pane pt-4 justify-content-center" id="v-profile-portfolio" 
+                                    role="tabpanel" aria-labelledby="v-pills-profile-portfolio">
+                                    {% include "resume_output.html" ignore missing with context %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- tab to update user and resume data -->
+                    <div class="row tab-pane" id="pills-edit-data" role="tabpanel" aria-labelledby="edit-data-tab">
+                        <!-- internal tab menu container-fluid d-flex -->
+                        <div class="d-flex">
+                            <!-- updates tabs menu -->
+                            <div class="flex-column nav nav-pills me-4 text-center mt-4 portfolio_menu" id="v-pills-tab"
+                                role="tablist" aria-orientation="vertical">
+                                <a href="#" class="nav-link fw-light link-portfolio active" id="v-pills-edit-data" data-bs-toggle="pill" 
+                                    data-bs-target="#v-edit-data" role="tab" aria-controls="v-edit-data" aria-selected="true">
+                                    Personal
+                                </a>
+
+                                <a href="#" class="nav-link fw-light link-portfolio" id="v-pills-edit-img" data-bs-toggle="pill" 
+                                    data-bs-target="#v-edit-img" role="tab" aria-controls="v-edit-img" aria-selected="false">
+                                    My Image
+                                </a>
+                                
+                                <a href="#" class="nav-link fw-light link-portfolio" id="v-pills-edit-ocupation" data-bs-toggle="pill" 
+                                    data-bs-target="#v-edit-ocupation" role="tab" aria-controls="v-edit-ocupation" aria-selected="false">
+                                    Ocupation
+                                </a>
+
+                                <a href="#" class="nav-link fw-light link-portfolio" id="v-pills-edit-coding" data-bs-toggle="pill" 
+                                    data-bs-target="#v-edit-coding" role="tab" aria-controls="v-edit-coding" aria-selected="false">
+                                    Coding
+                                </a>
+                            </div>
+
+                            <!-- tabs to add update developer and resume data -->
+                            <div class="tab-content" id="v-update-data">
+                                <!-- tab to update developer data -->
+                                <div class="col-12 tab-pane show active pt-4" id="v-edit-data" role="tabpanel" aria-labelledby="v-pills-edit-data">
+                                    <form class="row g-3 d-flex justify-content-center needs-validation" novalidate action="{{url_for("update_my_data")}}" method="POST">
+                                        <h1 class="page_title text-center">Update Data</h1>
+
+                                        <div class="col-12 col-sm-6 p-2">
+                                            <label for="first_name" class="form-label fw-light text-dark">
+                                                First Name <span class="fw-bolder text-danger">*</span>
+                                            </label>
+                                            <input type="text" tabindex="1" class="form-control" id="first_name" name="first_name" maxlength="25" 
+                                            value="{{user_in.First_Name}}" required>
+                                        </div>
+                        
+                                        <div class="col-12 col-sm-6 p-2">
+                                            <label for="last_name" class="form-label fw-light text-dark">Last Name <span class="fw-bolder text-danger">*</span></label>
+                                            <input type="text" tabindex="2" class="form-control" id="last_name" name="last_name" maxlength="25" value="{{user_in.Last_Name}}" required>
+                                        </div>
+                                       
+                                        <div class="col-12 col-sm-6 p-2">
+                                            <label class="col-12 form-label fw-light text-dark">
+                                                Gender <span class="fw-bolder text-danger">*
+                                            </label>
+
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" tabindex="3" name="gender" id="male" value="M" 
+                                                {{ "checked" if user_in.Gender == "M" }}>
+                                                <label class="form-check-label" for="male">Male</label>
+                                            </div>
+
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" tabindex="4" name="gender" id="female" value="F"
+                                                {{ "checked" if user_in.Gender == "F" }}>
+                                                <label class="form-check-label" for="female">Female</label>
+                                            </div>
+                                            <div class="fw-light smaller-texts text-primary">* set as unisex if not checked</div>
+                                        </div>
+            
+                                        <div class="col-12 p-2">
+                                            <label for="address" class="form-label fw-light text-dark">Address</label>
+                                            <input type="text" tabindex="5" class="form-control" id="address" name="address" maxlength="50" value="{{user_in.Address}}">
+                                        </div>
+                        
+                                        <div class="col-12 col-sm-6 p-2">
+                                            <label for="phone" class="form-label fw-light text-dark">Phone</label>
+                                            <input type="text" tabindex="6" class="form-control" id="phone" name="phone" maxlength="15" value="{{user_in.Phone}}">
+                                        </div>
+
+                                        <div class="col-12 col-sm-6 p-2">
+                                            <label for="email" class="form-label fw-light text-dark">E-mail <span class="fw-bolder text-danger">*</span></label>
+                                            <input type="email" tabindex="7" class="form-control" id="email" name="email" maxlength="40" value="{{user_in.Email}}" required>
+                                        </div>
+                                        <span class="d-none d-lg-block col-lg-6"></span>
+                                        <span class="fw-light smaller-texts text-danger">* required fields</span>
+
+                                        <div class="text-center mt-3">
+                                            <div id="form_valid" class="col-10 offset-1 col-md-6 offset-md-3 mb-3 d-none alert-field animate__animated animate__fadeInUp">
+                                                <b>Red fields are required!</b>
+                                            </div>
+                                        
+                                            <button type="submit" name="action" tabindex="8" class="fp-buttons fp-orange-btn mt-4" onclick="validate_create_update_account();">
+                                                <i class="bi bi-person-up" style="font-size: 1.3rem;"></i> Update Data
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+
+                                <!-- tab to update developer profile image -->
+                                <div class="col-12 tab-pane pt-4" id="v-edit-img" role="tabpanel" aria-labelledby="v-pills-edit-img">
+                                    <!-- form to delete developer profile image -->
+                                    <form class="row d-flex justify-content-center needs-validation" action="{{url_for("delete_profile_image", user_id=user_in.Id)}}" method="POST">
+                                        <span class="col-12 text-center page_title">Profile Image</span>
+                                        
+                                        <div class="col-7 text-center">
+                                            <div class="profile-container">
+                                                <img class="user_img" src="{{url_for("uploaded_dev_images", path=user_in.Image)}}"
+                                                    alt="{{user_in.First_Name}}">
+                                                
+                                                <!-- SVG for Circular Text -->
+                                                <svg viewBox="0 0 200 190" class="circular-text">
+                                                    <path id="textCircle" d="M 98, 80 m -100, 0 a 4,4 0 1,1 154,0 a 6,8 0 1,1 -150,0" fill="transparent"/>
+                                                    
+                                                    <text class="mt-2 animate__animated animate__flipInY animate__slow">
+                                                        <textPath class="test" href="#textCircle" startOffset="33%" text-anchor="bottom">
+                                                            {{user_in.First_Name}} {{user_in.Last_Name}}
+                                                        </textPath>
+                                                    </text>
+                                                </svg>
+                                            </div>
+
+                                            <div class="text-center mt-3">
+                                                <span class="container fw-light smaller-texts text-muted">Profile image will be set with default image</span><br>
+
+                                                {% if user_in.Image != 'default.png' %}
+                                                    <button type="submit" tabindex="1" class="fp-buttons fp-red-btn mt-2">
+                                                        <i class="bi bi-person-bounding-box" style="font-size: 1.3rem;"></i> Delete Image
+                                                    </button>
+                                                {% endif %}
+                                            </div>
+                                           
+                                            <hr class="text-muted" style="height: 0.5px;">
+                                        </div>
+                                    </form>
+
+                                   <!-- form to update developer profile image -->
+                                    <form class="container-fluid justify-content-center needs-validation" enctype="multipart/form-data" 
+                                        action="{{url_for("update_profile_image")}}" method="POST">
+                                        <p class="col-12 text-center text-dark fs-3 fw-normal">Update Image</p>
+                                        
+                                        <div class="mt-4 text-center">
+                                            <input type="file" class="btn-upload" tabindex="2" id="image" name="file" accept="image/*" onchange="validate_Image(this);">
+                                        </div>
+
+                                        <div class="row text-center py-2">
+                                            <i id="alert-icon" style="font-size: 2.3rem;"></i> <br>
+                                            <span id="error-message"></span>
+                                        </div>
+
+                                        <div class="text-center mt-2">
+                                            <button type="submit" tabindex="3" class="fp-buttons fp-orange-btn mt-2">
+                                                <i class="bi bi-file-image-fill" style="font-size: 1.3rem;"></i> Update Image
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+
+                                <!-- tab to update ocupation -->
+                                <div class="col-12 tab-pane pt-4" id="v-edit-ocupation" role="tabpanel" aria-labelledby="v-pills-edit-ocupation">
+                                    <form class="row g-3 needs-validation d-flex justify-content-center" novalidate action="{{url_for("update_ocupation")}}" method="POST">
+                                        <h1 class="page_title text-center">Update Job</h1>
+
+                                        <!-- getting work experience for the user loged in -->
+                                        {% set work = resume.get("works") %}
+                                        <div class="col-12 col-sm-6 mb-4">
+                                            <label class="form-label fw-light text-dark">Company <span class="fw-bolder text-danger">*</span></label>
+                                            <input type="text" tabindex="1" class="form-control" id="company" name="company" maxlength="100" required
+                                            {% if work %} value="{{work.Company1}}" {% endif %} placeholder="Company name">
+
+                                            <p class="text-primary smaller-texts fw-lighter">Enter unemployed if not working</p>
+                                        </div>
+                        
+                                        <div class="col-12 col-sm-6 mb-4">
+                                            <label class="form-label fw-light text-dark">Position <span class="fw-bolder text-danger">*</span></label>
+                                            <input type="text" tabindex="2" class="form-control" id="position" name="position" maxlength="100" required
+                                            {% if work %} value="{{work.Position1}}" {% endif %} placeholder="Position title">
+
+                                            <p class="text-primary smaller-texts fw-lighter">Enter unemployed if not working</p>
+                                        </div>
+              
+                                        <div class="row justify-content-evenly mb-4">
+                                            <div class="col-6">
+                                                <label class="form-label fw-light text-dark">Started</label>
+                                                <input type="text" tabindex="3" class="form-control" name="started" maxlength="10" id="started" 
+                                                {% if work %} value="{{work.Started1}}" {% endif %} placeholder="01/01/2020">
+                                            </div>
+
+                                            
+                                            <div class="col-6">
+                                                <label class="form-label fw-light text-dark">End</label>
+                                                <input type="text" tabindex="4" class="form-control" name="ended" maxlength="10" id="ended" 
+                                                {% if work and work.Ended1 %} value="{{work.Ended1}}" {% endif %} placeholder="01/01/2020">
+
+                                                <p class="text-primary smaller-texts fw-lighter ms-2">Enter today date if current</p>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-12 col-sm-10 offset-sm-1 badge bg-highlight text-wrap fst-italic lh-base text-dark py-3 mb-2">
+                                            Describe any position growth or projects achievement at the current company or others.
+                                        </div>
+
+                                        <div class="col-12 mb-2">
+                                            <label class="form-label fw-normal text-dark">Growth & Achievments</label>
+                                            <textarea id="text-1" type="text" tabindex="5" class="form-control" style="height: 220px; white-space: pre-wrap;" 
+                                                oninput="updateCount(this, 'ga-counter', 'ga-bars')" name="contribution" maxlength="1000" 
+                                                placeholder="Describe your growth and achievements...">{%- if work -%} {{work.Contribution1}} {%- endif -%}</textarea>
+
+                                            <progress class="col-12" id="ga-bars" value="0"></progress>
+                                            <div class="row d-flex justify-content-around smaller-texts fw-light">
+                                                <span class="col-6 text-danger">* required fields</span>
+                                                <span id="ga-counter" class="col-6 text-muted text-end">0 / 1000</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="text-center">
+                                            <div id="validate_ocupation" class="col-10 offset-1 col-md-6 offset-md-3 mb-3 d-none alert-field animate__animated animate__fadeInUp">
+                                                <b>Red fields are required!</b>
+                                            </div>
+                                        </div>
+                        
+                                        <div class="text-center">
+                                            <button type="submit" name="action" tabindex="6" class="fp-buttons fp-orange-btn mt-2" onclick="validate_update_ocupation();">
+                                                <i class="bi bi-person-up" style="font-size: 1.3rem;"></i> Update Ocupation
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+
+                                <!-- tab to update coding level -->
+                                <div class="col-12 tab-pane pt-4" id="v-edit-coding" role="tabpanel" aria-labelledby="v-pills-edit-coding">
+                                    <form class="row g-3 d-flex justify-content-center" action="{{url_for("update_code_level")}}" method="POST">
+                                        <h1 class="page_title text-center">Update Level</h1>
+
+                                        <div class="col-12 col-md-10 mb-4">
+                                            <label class="form-label fw-light text-dark">
+                                                Title <span class="fw-bolder text-danger">*</span>
+                                            </label> 
+                                            <select class="form-select form-control" tabindex="1" name="cod_title" aria-label="Select a developer title">
+                                                {% if user_in.Cod_Title %}
+                                                    <option value="{{ user_in.Cod_Title }}" selected>
+                                                        {{ user_in.Cod_Title}}
+                                                    </option>
+                                                {% endif %}
+
+                                                <option value="">Select a title</option>
+                                                <option value="Developer">Developer</option>
+                                                <option value="Jr. Developer">Jr. Developer</option>
+                                                <option value="Sr. Developer">Sr. Developer</option>
+                                                <option value="DevOps">DevOps</option>
+                                                <option value="Jr. DevOps">Jr. DevOps</option>
+                                                <option value="Sr. DevOps">Sr. DevOps</option>
+                                                <option value="Fullstack Developer">Fullstack Developer</option>
+                                                <option value="Jr. Fullstack Developer">Jr. Fullstack Developer</option>
+                                                <option value="Sr. Fullstack Developer">Sr. Fullstack Developer</option>
+                                                <option value="Software Engineer">Software Engineer</option>
+                                                <option value="Jr. Software Engineer">Jr. Software Engineer</option>
+                                                <option value="Sr. Software Engineer">Sr. Software Engineer</option>
+                                                <option value="Recent Graduate">Recent Graduate</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="col-12 col-md-10 mb-3">
+                                            <label class="form-label fw-light text-dark">
+                                                Programming Language <span class="fw-bolder text-danger">*</span>
+                                            </label>
+                                            <select class="form-select form-control" tabindex="2" name="cod_lang" aria-label="Select a developer title">
+                                                {% if user_in.Cod_Lang %}
+                                                    <option value="{{ user_in.Cod_Lang }}" selected>
+                                                        {{ user_in.Cod_Lang}}
+                                                    </option>
+                                                {% endif %}
+
+                                                <option value="">Select a language</option>
+                                                <option value="AI">AI</option>
+                                                <option value="Angular">Angular</option>
+                                                <option value="Back-End">Back-End</option>
+                                                <option value="C/C++">C/C++</option>
+                                                <option value="C#">C#</option>
+                                                <option value="DB Developer">DB Developer</option>
+                                                <option value="DB Admin">DB Admin</option>
+                                                <option value="Front-End">Front-End</option>
+                                                <option value="Java">Java</option>
+                                                <option value="Node">Node </option>
+                                                <option value="Python">Python</option>
+                                                <option value="React">React </option>
+                                                <option value="Rust">Rust </option>
+                                                <option value="Web Developer">Web Developer</option>
+                                            </select>
+
+                                            <p class="text-primary smaller-texts fw-lighter">Select your primary programming language</p>
+                                        </div>
+
+                                        <div class="col-5 col-md-3">
+                                            <label class="form-label fw-light text-dark">Experience</label>
+                                            <div class="input-group input-group-sm">
+                                                <input type="text" tabindex="3" class="form-control" min="1" max="50" maxlength="2" name="years_exp" id="experience" 
+                                                {% if user_in.Years_Exp %} value="{{user_in.Years_Exp}}" {% endif %} placeholder="9">
+
+                                                <span class="input-group-text">years</span>
+                                            </div>
+                                        </div>
+                                        <span class="fw-light text-center smaller-texts text-danger">* required fields</span>
+
+                                        <div class="text-center">
+                                            <div id="validate_coding" class="col-10 offset-1 col-md-6 offset-md-3 mb-3 d-none alert-field animate__animated animate__fadeInUp">
+                                                <b>Select Title and Programming Language or fill up!</b>
+                                            </div>
+                                        </div>
+
+                                        <div class="text-center">
+                                            <button type="submit" name="action" tabindex="6" class="fp-buttons fp-orange-btn mt-4" onclick="validate_update_coding();">
+                                                <i class="bi bi-person-up" style="font-size: 1.3rem;"></i> Update Coding Level
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- portfolio tabs data inputs -->
+                    <div class="tab-pane" id="pills-portfolio" role="tabpanel" aria-labelledby="portfolio-tab">
+                        <div class="container-fluid d-flex align-items-start">
+                            <!-- portfolio tabs menu -->
+                            <div class="nav flex-column nav-pills me-3 text-center mt-4 portfolio_menu" id="v-pills-tab" role="tablist" 
+                                aria-orientation="vertical">
+                                <a href="#" class="nav-link fw-light link-portfolio active" id="v-pills-education" data-bs-toggle="pill" 
+                                    data-bs-target="#v-education" role="tab" 
+                                    aria-controls="v-education" aria-selected="true">
+                                    Education
+                                </a>
+                                                      
+                                <a href="#" class="nav-link fw-light link-portfolio" id="v-pills-certification" data-bs-toggle="pill" 
+                                    data-bs-target="#v-certification" role="tab" 
+                                    aria-controls="v-certification" aria-selected="false">
+                                    Certification
+                                </a>
+
+                                <a href="#" class="nav-link fw-light link-portfolio" id="v-pills-code-skills" data-bs-toggle="pill" 
+                                    data-bs-target="#v-code-skills" role="tab" 
+                                    aria-controls="v-code-skills" aria-selected="false">
+                                    Skills
+                                </a>
+
+                                <a href="#" class="nav-link fw-light link-portfolio" id="v-pills-experience" data-bs-toggle="pill" 
+                                    data-bs-target="#v-experience" role="tab" 
+                                    aria-controls="v-experience" aria-selected="false">
+                                    Work
+                                </a>
+
+                                <a href="#" class="nav-link fw-light link-portfolio" id="v-pills-project" data-bs-toggle="pill" 
+                                    data-bs-target="#v-project" role="tab" 
+                                    aria-controls="v-project" aria-selected="false">
+                                    Projects
+                                </a>
+                            </div>
+
+                            <!-- tabs to add portfolio data -->
+                            <form class="tab-content needs-validation pt-4" novalidate method="POST"
+                                {% if not user_in.Has_Resume %} action="{{url_for("add_portfolio")}}" {% else %} action="{{url_for("update_portfolio")}}" {% endif %}>
+
+                                <!-- tab to add educations -->
+                                <div class="col-12 tab-pane show active" id="v-education" role="tabpanel" aria-labelledby="v-pills-education">
+                                    <h1 class="col-12 col-sm-10 offset-sm-1 page_title text-center">Education</h1>
+
+                                    <!-- setting parameter to get education data  -->
+                                    {% if user_in.Has_Resume %}
+                                        {% set education= resume.get("education") %}
+                                    {% endif %}
+
+                                    <div class="row offset-md-1">
+                                        <div class="col-12 col-md-12 mt-2 mb-4">
+                                            <label class="form-label fw-light text-dark">School <span class="fw-bolder text-danger">*</span></label>
+                                            <input type="text" tabindex="1" class="form-control" name="school" maxlength="50" id="school" 
+                                            {% if education %} value="{{education.School}}" {% endif %} placeholder="School name" required>
+                                            
+                                            <p class="text-primary smaller-texts fw-lighter">Most recent graduation or course in progress</p>
+                                        </div>
+
+                                        <div class="col-12 col-md-6 mb-4">
+                                            <label class="form-label fw-light text-dark">Type <span class="fw-bolder text-danger">*</span></label>
+                                            <select id="education_type" class="form-select" tabindex="2" name="education_type" required>
+                                                {% if education %} 
+                                                    <option value="{{education.Education_Type}}" selected>{{education.Education_Type}}</option>
+                                                    
+                                                    <option value="Associate Degree">Associate Degree</option>
+                                                    <option value="Bachelor's Degree">Bachelor's Degree</option>
+                                                    <option value="High School">High School</option>
+                                                    <option value="Master Degree">Master Degree</option>
+                                                    <option value="PHD">PHD</option>
+                                                {% else %}
+                                                    <option value="">Select graduation type</option>
+                                                    <option value="Associate Degree">Associate Degree</option>
+                                                    <option value="Bachelor's Degree">Bachelor's Degree</option>
+                                                    <option value="High School">High School</option>
+                                                    <option value="Master Degree">Master Degree</option>
+                                                    <option value="PHD">PHD</option>
+                                                    <option value="technical">Technical</option>
+                                                {% endif %}
+                                            </select>
+                                        </div>
+
+                                        <div class="col-12 col-md-6 mb-4">
+                                            <label class="form-label fw-light text-dark">Area of Study <span class="fw-bolder text-danger">*</span></label>
+                                            <select id="graduated_at" class="form-select" tabindex="3" name="graduated_at" required>
+                                                {% if education %} 
+                                                    <option value="{{education.Graduated_At}}" selected>{{education.Graduated_At}}</option>
+                                    
+                                                    <option value="Computer Architec">Computer Architect</option>
+                                                    <option value="Conputer Science">Conputer Science</option>
+                                                    <option value="Data Science">Data Science</option>
+                                                    <option value="Information Technology">Information Technology</option>
+                                                    <option value="Marketing">Marketing</option>
+                                                    <option value="System Analist">System Analysis</option>
+                                                    <option value="Software Engineering">Software Engineering</option>
+                                                {% else %}
+                                                    <option value="">Select graduation area</option>
+                                                    <option value="Computer Architec">Computer Architect</option>
+                                                    <option value="Conputer Science">Conputer Science</option>
+                                                    <option value="Data Science">Data Science</option>
+                                                    <option value="Information Technology">Information Technology</option>
+                                                    <option value="Marketing">Marketing</option>
+                                                    <option value="System Analist">System Analysis</option>
+                                                    <option value="Software Engineering">Software Engineering</option>
+                                                {% endif %}
+                                            </select>
+                                        </div>
+
+                                        <div class="d-flex justify-content-center">
+                                            <div class="col-12 mb-4">
+                                                <label class="col-12 form-label fw-light text-dark">Status 
+                                                    <span class="fw-bolder text-danger">*</span>
+                                                </label>
+
+                                                <input type="radio" class="btn-check" {'checked' if education.Grad_Status == 'In Progress'}
+                                                    name="grad_status" id="in_progress" value="In Progress" autocomplete="off" required>
+                                                <label class="radio-button fw-light" tabindex="5" for="in_progress">In Progress</label>
+
+                                                <input type="radio" class="btn-check" {'checked' if education.Grad_Status == 'Concluded'} 
+                                                    name="grad_status" id="concluded" value="Concluded" autocomplete="off">
+                                                <label class="radio-button fw-light" tabindex="6" for="concluded">Concluded</label>
+
+                                                <input type="radio" class="btn-check" {'checked' if education.Grad_Status == 'Stoped'} 
+                                                    name="grad_status" id="stoped" value="Stoped" autocomplete="off">
+                                                <label class="radio-button fw-light" tabindex="7" for="stoped">Stoped</label>
+                                            </div>
+                                        </div>
+    
+                                        <div class="col-12 py-3 mb-2">
+                                            <div class="row d-flex justify-content-between">
+                                                <div class="col-10">
+                                                    <a href="#" class="fp-btn-posts fp-btn-post-view" onclick="insertFormat('text-education');">
+                                                        <b><i class="bi bi-mortarboard-fill"></i></b> New Education
+                                                    </a>
+                                                </div>
+
+                                                <div class="col-2 d-flex justify-content-end">
+                                                    <a href="#" data-bs-toggle="tooltip" data-bs-animation="false" data-bs-placement="top" 
+                                                    title="Only chage the text inside single quote 'here' to your data">
+                                                        <b><i class="bi bi-question-circle" style="font-size: 1.5rem;"></i></b>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            
+                                            <textarea id="text-education" type="text" class="form-control" style="height: 190px; white-space: pre-wrap;"
+                                                oninput="updateCount(this, 'edu-counter', 'edu-bars')" maxlength="700"
+                                                name="other_education">{%- if education -%} {{education.New_Education}} {%- endif -%}</textarea>
+
+                                            <progress class="col-12" id="edu-bars" value="0"></progress>
+                                            <p id="edu-counter" class="col-12 smaller-texts fw-light text-muted text-end">0 / 700</p>
+                                        </div>
+
+                                        <div id="validate_resume" class="col-6 offset-3 alert-field d-none animate__animated animate__fadeInUp animate__slow">
+                                            <b>Red fields are required!</b>
+                                        </div>
+
+                                        <!-- button to navigate to next tab -->
+                                        <div class="d-flex justify-content-between py-3">
+                                            <span class="fw-light smaller-texts text-danger mt-3">* required fields</span>
+
+                                            <a href="#" onclick="certification_tab();" class="fp-buttons fp-gray-btn" tabindex="7">
+                                                &nbsp; Next <i class="bi bi-arrow-right-circle-fill px-2" style="font-size: 1.3rem;"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- tab to add certifications -->
+                                <div class="col-12 tab-pane" id="v-certification" role="tabpanel" aria-labelledby="v-pills-certification">
+                                    <h1 class="col-12 col-sm-10 offset-sm-1 page_title text-center">Certifications</h1>
+                                    
+                                    <!-- setting parameter to get front-certifications data  -->
+                                    {% if user_in.Has_Resume %}
+                                        {% set certification= resume.get("certifications") %}
+                                    {% endif %}
+
+                                    <div class="row offset-md-1">
+                                        <div class="card-title fs-5 mt-2">1º Certification _________________</div>
+                                        <div class="col-12 col-sm-8 col-md-9 mb-4">
+                                            <label class="form-label fw-light text-dark">Title</label>
+                                            <input type="text" tabindex="1" class="form-control" name="certification1" maxlength="50" id="certification1" 
+                                            {% if certification %} value="{{certification.Certification1}}" {% endif %} placeholder="Certification title">
+                                        </div>
+
+                                        <div class="col-4 col-md-3 mb-4">
+                                            <label class="form-label fw-light text-dark">Issued</label>
+                                            <input type="text" tabindex="2" class="form-control" name="cert1_date" id="cert1_date" 
+                                            {% if certification %} value="{{certification.Cert1_Date}}" {% endif %} placeholder="01/01/2020">
+                                        </div>
+                                        
+                                        <div class="card-title fs-5">2º Certification _________________</div>
+                                        <div class="col-12 col-sm-8 col-md-9 mb-4">
+                                            <label class="form-label fw-light text-dark">Title</label>
+                                            <input type="text" tabindex="3" class="form-control" name="certification2" maxlength="50" id="certification2" 
+                                            {% if certification %} value="{{certification.Certification2}}" {% endif %} placeholder="Certification title">
+                                        </div>
+
+                                        <div class="col-4 col-md-3 mb-4">
+                                            <label class="form-label fw-light text-dark">Issued</label>
+                                            <input type="text" tabindex="4" class="form-control" name="cert2_date" id="cert2_date"
+                                            {% if certification %} value="{{certification.Cert2_Date}}" {% endif %} placeholder="01/01/2020">
+                                        </div>
+                                    
+                                        <div class="card-title fs-5">3º Certification _________________</div>
+                                        <div class="col-12 col-sm-8 col-md-9 mb-4">
+                                            <label class="form-label fw-light text-dark">Title</label>
+                                            <input type="text" tabindex="5" class="form-control" name="certification3" maxlength="50" id="certification3" 
+                                            {% if certification %} value="{{certification.Certification3}}" {% endif %} placeholder="Certification title">
+                                        </div>
+
+                                        <div class="col-4 col-md-3 mb-4">
+                                            <label class="form-label fw-light text-dark">Issued</label>
+                                            <input type="text" tabindex="6" class="form-control" name="cert3_date" id="cert3_date"
+                                            {% if certification %} value="{{certification.Cert3_Date}}" {% endif %} placeholder="01/01/2020">
+                                        </div>
+                                       
+                                        <!-- tab navigation buttons -->
+                                        <div class="d-flex justify-content-between py-3">
+                                            <a href="#" onclick="education_tab();" class="fp-buttons fp-gray-btn p-2" tabindex="7">
+                                                <i class="bi bi-arrow-left-circle-fill px-2" style="font-size: 1.3rem;"></i> Previous &nbsp;
+                                            </a>
+
+                                            <a href="#" onclick="code_tab();" class="fp-buttons fp-gray-btn p-2" tabindex="8">
+                                                &nbsp; Next <i class="bi bi-arrow-right-circle-fill px-2" style="font-size: 1.3rem;"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- tab to add skills -->
+                                <div class="col-12 tab-pane" id="v-code-skills" role="tabpanel" aria-labelledby="v-pills-code-skills">
+                                    <h1 class="col-12 col-sm-10 offset-sm-1 page_title text-center">Coding Skills</h1>
+
+                                    <div class="row accordion accordion-flush" id="accordion-coding">
+                                        <div class="accordion-item">
+                                            <h2 class="accordion-header" id="flush-frontend">
+                                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse-frontend" 
+                                                    aria-expanded="false" aria-controls="flush-collapse-frontend">
+                                                    <span class="fs-5 card-title">
+                                                        <i class="bi bi-code-slash ms-3" style="font-size: 2.2rem;"></i> Front-End
+                                                    </span>
+                                                </button>
+                                            </h2>
+
+                                            <!-- setting parameter to get front-end data  -->
+                                            {% if user_in.Has_Resume %}
+                                                {% set front_end= resume.get("front_end") %}
+                                            {% endif %}
+
+                                            <div id="flush-collapse-frontend" class="row accordion-collapse collapse" aria-labelledby="flush-frontend" 
+                                                data-bs-parent="#accordion-coding">
+                                                <div class="accordion-body">
+                                                    <div class="row mt-2">
+                                                        <div class="col-12 col-md-9 mb-4">
+                                                            <label class="form-label fw-light text-dark">1º Language</label>
+                                                            <input type="text" tabindex="1" class="form-control" name="frontend-lang1" maxlength="50" id="frontend-lang1" 
+                                                            {% if front_end %} value="{{front_end.Frontend_Lang1}}" {% endif %} placeholder="Language name">
+                                                        </div>
+
+                                                        <div class="col-4 col-md-3 mb-4">
+                                                            <label class="form-label fw-light text-dark">Experience</label>
+                                                            <div class="input-group input-group-sm">
+                                                                <input type="number" tabindex="2" class="form-control" min="1" max="99" name="exp_frontend1" id="exp_frontend1" 
+                                                                {% if front_end %} value="{{front_end.Exp_Frontend1}}" {% endif %} placeholder="99">
+
+                                                                <span class="input-group-text">years</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row mt-2">
+                                                        <div class="col-12 col-md-9 mb-4">
+                                                            <label class="form-label fw-light text-dark">2º Language</label>
+                                                            <input type="text" tabindex="3" class="form-control" name="frontend-lang2" maxlength="50" id="frontend-lang2" 
+                                                            {% if front_end %} value="{{front_end.Frontend_Lang2}}" {% endif %} placeholder="Language name">
+                                                        </div>
+
+                                                        <div class="col-4 col-md-3 mb-4">
+                                                            <label class="form-label fw-light text-dark">Experience</label>
+                                                            <div class="input-group input-group-sm">
+                                                                <input type="number" tabindex="4" class="form-control" min="1" max="99" name="exp_frontend2" id="exp_frontend2"
+                                                                {% if front_end %} value="{{front_end.Exp_Frontend2}}" {% endif %} placeholder="99">
+
+                                                                <span class="input-group-text">years</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row mt-2">
+                                                        <div class="col-12 col-md-9 mb-4">
+                                                            <label class="form-label fw-light text-dark">3º Language</label>
+                                                            <input type="text" tabindex="5" class="form-control" name="frontend-lang3" maxlength="50" id="frontend-lang3"
+                                                            {% if front_end %} value="{{front_end.Frontend_Lang3}}" {% endif %} placeholder="Language name">
+                                                        </div>
+
+                                                        <div class="col-4 col-md-3 mb-4">
+                                                            <label class="form-label fw-light text-dark">Experience</label>
+                                                            <div class="input-group input-group-sm">
+                                                                <input type="number" tabindex="6" class="form-control" min="1" max="99" name="exp_frontend3" id="exp_frontend3"
+                                                                {% if front_end %} value="{{front_end.Exp_Frontend3}}" {% endif %} placeholder="99">
+
+                                                                <span class="input-group-text">years</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="accordion-item">
+                                            <h2 class="accordion-header" id="flush-backend">
+                                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse-backend" 
+                                                    aria-expanded="false" aria-controls="flush-collapse-backend">
+                                                    <span class="fs-5 card-title">
+                                                        <i class="bi bi-braces-asterisk ms-3" style="font-size: 2.2rem;"></i> Back-End
+                                                    </span>
+                                                </button>
+                                            </h2>
+
+                                            <!-- setting parameter to get back-end data  -->
+                                            {% if user_in.Has_Resume %}
+                                                {% set back_end= resume.get("back_end") %}
+                                            {% endif %}
+
+                                            <div id="flush-collapse-backend" class="accordion-collapse collapse" aria-labelledby="flush-backend" data-bs-parent="#accordion-coding">
+                                                <div class="accordion-body">
+                                                    <div class="row mt-2">
+                                                        <div class="col-12 col-md-9 mb-4">
+                                                            <label class="form-label fw-light text-dark">1º Language</label>
+                                                            <input type="text" tabindex="1" class="form-control" name="backend-lang1" maxlength="50" id="backend-lang1"
+                                                            {% if back_end %} value="{{back_end.Backend_Lang1}}" {% endif %} placeholder="Language name">
+                                                        </div>
+
+                                                        <div class="col-4 col-md-3 mb-4">
+                                                            <label class="form-label fw-light text-dark">Experience</label>
+                                                            <div class="input-group input-group-sm">
+                                                                <input type="number" tabindex="2" class="form-control" min="1" max="99" name="exp_backend1" id="exp_backend1" 
+                                                                {% if back_end %} value="{{back_end.Exp_Backend1}}" {% endif %} placeholder="99">
+
+                                                                <span class="input-group-text">years</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row mt-2">
+                                                        <div class="col-12 col-md-9 mb-4">
+                                                            <label class="form-label fw-light text-dark">2º Language</label>
+                                                            <input type="text" tabindex="3" class="form-control" name="backend-lang2" maxlength="50" id="backend-lang2" 
+                                                            {% if back_end %} value="{{back_end.Backend_Lang2}}" {% endif %} placeholder="Language name">
+                                                        </div>
+
+                                                        <div class="col-4 col-md-3 mb-4">
+                                                            <label class="form-label fw-light text-dark">Experience</label>
+                                                            <div class="input-group input-group-sm">
+                                                                <input type="number" tabindex="4" class="form-control" min="1" max="99" name="exp_backend2" id="exp_backend2" 
+                                                                {% if back_end %} value="{{back_end.Exp_Backend2}}" {% endif %} placeholder="99">
+
+                                                                <span class="input-group-text">years</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row mt-2">
+                                                        <div class="col-12 col-md-9 mb-4">
+                                                            <label class="form-label fw-light text-dark">3º Language</label>
+                                                            <input type="text" tabindex="5" class="form-control" name="backend-lang3" maxlength="50" id="backend-lang3" 
+                                                            {% if back_end %} value="{{back_end.Backend_Lang3}}" {% endif %} placeholder="Language name">
+                                                        </div>
+
+                                                        <div class="col-4 col-md-3 mb-4">
+                                                            <label class="form-label fw-light text-dark">Experience</label>
+                                                            <div class="input-group input-group-sm">
+                                                                <input type="number" tabindex="6" class="form-control" min="1" max="99" name="exp_backend3" id="exp_backend3" 
+                                                                {% if back_end %} value="{{back_end.Exp_Backend3}}" {% endif %} placeholder="99">
+
+                                                                <span class="input-group-text">years</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="accordion-item">
+                                            <h2 class="accordion-header" id="flush-database">
+                                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse-database" 
+                                                    aria-expanded="false" aria-controls="flush-collapse-database">
+                                                    <span class="fs-5 card-title">
+                                                        <i class="bi bi-database-fill-gear ms-3" style="font-size: 2.2rem;"></i> Database
+                                                    </span>
+                                                </button>
+                                            </h2>
+
+                                            <!-- setting parameter to get database data  -->
+                                            {% if user_in.Has_Resume %}
+                                                {% set database= resume.get("databases") %}
+                                            {% endif %}
+
+                                            <div id="flush-collapse-database" class="accordion-collapse collapse" aria-labelledby="flush-database" data-bs-parent="#accordion-coding">
+                                                <div class="accordion-body">
+                                                    <div class="row mt-2">
+                                                        <div class="col-12 col-md-9 mb-4">
+                                                            <label class="form-label fw-light text-dark">1º Database</label>
+                                                            <input type="text" tabindex="1" class="form-control" name="database1" maxlength="50" id="database1" 
+                                                            {% if database %} value="{{database.Database1}}" {% endif %} placeholder="Database name">
+                                                        </div>
+
+                                                        <div class="col-4 col-md-3 mb-4">
+                                                            <label class="form-label fw-light text-dark">Experience</label>
+                                                            <div class="input-group input-group-sm">
+                                                                <input type="number" tabindex="2" class="form-control" min="1" max="99" name="exp_database1" id="exp_database1" 
+                                                                {% if database %} value="{{database.Exp_Database1}}" {% endif %} placeholder="99">
+
+                                                                <span class="input-group-text">years</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row mt-2">
+                                                        <div class="col-12 col-md-9 mb-4">
+                                                            <label class="form-label fw-light text-dark">2º Database</label>
+                                                            <input type="text" tabindex="3" class="form-control" name="database2" maxlength="50" id="database2" 
+                                                            {% if database %} value="{{database.Database2}}" {% endif %} placeholder="Database name">
+                                                        </div>
+
+                                                        <div class="col-4 col-md-3 mb-4">
+                                                            <label class="form-label fw-light text-dark">Experience</label>
+                                                            <div class="input-group input-group-sm">
+                                                                <input type="number" tabindex="4" class="form-control" min="1" max="99" name="exp_database2" id="exp_database2" 
+                                                                {% if database %} value="{{database.Exp_Database2}}" {% endif %} placeholder="99">
+
+                                                                <span class="input-group-text">years</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row mt-2">
+                                                        <div class="col-12 col-md-9 mb-4">
+                                                            <label class="form-label fw-light text-dark">3º Database</label>
+                                                            <input type="text" tabindex="5" class="form-control" name="database3" maxlength="50" id="database3" 
+                                                            {% if database %} value="{{database.Database3}}" {% endif %} placeholder="Database name">
+                                                        </div>
+
+                                                        <div class="col-4 col-md-3 mb-4">
+                                                            <label class="form-label fw-light text-dark">Experience</label>
+                                                            <div class="input-group input-group-sm">
+                                                                <input type="number" tabindex="6" class="form-control" min="1" max="99" name="exp_database3" id="exp_database3" 
+                                                                {% if database %} value="{{database.Exp_Database3}}" {% endif %} placeholder="99">
+
+                                                                <span class="input-group-text">years</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="accordion-item">
+                                            <h2 class="accordion-header" id="flush-cloud">
+                                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse-cloud" 
+                                                    aria-expanded="false" aria-controls="flush-collapse-cloud">
+                                                    <span class="fs-5 card-title">
+                                                        <i class="bi bi-cloud-arrow-up-fill ms-3" style="font-size: 2.2rem;"></i> Cloud
+                                                    </span>
+                                                </button>
+                                            </h2>
+
+                                            <!-- setting parameter to get cloud data  -->
+                                            {% if user_in.Has_Resume %}
+                                                {% set cloud= resume.get("clouds") %}
+                                            {% endif %}
+
+                                            <div id="flush-collapse-cloud" class="accordion-collapse collapse" aria-labelledby="flush-cloud" data-bs-parent="#accordion-coding">
+                                                <div class="accordion-body">
+                                                    <div class="row mt-2">
+                                                        <div class="col-12 col-md-9 mb-4">
+                                                            <label class="form-label fw-light text-dark">1º Cloud Service</label>
+                                                            <input type="text" tabindex="1" class="form-control" name="cloud1" maxlength="50" id="cloud1" 
+                                                            {% if cloud %} value="{{cloud.Cloud1}}" {% endif %} placeholder="Cloud name">
+                                                        </div>
+
+                                                        <div class="col-4 col-md-3 mb-4">
+                                                            <label class="form-label fw-light text-dark">Experience</label>
+                                                            <div class="input-group input-group-sm">
+                                                                <input type="number" tabindex="2" class="form-control" min="1" max="99" name="exp_cloud1" id="exp_cloud1" 
+                                                                {% if cloud %} value="{{cloud.Exp_Cloud1}}" {% endif %} placeholder="99">
+
+                                                                <span class="input-group-text">years</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row mt-2">
+                                                        <div class="col-12 col-md-9 mb-4">
+                                                            <label class="form-label fw-light text-dark">2º Cloud Service</label>
+                                                            <input type="text" tabindex="3" class="form-control" name="cloud2" maxlength="50" id="cloud2" 
+                                                            {% if cloud %} value="{{cloud.Cloud2}}" {% endif %} placeholder="Cloud name">
+                                                        </div>
+
+                                                        <div class="col-4 col-md-3 mb-4">
+                                                            <label class="form-label fw-light text-dark">Experience</label>
+                                                            <div class="input-group input-group-sm">
+                                                                <input type="number" tabindex="4" class="form-control" min="1" max="99" name="exp_cloud2" id="exp_cloud2" 
+                                                                {% if cloud %} value="{{cloud.Exp_Cloud2}}" {% endif %} placeholder="99">
+
+                                                                <span class="input-group-text">years</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row mt-2">
+                                                        <div class="col-12 col-md-9 mb-4">
+                                                            <label class="form-label fw-light text-dark">3º Cloud Service</label>
+                                                            <input type="text" tabindex="5" class="form-control" name="cloud3" maxlength="50" id="cloud3"
+                                                            {% if cloud %} value="{{cloud.Cloud3}}" {% endif %} placeholder="Cloud name">
+                                                        </div>
+
+                                                        <div class="col-4 col-md-3 mb-4">
+                                                            <label class="form-label fw-light text-dark">Experience</label>
+                                                            <div class="input-group input-group-sm">
+                                                                <input type="number" tabindex="6" class="form-control" min="1" max="99" name="exp_cloud3" id="exp_cloud3"
+                                                                {% if cloud %} value="{{cloud.Exp_Cloud3}}" {% endif %}  placeholder="99">
+
+                                                                <span class="input-group-text">years</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="accordion-item">
+                                            <h2 class="accordion-header" id="flush-other">
+                                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse-other" 
+                                                    aria-expanded="false" aria-controls="flush-collapse-other">
+                                                    <span class="fs-5 card-title">
+                                                        <i class="bi bi-list-ol ms-3" style="font-size: 2.2rem;"></i> Other
+                                                    </span>
+                                                </button>
+                                            </h2>
+
+                                            <div id="flush-collapse-other" class="accordion-collapse collapse" aria-labelledby="flush-other" data-bs-parent="#accordion-coding">
+                                                <div class="accordion-body">
+                                                    <div class="col-12 col-md-10 offset-md-1 badge bg-highlight text-wrap fst-italic lh-base text-dark py-3 mb-4">
+                                                        If you need to add other skills, tools, certification or any other information regarthing your carrear fill up 
+                                                        the input below. Format as you wish to make stand out.
+                                                    </div>
+
+                                                    <label for="other_skills" class="form-label fw-normal text-dark">Other Skills</label>
+                                                    <textarea type="text" class="form-control" style="height: 205px; white-space: pre-wrap;" 
+                                                        oninput="updateCount(this, 'skill-counter', 'skill-bars')" maxlength="800"
+                                                        name="other_skills">{%- if cloud -%} {{cloud.Other_Skills}} {%- endif -%}</textarea>
+                                                    
+                                                    <progress class="col-12" id="skill-bars" value="0"></progress>
+                                                    <p id="skill-counter" class="col-12 smaller-texts fw-light text-muted text-end">0 / 800</p>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- tab navigation buttons -->
+                                        <div class="d-flex navigation_menu justify-content-between py-3">
+                                            <a href="#" onclick="certification_tab();" class="fp-buttons fp-gray-btn" tabindex="7">
+                                                <i class="bi bi-arrow-left-circle-fill px-2" style="font-size: 1.3rem;"></i> Previous &nbsp;
+                                            </a>
+                                        
+                                            <a href="#" onclick="work_tab();" class="fp-buttons fp-gray-btn" tabindex="8">
+                                                &nbsp; Next <i class="bi bi-arrow-right-circle-fill px-2" style="font-size: 1.3rem;"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- tab to add experiences -->
+                                <div class="col-12 tab-pane" id="v-experience" role="tabpanel" aria-labelledby="v-pills-experience">
+                                    <h1 class="col-12 col-sm-10 offset-sm-1 page_title text-center">Experience</h1>
+
+                                    <!-- setting parameter to get experience data  -->
+                                    {% if user_in.Has_Resume %}
+                                        {% set experience = resume.get("works") %}
+                                    {% endif %}
+
+                                    <div class="row offset-md-1">
+                                        <div class="col-12 col-sm-10">
+                                            <div class="row d-flex justify-content-between">
+                                                <div class="col-10 card-title fs-5 mt-2">1º Job _________________</div>
+
+                                                <a href="#" class="col-1" data-bs-toggle="tooltip" data-bs-placement="top"
+                                                title="Add different jobs and experiences make your portfolio standout">
+                                                    <b><i class="bi bi-question-circle" style="font-size: 1.5rem;"></i></b>
+                                                </a>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-12 col-sm-6 mb-4">
+                                            <label class="form-label fw-light text-dark">Company</label>
+                                            <input type="text" tabindex="1" class="form-control" name="company2" id="company2" maxlength="50" 
+                                            {% if experience %} value="{{experience.Company2}}" {% endif %} placeholder="Company name">
+                                        </div>
+
+                                        <div class="col-12 col-sm-6 mb-4">
+                                            <label class="form-label fw-light text-dark">Position</label>
+                                            <input type="text" tabindex="2" class="form-control" name="position2" id="position2" maxlength="50" 
+                                            {% if experience %} value="{{experience.Position2}}" {% endif %} placeholder="Position">
+                                        </div>
+
+                                        <div class="col-6 mb-4">
+                                            <label class="form-label fw-light text-dark">Started</label>
+                                            <input type="text" tabindex="3" class="form-control" name="started2" id="started2" 
+                                            {% if experience %} value="{{experience.Started2}}" {% endif %} placeholder="01/01/2020">
+                                        </div>
+                                                        
+                                        <div class="col-6 mb-4">
+                                            <label class="form-label fw-light text-dark">Ended</label>
+                                            <input type="text" tabindex="4" class="form-control" name="ended2" id="ended2" 
+                                            {% if experience %} value="{{experience.Ended2}}" {% endif %} placeholder="01/01/2020">
+                                        </div>
+
+                                        <div class="col-12 mb-4">
+                                            <label class="form-label fw-normal text-dark">Contribution</label>
+                                            <textarea id="text-4" type="text" tabindex="5" class="form-control" style="height: 190px; white-space: pre-wrap;"
+                                                oninput="updateCount(this, 'cont-1-counter', 'cont-1-bars')" name="contribution2" maxlength="1000"
+                                                placeholder="Describe your contribution, languages, and tools used...">
+                                            {%- if experience -%} {{experience.Contribution2}} {%- endif -%}</textarea>
+                                           
+                                            <progress class="col-12" id="cont-1-bars" value="0"></progress>
+                                            <p id="cont-1-counter" class="col-12 smaller-texts fw-light text-muted text-end">0 / 1000</p>
+                                        </div>
+
+                                        <div class="card-title fs-5 mt-2">2º Job _________________</div>
+                                        <div class="col-12 col-sm-6 mb-4">
+                                            <label class="form-label fw-light text-dark">Company</label>
+                                            <input type="text" tabindex="6" class="form-control" name="company3" id="company3" maxlength="50" 
+                                            {% if experience %} value="{{experience.Company3}}" {% endif %} placeholder="Company name">
+                                        </div>
+
+                                        <div class="col-12 col-sm-6 mb-4">
+                                            <label class="form-label fw-light text-dark">Position</label>
+                                            <input type="text" tabindex="7" class="form-control" name="position3" id="position3" maxlength="50" 
+                                            {% if experience %} value="{{experience.Position3}}" {% endif %} placeholder="Position">
+                                        </div>
+
+                                        <div class="col-6 mb-4">
+                                            <label class="form-label fw-light text-dark">Started</label>
+                                            <input type="text" tabindex="8" class="form-control" name="started3" id="started3" 
+                                            {% if experience %} value="{{experience.Started3}}" {% endif %} placeholder="01/01/2020">
+                                        </div>
+                                                        
+                                        <div class="col-6 mb-4">
+                                            <label class="form-label fw-light text-dark">Ended</label>
+                                            <input type="text" tabindex="9" class="form-control" name="ended3" id="ended3" 
+                                            {% if experience %} value="{{experience.Ended3}}" {% endif %} placeholder="01/01/2020">
+                                        </div>
+
+                                        <div class="col-12 mb-4">
+                                            <label class="form-label fw-normal text-dark">Contribution</label>
+                                            <textarea id="text-5" type="text" tabindex="10" class="form-control" style="height: 190px; white-space: pre-wrap;"
+                                                oninput="updateCount(this, 'cont-2-counter', 'cont-2-bars')" name="contribution3" maxlength="1000"
+                                                placeholder="Describe your contribution, languages, and tools used...">
+                                            {%- if experience -%} {{experience.Contribution3}} {%- endif -%}</textarea>
+
+                                            <progress class="col-12" id="cont-2-bars" value="0"></progress>
+                                            <p id="cont-2-counter" class="col-12 smaller-texts fw-light text-muted text-end">0 / 1000</p>
+                                        </div>
+
+                                        <!-- tab navigation buttons -->
+                                        <div class="d-flex navigation_menu justify-content-between py-3">
+                                            <a href="#" onclick="code_tab();" class="fp-buttons fp-gray-btn p-2" tabindex="12">
+                                                <i class="bi bi-arrow-left-circle-fill px-2" style="font-size: 1.3rem;"></i> Previous &nbsp;
+                                            </a>
+                                        
+                                            <a href="#" onclick="projects_tab();" class="fp-buttons fp-gray-btn p-2" tabindex="11">
+                                                &nbsp; Next <i class="bi bi-arrow-right-circle-fill px-2" style="font-size: 1.3rem;"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- tab to add projects -->
+                                <div class="col-12 tab-pane" id="v-project" role="tabpanel" aria-labelledby="v-pills-project">
+                                    <h1 class="col-12 col-sm-10 offset-sm-1 page_title text-center">Developed</h1>
+
+                                    <!-- setting parameter to get projects data  -->
+                                    {% if user_in.Has_Resume %}
+                                        {% set project= resume.get("projects") %}
+                                    {% endif %}
+                                    <div class="row offset-md-1">
+                                        <div class="col-12 col-sm-10">
+                                            <div class="row d-flex justify-content-between">
+                                                <div class="col-10 card-title fs-5 mt-2">1º Project ______________</div>
+
+                                                <a href="#" class="col-1" data-bs-toggle="tooltip" data-bs-placement="top"
+                                                title="Add different projects make your portfolio standout">
+                                                    <b><i class="bi bi-question-circle" style="font-size: 1.5rem;"></i></b>
+                                                </a>
+                                            </div>
+                                        </div>
+
+                                        <p class="py-2 text-primary smaller-texts fw-lighter">
+                                            Name can be type of project or language like: Java, Pyton, C++ ... <br> 
+                                            Access is server that host your project like: GitHub, AWS, Azure, Google Drive, or URL
+                                        </p>
+
+                                        <div class="col-12 col-sm-6 mb-3">
+                                            <label class="form-label fw-light text-dark">Name</label>
+                                            <input type="text" tabindex="1" class="form-control" name="project1" id="project1" maxlength="50" 
+                                            {% if project %} value="{{project.Project1}}" {% endif %} placeholder="Project name">
+                                        </div>
+
+                                        <div class="col-12 col-sm-6 mb-4">
+                                            <label class="form-label fw-light text-dark">Link access</label>
+                                            <input type="text" tabindex="2" class="form-control" name="link1" id="link1" maxlength="100" 
+                                            {% if project %} value="{{project.Link1}}" {% endif %} placeholder="Project link access">
+                                        </div>
+
+                                        <div class="col-12 mb-4">
+                                            <label class="form-label fw-normal text-dark">Description</label>
+                                            <textarea id="text-6" type="text" tabindex="3" class="form-control" style="height: 190px; white-space: pre-wrap;"
+                                                oninput="updateCount(this, 'proj-1-counter', 'proj-1-bars')" name="prj_desc1" maxlength="1000"
+                                                placeholder="Describe the project challenges, language and tools used...">
+                                                {%- if project -%} {{project.Prj_Desc1}}  {%- endif -%}</textarea>
+
+                                            <progress class="col-12" id="proj-1-bars" value="0"></progress>
+                                            <p id="proj-1-counter" class="col-12 smaller-texts fw-light text-muted text-end">0 / 1000</p>
+                                        </div>
+
+                                        <div class="col-10 card-title fs-5 mt-2">2º Project ______________</div>
+                                        <div class="col-12 col-sm-6 mb-4">
+                                            <label class="form-label fw-light text-dark">Name</label>
+                                            <input type="text" tabindex="4" class="form-control" name="project2" id="project2" maxlength="50" 
+                                            {% if project %} value="{{project.Project2}}" {% endif %} placeholder="Project name">
+                                        </div>
+
+                                        <div class="col-12 col-sm-6 mb-4">
+                                            <label class="form-label fw-light text-dark">Link access:</label>
+                                            <input type="text" tabindex="5" class="form-control" name="link2" id="link2" maxlength="100" 
+                                            {% if project %} value="{{project.Link2}}" {% endif %} placeholder="Project link access">
+                                        </div>
+
+                                        <div class="col-12 mb-4">
+                                            <label class="form-label fw-normal text-dark">Description</label>
+                                            <textarea id="text-7" type="text" tabindex="6" class="form-control" style="height: 190px; white-space: pre-wrap;"
+                                                oninput="updateCount(this, 'proj-2-counter', 'proj-2-bars')" name="prj_desc2" maxlength="1000"
+                                                placeholder="Describe the project challenges, language and tools used...">
+                                                {%- if project -%} {{project.Prj_Desc2}}{%- endif -%}</textarea>
+
+                                            <progress class="col-12" id="proj-2-bars" value="0"></progress>
+                                            <p id="proj-2-counter" class="col-12 smaller-texts fw-light text-muted text-end">0 / 1000</p>
+                                        </div>
+                                       
+                                        <div class="col-10 card-title fs-5 mt-2">3º Project ______________</div>
+                                        <div class="col-12 col-sm-6 mb-4">
+                                            <label class="form-label fw-light text-dark">Name</label>
+                                            <input type="text" tabindex="7" class="form-control" name="project3" id="project3" maxlength="50" 
+                                            {% if project %} value="{{project.Project3}}" {% endif %} placeholder="Project name">
+                                        </div>
+
+                                        <div class="col-12 col-sm-6 mb-4">
+                                            <label class="form-label fw-light text-dark">Link access</label>
+                                            <input type="text" tabindex="8" class="form-control" name="link3" id="link3" maxlength="100" 
+                                            {% if project %} value="{{project.Link3}}" {% endif %} placeholder="Project link access">
+                                        </div>
+
+                                        <div class="col-12 mb-4">
+                                            <label class="form-label fw-normal text-dark">Description</label>
+                                            <textarea id="text-8" type="text" tabindex="9" class="form-control" style="height: 190px; white-space: pre-wrap;"
+                                                oninput="updateCount(this, 'proj-3-counter', 'proj-3-bars')" name="prj_desc3" maxlength="1000"
+                                                placeholder="Describe the project challenges, language and tools used...">
+                                                {%- if project -%} {{project.Prj_Desc3}}{%- endif -%}</textarea>
+
+                                            <progress class="col-12" id="proj-3-bars" value="0"></progress>
+                                            <p id="proj-3-counter" class="col-12 smaller-texts fw-light text-muted text-end">0 / 1000</p>
+                                        </div>
+                                    
+                                        <!-- tab navigation buttons -->
+                                        <div class="d-flex navigation_menu justify-content-between py-3">
+                                            <a href="#" onclick="work_tab();" class="fp-buttons fp-gray-btn p-2" tabindex="8">
+                                                <i class="bi bi-arrow-left-circle-fill px-2" style="font-size: 1.3rem;"></i> Previous &nbsp;
+                                            </a>
+                                            {% if user_in.Has_Resume %}
+                                                <button type="submit" name="action" class="fp-buttons fp-orange-btn" tabindex="7">
+                                                    <i class="bi bi-person-up" style="font-size: 1.3rem;"></i> Update Portfolio
+                                                </button>
+                                            {% else %}
+                                                <button type="submit" class="fp-buttons fp-orange-btn" tabindex="7" onclick="validate_portfolio();">
+                                                    <i class="bi bi-person-vcard px-1" style="font-size: 1.3rem;"></i> Create Portfolio
+                                                </button>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row text-center">
+                                    <span class="text-muted smaller-texts">Fill up portfolios' Tabs that you feel comfortable.</span>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- tab to update password -->
+                    <div class="tab-pane col-12" id="pills-change-pass" role="tabpanel" aria-labelledby="change-pass-tab">
+                        <h1 class="col-12 col-sm-10 offset-sm-1 page_title text-center mt-3">Update Password</h1>
+
+                        <form class="row needs-validation d-flex justify-content-center" novalidate action="{{url_for("update_developer_password")}}" method="POST">
+                            <div class="col-10 col-sm-7 col-md-6 offset-md-1 py-3">
+                                <label class="form-label fw-light text-dark">Current Password <span class="fw-bolder text-danger">*</span></label>
+                                <input type="password" tabindex="1" class="form-control" name="cur_password" maxlength="50" id="cur_password" placeholder="Current Password" required>
+                            </div>
+
+                            <div class="col-10 col-sm-7 col-md-6 offset-md-1 py-3">
+                                <label class="form-label fw-light text-dark">New Password <span class="fw-bolder text-danger">*</span></label>
+                                <input type="password" tabindex="2" class="form-control" name="new_password" maxlength="50" id="user_reg_password" 
+                                placeholder="New Password" required onkeyup="checkPasswordMatch();">
+                            </div>
+            
+                            <div class="col-10 col-sm-7 col-md-6 offset-md-1 py-3">
+                                <label class="form-label fw-light text-dark">Confirm Password <span class="fw-bolder text-danger">*</span></label>
+                                <input type="password" tabindex="3" class="form-control" name="conf_password" maxlength="25" id="user_reg_conf_password" 
+                                placeholder="Confim Password" required onkeyup="checkPasswordMatch();">
+
+                                <div id="form_update_pass" class="mt-3 alert-field d-none animate__animated animate__fadeInUp">
+                                    <b>Red fields are required!</b>
+                                </div>
+                            </div>
+
+                            <div class="col-12 text-center py-2">
+                                <i id="pass-icon"></i>
+                                <span id="message"></span>
+                            </div>
+
+                            <div class="container text-center">
+                                <p class="mb-3 text-center fw-lighter text-primary smaller-texts">
+                                    Strong password usea at least one cappital and special char.<br>
+                                    And mix of numbers and letters.
+                                </p><br>
+                                <span class="fw-light smaller-texts text-danger">* required fields</span>
+                            </div>
+
+                            <div class="col-12 text-center py-3">
+                                <button type="submit" tabindex="4" class="fp-buttons fp-orange-btn" onclick="update_password_validation()">
+                                    <i class="bi bi-shield-lock-fill" style="font-size: 1.3rem;"></i> Update Password
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="d-flex justify-content-center">
+                <div class="col-10 mb-5 alert alert-info alert-dismissible text-center animate__animated animate__fadeInDown">
+                    <i class="bi bi-exclamation-diamond-fill" style="font-size: 2rem; color: rgb(64, 104, 235);"></i> <br>
+                    <p class="fs-5 fw-light mt-2 text-break" style="color: rgb(67, 131, 240) ;">
+                        This page is restricted to loged in users!
+                    </p>
+                </div>     
+            </div>
+
+            <div class="col-12 text-center mb-2 fs-3 text-dark fw-light animate__animated animate__fadeInUp animate__delay-1s"
+                style="margin-top: 10rem;">
+                You can
+            </div>
+
+            <div class="col-6 offset-3 mb-5 d-flex justify-content-evenly animate__animated animate__fadeInUp animate__delay-2s">
+                <a href="/" class="fp-buttons fp-orange-btn px-4 mt-5">
+                    Home
+                </a>
+
+                <a href="{{url_for("add_user")}} create-account" class="fp-buttons fp-orange-btn px-4 mt-5">
+                    Create Account
+                </a>
+        
+                <a href="{{url_for("login")}}" class="fp-buttons fp-orange-btn px-4 mt-5">
+                    Login
+                </a>
+            </div>
+
+            <div class="row py-3">
+                <img class="waves-img" src="{{ url_for("static", path='images/backgrounds/waves.jpeg') }}" alt="">
+            </div>
+        {% endif %}
+    </main>
+
+    
+    <script>
+        $(document).ready(function() {
+            // get URL and check if UPDADE or DELETE image functions it's in it
+            if (window.location.href.includes('/delete_profile_image') || 
+                window.location.href.includes('/update_profile_image')) {
+                new bootstrap.Tab('#edit-data-tab').show();
+                new bootstrap.Tab('#v-pills-edit-img').show();
+            }
+            else if (window.location.href.includes('update_developer_password')){
+                new bootstrap.Tab('#change-pass-tab').show();
+            }
+        });
+
+
+        // ADD NEW EDUCATION TO TEXTATEA -->
+        function insertFormat(input_id){
+            var textarea = document.getElementById(input_id);
+            const format = "  School: 'school here'" +
+            "\n  Type: 'type here'" +
+            "\n  Area of Study: 'area here'" +
+            "\n  Status: 'status here'" + 
+            "\n   ______________________________________\n";
+
+            textarea.innerHTML += format;
+        }
+    </script>
+{% endblock %}

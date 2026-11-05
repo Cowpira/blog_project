@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+{% set active_page = "new_employeer" %}
+
+{% block title %}
+    <title>FP - New Employee</title>
+{% endblock %}
+
+{% block content %}
+    <!-- include alert page to handle alert messages -->
+    {% if result.status_code %}
+        {% include "alerts.html" ignore missing with context %}
+    {% endif %}
+
+    <main class="container-fluid start-content">
+        <h3 class="page_title py-3 text-orange text-center animate__animated animate__fadeInDown animate__delay-1s">
+            Employee Account
+        </h3>
+
+        <div class="col-10 offset-1 col-xxl-8 offset-xxl-2">
+            <ul class="nav mb-3 mt-4 d-flex justify-content-center" id="pills-tab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <a href="#pills-personal" class="nav-link navlink-tab-menu active" id="personal-tab" data-bs-toggle="pill" 
+                    data-bs-target="#pills-personal" role="tab" aria-controls="pills-personal" aria-selected="false">Personal</a>
+                </li>
+
+                <li class="nav-item" role="presentation">
+                    <a href="#pills-access" class="nav-link navlink-tab-menu" id="access-tab" data-bs-toggle="pill" 
+                    data-bs-target="#pills-access" role="tab" aria-controls="pills-access" aria-selected="false">Access</a>
+                </li>
+            </ul>
+
+            <form id="create_employee_account" class="row g-3 needs-validation d-flex justify-content-center" novalidate method="POST">
+                <div class="tab-content" id="pills-tabContent">
+                
+                    <!-- TAB TO ADD EMPLOYEE PERSONAL DATA -->
+                    <div class="tab-pane show active row" id="pills-personal" role="tabpanel" aria-labelledby="personal-tab">
+                        <div class="row justify-content-center">
+                            <div class="col-12 col-md-6 col-lg-4 offset-lg-1 p-2 py-3">
+                                <label for="employee_id" class="form-label fw-light text-dark">Employee ID <span class="fw-bolder text-danger">*</span></label>
+                                <input type="text" class="form-control" tabindex="1" name="employee_id" maxlength="10" id="employee_id" 
+                                    value="{{data.employee_id or ''}}" placeholder="Enter employee id" required>
+                            </div>
+
+                             <div class="col-12 col-md-6 col-lg-4 offset-lg-1 p-2 py-3">
+                                <label for="position" class="form-label fw-light text-dark">Position <span class="fw-bolder text-danger">*</span></label>
+                                <input type="text" class="form-control" tabindex="2" name="position" maxlength="70" id="position" 
+                                    value="{{data.position or ''}}" placeholder="Enter companys' position" required>
+                            </div>
+
+                            <div class="col-12 col-md-6 col-lg-4 offset-lg-1 p-2 py-3">
+                                <label for="first_name" class="form-label fw-light text-dark">First Name <span class="fw-bolder text-danger">*</span></label>
+                                <input type="text" class="form-control" tabindex="3" name="first_name" maxlength="25" id="first_name" 
+                                    value="{{data.first_name or ''}}" placeholder="Enter your first name" required>
+                            </div>
+
+                            <div class="col-12 col-md-6 col-lg-4 offset-lg-1 p-2 py-3">
+                                <label for="last_name" class="form-label fw-light text-dark">Last Name <span class="fw-bolder text-danger">*</span></label>
+                                <input type="text" class="form-control" tabindex="4" name="last_name" maxlength="25" id="last_name" 
+                                    value="{{data.last_name or ''}}" placeholder="Enter your last name" required>
+                            </div>
+
+                            <div class="col-12 col-md-6 col-lg-4 p-2 py-3">
+                                <label for="phone" class="form-label fw-light text-dark">Phone <span class="fw-bolder text-danger">*</span></label>
+                                <input type="text" class="form-control" tabindex="5" maxlength="15" name="phone" id="phone" 
+                                    value="{{data.phone or ''}}" placeholder="Enter company's phone" required>
+                            </div>
+                        </div>
+
+                        <!-- tab navigation buttons -->
+                        <div class="col-12 col-md-10 offset-md-1 col-lg-8 offset-lg-2 navigation_menu d-flex justify-content-between mt-4 py-4">
+                            <span class="fw-light smaller-texts text-danger mt-3">* required fields</span>
+
+                            <a href="#" onclick="access_tab();" class="fp-buttons fp-gray-btn p-2" tabindex="6">
+                                &nbsp; Next <i class="bi bi-arrow-right-circle-fill px-2" style="font-size: 1.3rem;"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- TAB TO ADD EMPLOYEE ACCESS -->
+                    <div class="tab-pane" id="pills-access" role="tabpanel" aria-labelledby="access-tab">
+                        <div class="col-12 col-sm-10 offset-sm-1 col-md-8 offset-md-2 p-2 py-3">
+                            <label for="email" class="form-label fw-light text-dark">Email <span class="fw-bolder text-danger">*</span></label>
+                            <input type="text" class="form-control" tabindex="7" name="email" maxlength="100" id="email_address" 
+                                value="{{data.email or ''}}" placeholder="Enter your e-mail" required>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-12 col-sm-5 offset-sm-1 col-md-4 offset-md-2 p-2 py-3">
+                                <label for="password" class="form-label fw-light text-dark">Password <span class="fw-bolder text-danger">*</span></label>
+                                <input type="password" class="form-control" tabindex="8" name="password" maxlength="12" id="user_reg_password" 
+                                    placeholder="Enter your password" required onkeyup="checkPasswordMatch();">
+                            </div>
+
+                            <div class="col-12 col-sm-5 col-md-4 p-2 py-3">
+                                <label for="conf_password" class="form-label fw-light text-dark">Confirm Password <span class="fw-bolder text-danger">*</span></label>
+                                <input type="password" class="form-control" tabindex="9" name="conf_password" maxlength="12" id="user_reg_conf_password" 
+                                    placeholder="Confirm your password" required onkeyup="checkPasswordMatch();">
+                            </div>
+                            
+                            <div class="col-12 text-center py-2">
+                                <i id="pass-icon"></i>
+                                <span id="message"></span>
+                            </div>
+
+                            <p class="text-center fw-lighter text-primary smaller-texts">
+                                Strong password has at least one cappital letter and special char<br>
+                                Also mix of numbers and letters
+                            </p>
+                        </div>
+
+                        <div id="form_valid" class="d-none col-6 offset-3 col-md-4 offset-md-4 mt-2 alert-field animate__animated 
+                            animate__fadeInUp animate__duration-1s">
+                                <b>Red fields are required!</b>
+                        </div>    
+        
+                        <!-- tab navigation buttons -->
+                        <div class="col-12 col-md-10 offset-md-1 col-lg-8 offset-lg-2 navigation_menu d-flex justify-content-between mt-2 py-4">
+                            <a href="#" onclick="personal_tab();" class="fp-buttons fp-gray-btn p-2" tabindex="11">
+                                <i class="bi bi-arrow-left-circle-fill px-2" style="font-size: 1.3rem;"></i> Previous &nbsp;
+                            </a>
+                            <span class="fw-light smaller-texts text-danger mt-3">* required fields</span>
+
+                            <button type="submit" name="action" tabindex="10" class="fp-buttons fp-orange-btn" onclick="validate_employee_account();">
+                                <i class="bi bi-person-badge-fill px-2" style="font-size: 1.5rem;"></i> Create Account
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <div class="col-12 mt-1 text-center">
+                <p class="form-text text-muted">Already have account?
+                    <a href="#" class="open_login fs-6 fw-light text-decoration-none" tabindex="12" data-bs-toggle="modal" 
+                        data-bs-target="#loginModal">
+                        Login
+                    </a>
+                </p>
+            </div>
+        </div>
+    </main>
+{% endblock%}

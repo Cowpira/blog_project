@@ -1,0 +1,321 @@
+{% extends "base.html" %}
+{% set active_page = "developers" %}
+
+{% block title %}
+    <title>FP - Users</title>
+{% endblock %}
+
+{% block content %}
+<!-- include alert page to handle alert messages -->
+    {% if result.status_code %}
+        {% include "alerts.html" with context %}
+    {% endif %}
+    
+    <main class="container-fluid start-content">
+        {% if result and result.status_code == 204 %}
+            <div class="row text-center" style="color: coral; padding-top:11rem;">
+                <div class="animate__animated animate__fadeInDown animate__delay-1s">
+                    <i class="{{result.detail[0]}} animate__animated animate__flash animate__slower animate__delay-3s animate__infinite" 
+                    style="font-size: 5rem;"></i>
+                </div>
+                
+                <div class="py-2 fs-1 animate__animated animate__fadeInUp animated__slower animate__delay-3s">
+                    <span class="fw-bolder">{{result.status_code}}</span> <br>{{result.detail[1] | safe}}
+                </div>
+            </div>
+        {% elif search != 'None' %}
+            <form class="row py-3 justify-content-around align-items-center needs-validation" style="background-color: rgba(36, 36, 36, 0.895);" 
+                novalidate action="{{ url_for('search_developer') }}" method="GET">
+        
+                <!-- dropdown to select developers per page -->
+                <div class="col-4 col-sm-3 col-md-3 col-lg-2">
+                    <a href="#" class="fp-buttons fp-orange-btn dropdown-toggle w-100 text-center" type="button" id="dropdownMenuCheck" 
+                        data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">View
+                    </a>
+
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuCheck">
+                        {% for limit in limit_items %}
+                            <div class="form-check d-flex justify-content-center">
+                                <input class="form-check-input" type="radio" name="users" value="{{ limit }}" id="limit_dev_{{ limit }}"
+                                {% if limit == users.get('items_per_page') %}checked{% endif %}>
+
+                                <p class="small-texts fw-light text-light ms-2" for="limit_dev_{{ limit }}">
+                                    {{ limit }} developers
+                                </p>
+                            </div>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <!-- link for new users to sign up -->
+                <div class="col-4 col-sm-3 col-md-3 col-lg-3 text-center">
+                    {% if not user_in %}
+                        <a href="#" data-bs-toggle="modal" data-bs-target="#modalNewUser" 
+                            class="fp-links create_new_account animate__animated animate__fadeInDown animate__slow">
+                            <i class="bi bi-person-fill-add"></i> New here?
+                        </a>
+                    {% endif %}
+                </div>
+               
+                <!-- seach field -->
+                <div class="col-12 col-sm-6 col-md-6 col-lg-5 mt-2 mt-sm-0">
+                    <div class="input-group input-group-sm">
+                        <input type="text" class="form-control search-input search_obj" name="search_dev" maxlength="50"
+                            value="{{ request.query_params.get('search_dev', '') if request else '' }}" id="search_dev_input"
+                            placeholder="Search by name, email, language..." required>
+
+                        <button class="col-2 fp-buttons fp-orange-btn p-0 text-center" type="submit">
+                            <i class="bi bi-search fw-bolder" style="font-size: 1.1rem;"></i>
+                        </button>
+                    </div>
+
+                    {% if null_search %}
+                        <div class="col-12 smaller-texts text-warning text-center mt-1 animate__animated animate__slideInDown animate__slow">
+                            Sorry. No developer {{ search }} found!
+                        </div>
+                    {% endif %}
+                </div>
+            </form>
+        {% else %}
+            <div class="row py-3 mb-4 align-items-center">
+                <div class="col-12 d-flex flex-wrap justify-content-around align-items-center action_bar_menu">
+                    <p class="smaller-texts fw-light text-dark m-0 mt-1 px-3 py-2 badge rounded-pill bg-light border">
+                        {{ users.get('items_found', 0) }} Developers found
+                    </p>
+
+                    <a href="{{ url_for("users") }}?page=1&list={{ users.get('items_per_page') }}" class="fp-links d-flex align-items-center py-2">
+                        <i class="bi bi-arrow-counterclockwise" style="font-size: 15px;"></i> Return
+                    </a>
+
+                    {% if not user_in %}
+                        <a href="#" data-bs-toggle="modal" data-bs-target="#modalNewUser" class="fp-links d-flex align-items-center py-2">
+                            <i class="bi bi-person-add" style="font-size: 15px;"></i> New here?
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        {% endif %}
+
+
+        <!-- check if items per page is withim the limit -->
+        {% if users.get('items_per_page', 0) > limit_items[-1] + 1 %}
+            <div class="col-12 text-center text-warning py-3">
+                <div class="animate__animated animate__bounce animate__slow animate__repeat-2 mt-5">
+                    <i class="bi bi-grid-3x3-gap-fill" style="font-size: 8rem;"></i>
+                </div>
+                
+                <span class="page_title"> {{ users.get('items_per_page') }} items per page <br> Not permitted! </span>
+            </div>
+
+        <!-- check if the page in URL is valid  -->
+        {% elif users.get('cur_page', 0) != 1 and users.get('cur_page', 0) not in users.get('total', []) %}
+            <div class="col-12 text-center text-danger py-3">
+                <div class="animate__animated animate__bounce animate__slow animate__repeat-2 mt-5">
+                    <i class="bi bi-file-earmark-excel-fill " style="font-size: 8rem;"></i>
+                </div>
+                
+                <span class="page_title"> Page {{ users.get('cur_page') }} not found! </span>
+            </div>
+        {% else %}
+            <div class="developers-cards-row mt-4">
+                <!-- check ig the developer list is not empty -->
+                {% if users.get('user', [])|length == 0 %}
+                    <div class="row text-center py-5">
+                        <div class="animate__animated animate__fadeInUp animate__slow mt-5">
+                            <i class="bi bi-people-fill" style="font-size: 8rem;"></i>
+                        </div>
+
+                        <span class="page_title animate__animated animate__fadeIn animate__delay-2s"> 
+                            No developers available! 
+                        </span>
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="row d-flex justify-content-evenly py-4 mb-3">
+                {% for user in users.get('user', []) %}
+                    {% include "user_layout.html" with context %}
+                {% endfor %}
+
+                <!-- div is to display the developer modal -->
+                <div id="dislay_modal_resume"></div>
+
+                <!--  MODAL TO SEND A MESSAGE FOR A DEVELOPER -->
+                <div class="modal gen-mdl" id="global-send-msg" tabindex="-1" data-bs-backdrop="static" 
+                data-bs-keyboard="false" aria-labelledby="staticSendMessage" aria-hidden="true">
+                    
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header d-flex justify-content-around">
+                                <h1 class="col-10 text-center title-headers">
+                                    <i class="bi bi-chat-right-dots" style="font-size: 2rem;"></i>
+                                    <span class="col-12 text-light fs-6">Message to </span> 
+                                    <span id="global-dev-name"></span>
+                                </h1>
+
+                                <a href="#" class="gen-mdl-close btn-close-modal position-absolute p-1 top-0 end-0">
+                                    <i class="bi bi-x-circle-fill" style="font-size: 1.7rem;"></i>
+                                </a>
+                            </div>
+                    
+                            <form id="global-send-msg-frm" class="needs-validation" novalidate method="POST" action="">
+                                <div class="modal-body">
+                                    <input type="hidden" id="global-dev-id" name="dev_id" value="">
+                                    <textarea id="global-msg-text" type="text" class="form-control" tabindex="1" 
+                                        style="height: 270px; white-space: pre-wrap;" name="msg_to_send" maxlength="1500" 
+                                        oninput="updateCount(this, 'msg-counter', 'msg-bars')" required></textarea>
+
+                                    <progress class="col-12" id="msg-bars" value="0"></progress>
+                                    <div class="row d-flex justify-content-around smaller-texts fw-light">
+                                        <span class="col-6 text-danger">* required fields</span>
+                                        <span id="msg-counter" class="col-6 text-muted text-end">0 / 1500</span>
+                                    </div>
+                                    
+                                    <span id="form_valid" class="alert alert-field d-none mt-2 invalid-feedback 
+                                        animate__animated animate__fadeInUp animate__duration-1s">
+                                        <b>You must enter your reply!!</b>
+                                    </span>
+                                </div>
+                    
+                                <div class="col-12 modal-footer d-flex justify-content-center">
+                                    <div class="py-1">
+                                        <button type="submit" id="global-send-msg" onclick="validate_mdl_send_msg();" 
+                                            tabindex="2" class="fp-buttons fp-orange-btn">
+                                            <i class="bi bi-send" style="font-size: 1.3rem;"></i> Send
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+        
+        <!-- if page is not found -->
+        {% if users.get('total')|length > 1 %}
+            <nav class="mt-5 mb-1">
+                <ul class="pagination justify-content-center">
+                    {% if users.get('cur_page') >= 2 %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ url_for("users") }}?page={{ users.get('cur_page', 1) - 1 }}&list={{ users.get('items_per_page', 10) }}">
+                                Previous
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled">
+                            <span class="page-link">Previous</span>
+                        </li>
+                    {% endif %}
+                        
+                    {% for page in users.get('total', []) %}
+                        <li class="page-item {% if page == users.get('cur_page') %} page-active {% endif %}">
+                            <a class="page-link  {% if page == users.get('cur_page') %}page-active{% endif %}" 
+                                href="{{ url_for("users") }}?page={{ page }}&list={{ users.get('items_per_page', 10) }}">
+                                {{page}}
+                            </a>
+                        </li>
+                    {% endfor %}
+                    
+                    {% if users.get('cur_page') == users.get('total')|length %}
+                        <li class="page-item disabled">
+                            <span class="page-link">Next</span>
+                        </li>
+                    {% else %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ url_for("users") }}?page={{ users.get('cur_page', 1) + 1 }}&list={{ users.get('items_per_page', 10) }}">
+                                Next
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+                    
+                <span class="d-flex justify-content-center fs-6 fw-lighter mb-3">
+                    Page: <b class="px-2"> {{ users.get('cur_page', 1) }} </b> out of <b class="px-2"> {{ users.get('total', [])|length }}.</b>
+                    &nbsp;&nbsp; Total of &nbsp;<b>{{ users.get('items_found', 0) }}</b> &nbsp; users found.
+                </span>
+            </nav>
+        {% endif %}
+    </main>
+
+    <!-- modal to create account as developer or employee -->
+    <div id="modalNewUser" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" 
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-fullscreen">
+            <div class="modal-content">
+                <div class="modal-body users-background">
+                    <div>
+                        <div class="animate__animated animate__flash animate__delay-3s animate__slower">
+                            <a href="#" class="closebtn" data-bs-dismiss="modal" aria-label="Close">
+                                <b><i class="bi bi-x-lg" style="font-size: 3.2rem;"></i></b>
+                            </a>
+                        </div>
+
+                        <div class="row d-flex justify-content-center">
+                            <div class="col-12 col-sm-10 col-lg-8 mb-3" style="margin-top: 10rem;">
+                                <div class="animate__animated animate__fadeInDown animate__slower">
+                                    <h1 class="create_account_title">Benefits</h1>
+                                </div>
+                                
+                                <p class="fw-lighter py-3 fs-4 text-light animate__animated animate__fadeInDown animate__slow animate__delay-1s" 
+                                    style="background-color: rgba(13, 13, 13, 0.908); padding: 35px; border-radius: 10px;">
+                                    Post unlimited questions, get help from the best professionals, developers and engineers in <span style="color: #FF6F00;">
+
+                                    <b>JAVA</b></span>, <span style="color: #cbc803;"><b>PYTHON</b></span>, <span style="color: #4cf526;"><b>C/C++</b></span>, 
+                                    <span style="color: #300cfd;"><b>.NET</b></span>, <span style="color: #26A69A;"><b>FRONT-END</b></span>, 
+                                    <span style="color: #00bbfe;"><b>BACK-END</b></span>, <span style="color: #ed1dc7;"><b>SQL</b></span>,
+                                    <span style="color: #ae0fce;"><b>BOOTSTRAP</b></span>, and many other languages, databases and frameworks. <br>
+
+                                    You can also create your resume profile, and apply to the jobs opportunities from the best tech companies around the world.
+                                </p>
+                            </div>
+
+                            <span class="col-12 text-center fs-1 fw-bolder text-light animate__animated animate__fadeInUp animate__slower animate__delay-2s">I'm</span>
+
+                            <div class="text-center mt-4 animate__animated animate__fadeInUp animate__slower animate__delay-2s">
+                                <a href="{{ url_for("add_employeer") }}" class="col-4 mt-5 fp-buttons btn-create-account">
+                                    &nbsp; Employeer &nbsp;
+                                </a>
+
+                                <a href="{{ url_for("add_developer") }}" class="col-4 mt-5 ms-4 fp-buttons btn-create-account">
+                                    &nbsp; Developer &nbsp;
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // get the value user selected to load total items per page
+        document.addEventListener('DOMContentLoaded', function() {
+            const radio_selected = document.querySelectorAll('input[name="users"]');
+
+            radio_selected.forEach(function(radio) {
+                radio.addEventListener('change', function() {
+                    if (this.checked) {
+                        localStorage.clear;
+                        const total_posts = this.value;
+                        localStorage.setItem('total_users', total_posts);
+                        const url= "http://127.0.0.1:8000/users?page=1&list="+localStorage.getItem('total_users');
+                        window.location.href = url
+                        return localStorage;
+                    }
+                });
+            });
+        });
+
+        // keep the radio selected after reload the page
+        window.addEventListener('load', function() {
+            const storedValue = localStorage.getItem('total_users');
+            if (storedValue) {
+                const radioToSelect = document.querySelector(`input[type="radio"][name="users"][value="${storedValue}"]`);
+                if (radioToSelect) {
+                    radioToSelect.checked = true;
+                }
+            }
+        });
+    </script>
+{% endblock %}

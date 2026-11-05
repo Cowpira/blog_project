@@ -1,0 +1,326 @@
+{% extends "base.html" %}
+
+{% block title %}
+    <title>Future Programmers - Home</title>
+{% endblock %}
+
+{% block content %}
+    <!-- include alert page to handle alert messages -->
+    {% if result.status_code %}
+        {% include "alerts.html" ignore missing with context %}
+    {% endif %}
+
+    <!-- alert to show users the session has exired -->
+    <div class="row d-flex justify-content-center">
+        <div class="col-12 col-sm-10 col-md-8 d-none alert-expired alert-dismissible alert alert-info global-alerts text-center 
+            animate__animated animate__fadeInDown" style="color: rgb(63, 157, 223);">
+            
+            <button type="button" class="btn-close text-muted animate__animated animate__fadeIn animate__delay-1s" 
+                data-bs-dismiss="alert" aria-label="Close"></button>
+        
+            <i class="bi bi-person-fill-lock fw-bolder animate__animated animate__flash animate__delay-2s animate__repeat-3" 
+                style="font-size: 1.9rem;"></i> <br> Session expired. Please login again!
+        </div>
+    </div>
+
+
+    <div class="video-container">
+        <!-- The video element acting as the background -->
+        <video video autoplay muted loop playsinline class="background-video">
+            <source src="/static/images/backgrounds/background-video.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+  
+        <div class="carousel slide carousel-fade offset-1 offset-lg-2" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                <div class="carousel-item active animate__animated animate__fadeInUp animate__delay-1s animate__slow animate__animated_infinite">
+                    <div class="row">
+                        <span class="banner-title">
+                            <i class="row bi bi-file-earmark-code" style="font-size: 8.2rem;"></i> Back-End
+                        </span>
+
+                        <span class="banner-text fs-2 fw-bolder fp-font text-light">
+                            Find help for all programming languages
+                        </span>
+                    </div>
+                </div>
+
+                <div class="carousel-item animate__animated animate__lightSpeedInRight animate__delay-1s animate__animated_infinite">
+                    <div class="row">
+                        <span class="banner-title">
+                            <i class="row bi bi-filetype-html" style="font-size: 8.2rem;"></i> Front-End
+                        </span>
+
+                        <p class="banner-text fs-2 fw-bolder fp-font text-light">
+                            Best HTML & CSS practices, patern and hints
+                        </p>
+                    </div>
+                </div>
+
+                <div class="carousel-item animate__animated animate__zoomInDown animate__delay-1s animate__animated_infinite">
+                    <div class="row">        
+                        <span class="banner-title">
+                            <i class="row bi bi-database-check" style="font-size: 8.2rem;"></i> Data Base
+                        </span>
+                    
+                        <p class="banner-text fs-2 fw-bolder fp-font text-light">
+                            Improve your queries and DB performance
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <main class="container-fluid">
+        <div class="row py-5 dl-flex justify-content-center" style="background-color: black;">
+            <a href="{{url_for("search_posts")}}?search_post=Python&author_id=0&page=1&list={{total_items}}" 
+                class="col-4 col-md-3 col-lg-2 text-center text-decoration-none banner-languages">
+                <i class="bi bi-filetype-py" style="font-size: 4rem;"></i><br>
+                <span class="fs-5 fw-light">Python</span>
+            </a>
+
+            <a href="{{url_for("search_posts")}}?search_post=html&author_id=0&page=1&list={{total_items}}" 
+                class="col-4 col-md-3 col-lg-2 text-center text-decoration-none banner-languages">
+                <i class="bi bi-braces" style="font-size: 4rem;"></i><br>
+                <span class="fs-5 fw-light">Front-End</span>
+            </a>
+
+             <a href="{{url_for("search_posts")}}?search_post=css&author_id=0&page=1&list={{total_items}}" 
+                class="col-4 col-md-3 col-lg-2 text-center text-decoration-none banner-languages">
+                <i class="bi bi-journal-code" style="font-size: 4rem;"></i><br>
+                <span class="fs-5 fw-light">CSS</span>
+            </a>
+
+            <a href="{{url_for("search_posts")}}?search_post=backend&author_id=0&page=1&list={{total_items}}" 
+                class="col-4 col-md-3 col-lg-2 text-center text-decoration-none banner-languages">
+                <i class="bi bi-terminal-dash" style="font-size: 4rem;"></i><br>
+                <span class="fs-5 fw-light">Back-End</span>
+            </a>
+
+            <a href="{{url_for("search_posts")}}?search_post=java&author_id=0&page=1&list={{total_items}}" 
+                class="col-4 col-md-3 col-lg-2 text-center text-decoration-none banner-languages">
+                <i class="bi bi-filetype-java" style="font-size: 4rem;"></i><br>
+                <span class="fs-5 fw-light">Java</span>
+            </a>
+
+            <a href="{{url_for("search_posts")}}?search_post=c&author_id=0&page=1&list={{total_items}}"
+                class="col-4 col-md-3 col-lg-2 text-center text-decoration-none banner-languages">
+                <i class="bi bi-braces-asterisk" style="font-size: 4rem;"></i><br>
+                <span class="fs-5 fw-light">C#</span>
+            </a>
+        </div>
+
+    
+        <div class="row py-5">
+            <div class="col-12 py-5 text-center">
+                <h1 class="page_title animate__animated animate__fadeInDown animate__duration-1s">
+                    Top Posts 
+                </h1>
+                <span class="fs-5 fw-light text-muted">this week</span>
+            </div>
+            
+            <div class="row mb-4 d-flex justify-content-evenly">
+                <div class="card mb-3" style=" width: 400px;">
+                    <div class="row g-0">
+                        <div class="col-3 mt-5">
+                            <img src="{{ url_for('static', path='/images/java.png') }}" class="img-fluid rounded-start" width="100" height="100" alt="Java">
+                        </div>
+
+                        <div class="col-9">
+                            <div class="card-body row">
+                                <h5 class="card-title">Java OOP</h5>
+                                <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
+                                    additional content. This content is a little bit longer.</p>
+
+                                <p class="card-text d-flex justify-content-end">
+                                    <small class="text-body-secondary smaller-texts">Last updated 3 mins ago</small>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mb-3" style=" width: 400px;">
+                    <div class="row g-0">
+                        <div class="col-3 mt-5">
+                            <img src="{{ url_for('static', path='/images/web-design.png') }}" class="img-fluid rounded-start" alt="Web Development">
+                        </div>
+
+                        <div class="col-9">
+                            <div class="card-body row">
+                                <h5 class="card-title">Web Development</h5>
+                                <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
+                                    additional content. This content is a little bit longer.</p>
+
+                                <p class="card-text d-flex justify-content-end">
+                                    <small class="text-body-secondary smaller-texts">Last updated 3 mins ago</small>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mb-3" style=" width: 400px;">
+                    <div class="row g-0">
+                        <div class="col-3 mt-5">
+                            <img src="{{ url_for('static', path='/images/c.png') }}" class="img-fluid rounded-start" alt="C#">
+                        </div>
+
+                        <div class="col-9">
+                            <div class="card-body row">
+                                <h5 class="card-title">C#</h5>
+                                <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
+                                    additional content. This content is a little bit longer.</p>
+
+                                <p class="card-text d-flex justify-content-end">
+                                    <small class="text-body-secondary smaller-texts">Last updated 3 mins ago</small>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <span class="col-12 d-none d-xxl-block"></span>
+
+                <div class="card mb-3" style=" width: 400px;">
+                    <div class="row g-0">
+                        <div class="col-3 mt-5">
+                            <img src="{{ url_for('static', path='/images/python.png') }}" class="img-fluid rounded-start" alt="Python">
+                        </div>
+
+                        <div class="col-9">
+                            <div class="card-body row">
+                                <h5 class="card-title">Python</h5>
+                                <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
+                                    additional content. This content is a little bit longer.</p>
+
+                                <p class="card-text d-flex justify-content-end">
+                                    <small class="text-body-secondary smaller-texts">Last updated 3 mins ago</small>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mb-3" style=" width: 400px;">
+                    <div class="row g-0">
+                        <div class="col-3 mt-5">
+                            <img src="{{ url_for('static', path='/images/back-end.png') }}" class="img-fluid rounded-start" alt="Back-End">
+                        </div>
+
+                        <div class="col-9">
+                            <div class="card-body row">
+                                <h5 class="card-title">Back-End</h5>
+                                <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
+                                    additional content. This content is a little bit longer.</p>
+
+                                <p class="card-text d-flex justify-content-end">
+                                    <small class="text-body-secondary smaller-texts">Last updated 3 mins ago</small>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mb-3" style=" width: 400px;">
+                    <div class="row g-0">
+                        <div class="col-3 mt-5">
+                            <img src="{{ url_for('static', path='/images/html.png') }}" class="img-fluid rounded-start" alt="HTML5">
+                        </div>
+
+                        <div class="col-9">
+                            <div class="card-body row">
+                                <h5 class="card-title">HTML5</h5>
+                                <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
+                                    additional content. This content is a little bit longer.</p>
+
+                                <p class="card-text d-flex justify-content-end">
+                                    <small class="text-body-secondary smaller-texts">Last updated 3 mins ago</small>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="py-5">
+            <div class="row text-center">
+                <h1 class="page_title animate__animated animate__fadeInDown animate__duration-1s">
+                    Most Active Devs 
+                </h1>
+                <span class="fs-5 fw-lighter text-muted">this week</span>
+            </div>
+
+            {% if users.status_code == 204 %}
+                <div class="fs-4 fw-lighter text-danger">
+                    <i class="{{users.detail[0]}} fw-bolder fs-1 animate__animated animate__flash animate__slower animate__repeat-3"></i> 
+                    <br> {{users.detail[1]}}
+                </div>
+            {% else %}
+                <div class="row developers-cards-row d-flex justify-content-evenly">
+                    {% for user in users %}
+                        {% include "user_layout.html" ignore missing with context %}
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+        
+        <!-- div is to display the developer modal -->
+        <div id="dislay_modal_resume"></div>
+
+        <div class="py-5 text-center">
+            <h1 class="page_title animate__animated animate__fadeInDown animate__duration-1s">
+                Companies & Partners
+            </h1>
+
+            {% if companies and companies.status_code == 204 %} 
+                <div class="fs-4 fw-lighter text-danger">
+                    {% for detail in users.detail %}
+                        <i class="{{detail}} fw-bolder fs-1 animate__animated animate__flash 
+                            animate__slower animate__repeat-3"></i> 
+                        <br> {{detail}}
+                    {% endfor %}
+                </div>
+            {% else %}
+                <!-- companies logo carousel -->
+                <div class="tags-carousel">
+                    <div class="tags-list">
+                        {% for company in companies %}
+                            <div>
+                                <img alt="" width="65" height="65" loading="lazy"
+                                    src="{{url_for("uploaded_comp_images", path=company.Image)}}"> <br>
+                                <span class="small-text fp-font">{{ company.Company }}</span>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    <div aria-hidden class="tags-list">
+                        {% for company in companies %}
+                            <div>
+                                <img alt="" width="65" height="65" loading="lazy"
+                                    src="{{url_for("uploaded_comp_images", path=company.Image)}}"><br>
+                                <span class="small-text fp-font">{{ company.Company }}</span>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </main>
+
+    <script>
+        // check if login expired
+        const params = new URLSearchParams(window.location.search);
+        const session_expired = params.get('session_expired');
+        const email_login = params.get('email');
+        const alert_expired= document.querySelector('.alert-expired');
+        console.log(email_login)
+
+        if(session_expired && !email_login){
+            // adding text color according to the alert
+            alert_expired.classList.remove('d-none');
+        }
+    </script>
+{% endblock %}

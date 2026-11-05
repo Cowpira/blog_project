@@ -1,0 +1,510 @@
+{% block resume_modal %}
+    <div class="modal gen-mdl" id="global-mdl-resume" aria-hidden="true" tabindex="-1"
+        data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="resume-content-scroll">
+
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header text-orange d-flex justify-content-center py-2">
+                    <i class="bi bi-file-text" style="font-size: 2.4rem;"></i>
+                    <span class="fs-3 fw-bold ms-2">{{ dev.First_Name }}s' Resume</span>
+                </div>
+
+                <span id="no_resume" class="d-none text-center alert alert-warning fs-4 fw-bold text-dark"></span>
+
+                <div class="container-fluid modal-body">
+                    <!-- =======================  RESUME PERSONAL DATA ======================= -->
+                    <div class="badge resume-bg-gray position-relative fs-6 fw-light py-2 ms-2 fp-font animate__animated 
+                        animate__fadeInUp animate__slow animate__delay-1s">
+                        <i class="bi bi-person" style="font-size: 1.2rem;"></i>
+
+                        <svg width="1.3em" height="1.3em" viewBox="0 0 16 16" class="position-absolute top-100 start-30 
+                            translate-middle mt-1 bi bi-caret-down-fill" fill="#cfd8dcba" xmlns="http://www.w3.org/2000/svg">
+
+                            <path d="M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 
+                                1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/>
+                        </svg>
+                        Personal
+                    </div>
+
+                    <div class="row justify-content-around py-1">
+                        <div class="col">
+                            <span class="smaller-texts text-dark fw-bold">Name:</span>
+                            <p class="fp-font text-marine">{{ dev.First_Name}} {{dev.Last_Name }}</p>
+                        </div>
+
+                        <div class="col">
+                            <span class="smaller-texts text-dark fw-bold">Address:</span>
+                            <p class="fp-font text-marine">{{ dev.Address | default('Not provided', true) }}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="row justify-content-around">
+                        <div class="col">
+                            <span class="smaller-texts text-dark fw-bold">Email:</span>
+                            <p class="fp-font text-marine">{{ dev.Email }}</p>
+                        </div>
+
+                        <div class="col">
+                            <span class="smaller-texts text-dark fw-bold">Phone:</span>
+                            <p class="fp-font text-marine">{{ dev.Phone | default('Not provided', true) }}</p>
+                        </div>
+                    </div>
+                    <hr class="col-10 offset-1 text-dark border-bottom">
+
+
+                    <!-- resume coding level -->
+                    <div class="badge resume-bg-gray position-relative fs-6 fw-light py-2 fp-font animate__animated 
+                        animate__fadeInUp animate__slow animate__delay-1s">
+                        <i class="bi bi-megaphone" style="font-size: 1.2rem;"></i>
+
+                        <svg width="1em" height="1em" viewBox="0 0 16 16" class="position-absolute top-100 start-30 
+                            translate-middle mt-1 bi bi-caret-down-fill" fill="#cfd8dcba" xmlns="http://www.w3.org/2000/svg">
+
+                            <path d="M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 
+                                .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/>
+                        </svg>
+                        Professional
+                    </div>
+
+                    <div class="row justify-content-around py-1">
+                        <div class="col">
+                            <span class="smaller-texts text-dark fw-bold">Title:</span>
+                            <p class="fp-font text-marine">{{ dev.Cod_Title }}</p>
+                        </div>
+
+                        <div class="col">
+                            <span class="smaller-texts text-dark fw-bold">Language:</span>
+                            <p class="fp-font text-marine">{{ dev.Cod_Lang }}</p>
+                        </div>
+                    
+                        <div class="col">
+                            <span class="smaller-texts text-dark fw-bold">Experience:</span>
+                            <p class="fp-font text-marine">{{ dev.Years_Exp }}</p>
+                        </div>
+                    </div>
+                    <hr class="col-10 offset-1 text-dark border-bottom">
+
+                    <!-- =======================  RESUME EDUCATION  ======================== -->
+                    <div class="badge resume-bg-gray position-relative fs-6 fw-light py-2 fp-font animate__animated 
+                        animate__fadeInUp animate__slow animate__delay-1s">
+                        <i class="bi bi-mortarboard" style="font-size: 1.2rem;"></i>
+
+                        <svg width="1em" height="1em" viewBox="0 0 16 16" class="position-absolute top-100 start-30 
+                            translate-middle mt-1 bi bi-caret-down-fill" fill="#cfd8dcba" xmlns="http://www.w3.org/2000/svg">
+
+                            <path d="M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 
+                            5.48a1 1 0 0 1-1.506 0z"/>
+                        </svg>
+                        Education
+                    </div>
+                    
+                    {% if edu %}
+                        <div class="row justify-content-around py-1">
+                            <div class="col">
+                                <span class="smaller-texts text-dark fw-bold">School:</span>
+                                <p class="fp-font text-marine">{{ edu.School }}</p>
+                            </div>
+
+                            <div class="col">
+                                <span class="smaller-texts text-dark fw-bold">Type:</span>
+                                <p class="fp-font text-marine">{{ edu.Education_Type }}</p>
+                            </div>
+                        </div>
+
+                        <div class="row justify-content-around">
+                            <div class="col">
+                                <span class="smaller-texts text-dark fw-bold">Area:</span>
+                                <p class="fp-font text-marine">{{ edu.Graduated_At }}</p>
+                            </div>
+                            
+                            <div class="col">
+                                <span class="smaller-texts text-dark fw-bold">Status:</span>
+                                <p class="fp-font text-marine">{{ edu.Grad_Status }}</p>
+                            </div>
+                        </div>
+                                
+                        <div class="col-12 mt-1">
+                            <span class="smaller-texts text-dark fw-bold">Other Formations:</span>
+                            <p class="fp-font text-marine">{{ edu.New_Education | default('No other formations registered', true) }}</p>
+                        </div>
+                    {% else %}
+                        <div class="col-12 text-center py-2 animate__animated animate__fadeInUp 
+                            animate__slow animate__delay-2s">
+                            <span class="text-orange small-texts">No education registered!</span>
+                        </div>
+                    {% endif %}
+                    <hr class="col-10 offset-1 text-dark border-bottom">
+
+                    
+                    <!-- =======================  RESUME WORK EXPERIENCE ======================= -->
+                    <div class="badge resume-bg-gray position-relative fs-6 fw-light py-2 fp-font animate__animated 
+                        animate__fadeInUp animate__slow animate__delay-1s">
+                        <i class="bi bi-card-checklist" style="font-size: 1.2rem;"></i>
+
+                        <svg width="1em" height="1em" viewBox="0 0 16 16" class="position-absolute top-100 start-30 
+                            translate-middle mt-1 bi bi-caret-down-fill" fill="#cfd8dcba" xmlns="http://www.w3.org/2000/svg">
+                        
+                            <path d="M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 
+                            5.48a1 1 0 0 1-1.506 0z"/>
+                        </svg>
+                        Experiences
+                    </div>
+
+                    {% if not works or (not works.Company1 and not works.Company2 and not works.Company3) %}
+                        <div class="col-12 text-center py-2 animate__animated animate__fadeInUp 
+                            animate__slow animate__delay-2s">
+                            <span class="text-orange small-texts">No work experience registered!</span>
+                        </div>
+                    {% else %}
+                        <!-- block work experiences -->
+                        {% for i in range(1, 4) %}
+                            {% if works['Company'~i] or works['Position'~i] %}
+                                <div class="row py-1">
+                                    {% if i == 1 %}
+                                        <div class="col-12 text-center mb-1">
+                                            <span class="col-3 fw-bold badge rounded-pill bg-green">Most Recent</span>
+                                        </div>
+                                    {% elif i == 2 %}
+                                        <div class="col-12 text-center mb-1">
+                                            <span class="col-3 fw-bold badge rounded-pill bg-yellow">Previous Role</span>
+                                        </div>
+                                    {% else %}
+                                        <div class="col-12 text-center mb-1">
+                                            <span class="col-3 fw-bold badge rounded-pill bg-red">Prior Experience</span>
+                                        </div>
+                                    {% endif %}
+
+                                    <div class="row justify-content-around py-1">
+                                        <div class="col">
+                                            <span class="smaller-texts text-dark fw-bold">Company:</span><br>
+                                            <p class="fp-font text-marine">{{ works['Company'~i] }}</p>
+                                        </div>
+                                    
+                                        <div class="col">
+                                            <span class="smaller-texts text-dark fw-bold">Position:</span><br>
+                                            <p class="fp-font text-marine">{{ works['Position'~i] }}</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="row justify-content-around">
+                                        <div class="col">
+                                            <span class="smaller-texts text-dark fw-bold">Started:</span><br> 
+                                            <p class="fp-font text-marine">{{ works['Started'~i] | default('Not informed', true) }}</p>
+                                        </div>
+
+                                        <div class="col">
+                                            <span class="smaller-texts text-dark fw-bold">Ended:</span><br>
+                                            <p class="fp-font text-marine">{{ works['Ended'~i] | default('Present', true) }}</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12">
+                                        <span class="smaller-texts text-dark fw-bold">Contribution & Growth:</span><br>
+                                        <p class="fp-font text-marine">{{ works['Contribution'~i] | default('No contributions informed', true) }}</p>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                    <hr class="col-10 offset-1 text-dark" style="border: .4px solid">
+
+
+                    <!-- =======================  RESUME CERTIFICATION ======================= -->
+                    <div class="badge resume-bg-gray position-relative fs-6 fw-light py-2 fp-font animate__animated 
+                        animate__fadeInUp animate__slow animate__delay-1s">
+                        <i class="bi bi-award" style="font-size: 1.2rem;"></i>
+
+                        <svg width="1em" height="1em" viewBox="0 0 16 16" class="position-absolute top-100 start-30 
+                            translate-middle mt-1 bi bi-caret-down-fill" fill="#cfd8dcba" xmlns="http://www.w3.org/2000/svg">
+
+                        <path d="M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 
+                            5.48a1 1 0 0 1-1.506 0z"/>
+                        </svg>
+                        Certification
+                    </div>
+                    
+                    {% if cert and (cert.Certification1 or cert.Certification2 or cert.Certification3) %}
+                        {% for i in range(1, 4) %}
+                            {% if cert['Certification'~i] %}
+                                <div class="row justify-content-around py-1">
+                                    <div class="col">
+                                        <span class="smaller-texts text-dark fw-bold">Certification:</span><br>
+                                        <p class="fp-font text-marine">{{ cert['Certification'~i] }}</p>
+                                    </div>
+
+                                    <div class="col">
+                                        <span class="smaller-texts text-dark fw-bold">Expires:</span><br>
+                                        <p class="fp-font text-marine">{{ cert['Cert' ~i~ '_Date'] | default('Not informed!', true) }}</p>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        <div class="col-12 text-center py-2 animate__animated animate__fadeInUp 
+                            animate__slow animate__delay-2s">
+                            <span class="text-orange small-texts">No certificatios registered!</span>
+                        </div>
+                    {% endif %}
+                    <hr class="col-10 offset-1 text-dark" style="border: .4px solid">
+                    
+                    <!-- =======================  RESUME PROJECTS ======================= -->
+                    <div class="badge resume-bg-gray position-relative fs-6 fw-light py-2 fp-font animate__animated 
+                        animate__fadeInUp animate__slow animate__delay-1s">
+                        <i class="bi bi-bezier2" style="font-size: 1.2rem;"></i>
+
+                        <svg width="1em" height="1em" viewBox="0 0 16 16" class="position-absolute top-100 start-30 
+                            translate-middle mt-1 bi bi-caret-down-fill" fill="#cfd8dcba" xmlns="http://www.w3.org/2000/svg">
+
+                            <path d="M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 
+                            5.48a1 1 0 0 1-1.506 0z"/>
+                        </svg>
+                        Projects
+                    </div>
+
+                    {% if proj and ((proj.Project1 and proj.Prj_Desc1) or (proj.Project2 and proj.Prj_Desc2) or (proj.Project3 and proj.Prj_Desc3)) %}
+                        {% for i in range(1, 4) %}
+                            {% if proj['Project'~i] and proj['Prj_Desc'~i] %}
+                                <div class="row justify-content-around py-1">
+                                    <div class="col-12 text-center mb-1">
+                                        <span class="col-3 fw-bold text-orange badge rounded-pill bg-dark">Project {{i}}</span>
+                                    </div>
+
+                                    <div class="col">
+                                        <span class="smaller-texts text-dark fw-bold">Name:</span><br>
+                                        <p class="fp-font text-marine">{{ proj['Project'~i] }}</p>
+                                    </div>
+
+                                    <div class="col">
+                                        <span class="smaller-texts text-dark fw-bold">Access link:</span><br>
+                                        {% if proj.Link1 %}
+                                            <a href="{{ proj.Link1 }}" target="_blank" class="fp-font text-marine 
+                                                text-decoration-underline"> {{ proj['Link'~i] }}
+                                            </a>
+                                        {% else %}
+                                            <p class="fp-font text-marine">No link provided</p>
+                                        {% endif %}
+                                    </div>
+                                
+                                    <div class="col-12">
+                                        <span class="smaller-texts text-dark fw-bold">Description:</span><br> 
+                                        <p class="fp-font text-marine">{{ proj['Prj_Desc'~i] | default('No project description informed', true) }}</p>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        <div class="col-12 text-center py-2 animate__animated animate__fadeInUp 
+                            animate__slow animate__delay-2s">
+                            <span class="text-orange small-texts">No projects registered!</span>
+                        </div>
+                    {% endif %}
+                    <hr class="col-10 offset-1 text-dark" style="border: .4px solid">
+
+                    <!-- =======================  RESUME SKILLS ======================= -->
+                    <div class="badge resume-bg-gray position-relative fs-6 fw-light py-2 fp-font animate__animated 
+                        animate__fadeInUp animate__slow animate__delay-1s">
+                        <i class="bi bi-file-earmark-code" style="font-size: 1.2rem;"></i>
+
+                        <svg width="1em" height="1em" viewBox="0 0 16 16" class="position-absolute top-100 start-30 
+                            translate-middle mt-1 bi bi-caret-down-fill" fill="#cfd8dcba" xmlns="http://www.w3.org/2000/svg">
+
+                            <path d="M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 
+                            5.48a1 1 0 0 1-1.506 0z"/>
+                        </svg>
+                        Skills
+                    </div>
+                   
+                    {% if not front and not back and not databases and not clouds %}
+                        <div class="col-12 text-center py-2 animate__animated animate__fadeInUp 
+                            animate__slow animate__delay-2s">
+                            <span class="text-orange small-texts">No skills registered!</span>
+                        </div>
+                    {% else %}
+                        <!-- FRONT-END SKILL BLOCK -->
+                        <div class="row py-2">
+                            <div class="col-12 text-center mb-2">
+                                <span class="col-3 fw-bold text-orange badge rounded-pill bg-dark">Front-End</span>
+                            </div>
+
+                            {% if front and (front.Frontend_Lang1 or front.Frontend_Lang2 or front.Frontend_Lang3)  %}
+                                {% for i in range(1, 4) %}
+                                    {% if front['Frontend_Lang'~i] %}
+                                        <div class="row py-1">
+                                            <div class="col-6">
+                                                <span class="smaller-texts text-dark fw-bold">Language:</span><br>
+                                                <p class="fp-font text-marine">{{ front['Frontend_Lang'~i] }}</p>
+                                            </div>
+
+                                            <div class="col-6">
+                                                <span class="smaller-texts text-dark fw-bold">Experience:</span><br>
+                                                <p class="fp-font text-marine">{{ front['Exp_Frontend'~i] | default('0', true) }} years</p>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                            {% else %}
+                                    <div class="col-12 text-center py-1 animate__animated animate__fadeInUp 
+                                        animate__slow animate__delay-2s">
+                                    <span class="text-orange smaller-texts">No front-end experience added!</span>
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- BACK-END SKILL BLOCK -->
+                        <div class="row py-2">
+                            <div class="col-12 text-center mb-2">
+                                <span class="col-3 fw-bold text-orange badge rounded-pill bg-dark">Back-End</span>
+                            </div>
+
+                            {% if back and (back.Backend_Lang1 or back.Backend_Lang2 or back.Backend_Lang3) %}
+                                {% for i in range(1, 4) %}
+                                    {% if back['Backend_Lang'~i] %}
+                                        <div class="row py-1">
+                                            <div class="col-6">
+                                                <span class="smaller-texts text-dark fw-bold">Language:</span><br>
+                                                <p class="fp-font text-marine">{{ back['Backend_Lang'~i] }}</p>
+                                            </div>
+
+                                            <div class="col-6">
+                                                <span class="smaller-texts text-dark fw-bold">Experience:</span><br>
+                                                <p class="fp-font text-marine">{{ back['Exp_Backend'~i] | default('0', true) }}</p>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                            {% else %}
+                                <div class="col-12 text-center py-1 animate__animated animate__fadeInUp 
+                                    animate__slow animate__delay-2s">
+                                    <span class="text-orange smaller-texts">No back-end experience added!</span>
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="row py-2">
+                            <div class="col-12 text-center mb-2">
+                                <span class="col-3 fw-bold text-orange badge rounded-pill bg-dark">Database</span>
+                            </div>
+
+                            {% if databases and (databases.Database1 or databases.Database2 or databases.Database3) %}
+                                {% if databases.Database1 %}
+                                    <div class="row justify-content-around py-1">
+                                        <div class="col">
+                                            <span class="smaller-texts text-dark fw-bold">Databases:</span><br>
+                                            <p class="fp-font text-marine">{{ databases.Database1 }}</p>
+                                        </div>
+
+                                        <div class="col">
+                                            <span class="smaller-texts text-dark fw-bold">Experience:</span><br>
+                                            <p class="fp-font text-marine">{{ databases.Exp_Database1 | default('0', true) }}</p>
+                                        </div>
+                                    </div>
+                                {% endif %}
+
+                                {% if databases.Database2 %}
+                                    <div class="row justify-content-around py-1">
+                                        <div class="col">
+                                            <span class="smaller-texts text-dark fw-bold">Databases:</span><br>
+                                            <p class="fp-font text-marine">{{ databases.Database2 }}</p>
+                                        </div>
+
+                                        <div class="col-6">
+                                            <span class="smaller-texts text-dark fw-bold">Experience:</span><br>
+                                            <p class="fp-font text-marine">{{ databases.Exp_Database2 | default('0', true) }}</p>
+                                        </div>
+                                    </div>
+                                {% endif %}
+
+                                {% if databases.Database3 %}
+                                    <div class="row justify-content-around py-1">
+                                        <div class="col-6">
+                                            <span class="smaller-texts text-dark fw-bold">Databases:</span><br>
+                                            <p class="fp-font text-marine">{{ databases.Database3 }}</p>
+                                        </div>
+
+                                        <div class="col-6">
+                                            <span class="smaller-texts text-dark fw-bold">Experience:</span><br>
+                                            <p class="fp-font text-marine">{{ databases.Exp_Database3 | default('0', true) }}</p>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% else %}
+                                <div class="col-12 text-center py-1 animate__animated animate__fadeInUp 
+                                    animate__slow animate__delay-2s">
+                                    <span class="text-orange smaller-texts">No database experience added!</span>
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="row py-1">
+                            <div class="col-12 text-center mb-2">
+                                <span class="col-3 fw-bold text-orange badge rounded-pill bg-dark">Clouds</span>
+                            </div>
+
+                            {% if clouds and (clouds.Cloud1 or clouds.Cloud2 or clouds.Cloud3) %}
+                                {% for i in range(1, 4) %}
+                                    {% if clouds['Cloud'~i] %}
+                                        <div class="row py-1">
+                                            <div class="col-6">
+                                                <span class="smaller-texts text-dark fw-bold">Cloud:</span><br>
+                                                <p class="fp-font text-marine">{{ clouds['Cloud'~i] }}</p>
+                                            </div>
+
+                                            <div class="col-6">
+                                                <span class="smaller-texts text-dark fw-bold">Experience:</span><br>
+                                                <p class="fp-font text-marine">{{ clouds['Exp_Cloud'~i] | default('0', true) }}</p>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                            {% else %}
+                                <div class="col-12 text-center py-1 animate__animated animate__fadeInUp 
+                                    animate__slow animate__delay-2s">
+                                    <span class="text-orange smaller-texts">No cloud experience added!</span>
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                    <hr class="col-10 offset-1 text-dark" style="border: .4px solid">
+
+
+                    <!-- =======================  RESUME OTHER SKILLS ======================= -->
+                    <div class="badge resume-bg-gray position-relative fs-6 fw-light mb-2 fp-font animate__animated 
+                        animate__fadeInUp animate__slow animate__delay-1s">
+                        <i class="bi bi-signpost-split" style="font-size: 1.2rem;"></i>
+
+                        <svg width="1em" height="1em" viewBox="0 0 16 16" class="position-absolute top-100 start-30 
+                            translate-middle mt-1 bi bi-caret-down-fill" fill="#cfd8dcba" xmlns="http://www.w3.org/2000/svg">
+
+                            <path d="M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 
+                            5.48a1 1 0 0 1-1.506 0z"/>
+                        </svg>
+                        Others Skills
+                    </div>
+
+                    {% if clouds.Other_Skills %}
+                        <div id="other-skills-block" class="row py-1">
+                            <p class="fp-font text-marine">{{clouds.Other_Skills }}</p>
+                        </div>
+                    {% else %}
+                        <div class="col-12 text-center py-1 animate__animated animate__fadeInUp 
+                            animate__slow animate__delay-2s">
+                            <span class="text-orange small-texts">No other skills registered!</span>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- buttons to close or contact user -->
+                <div class="modal-footer d-flex justify-content-center">
+                    <a href="{{url_for("download_dev_resume", dev_id=dev.Id)}}" 
+                        class="fp-buttons fp-blue-btn">
+                        <i class="bi bi-cloud-download-fill" style="font-size: 1.2rem;"></i> &nbsp; Download &nbsp;
+                    </a>
+
+                    <a href="#" class="gen-mdl-close fp-buttons fp-red-btn">
+                        <i class="bi bi-x-circle-fill" style="font-size: 1.2rem;"></i> &nbsp; Close &nbsp;
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

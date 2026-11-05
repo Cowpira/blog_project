@@ -1,0 +1,213 @@
+{% extends "base.html" %}
+{% set active_page = "messages" %}
+
+{% block title %}
+    <title>FP - My Messages</title>
+{% endblock %}
+
+{% block content %}
+    <!-- include alert page to handle alert messages -->
+    {% if result.status_code and result.status_code != 204 %}
+        {% include "alerts.html" with context %}
+    {% endif %}
+    
+    <main class="container-fluid start-content">
+        {% if not my_messages %}
+            {% set items_per_page = 4 %}
+        {% else %}
+            {% set items_per_page = my_messages.get('items_per_page') %}
+        {% endif %}
+
+        <div class="row text-center py-3 header-bg" >
+            <div class="col d-flex justify-content-evenly">
+                <a href="{{ url_for("my_messages", page=1, list=items_per_page, msg_by="all") }}" 
+                    class="btn btn-sm msg-btn {{ 'msg-active' if msg_by == 'all' }}">All</a>
+
+                <a href="{{ url_for("my_messages", page=1, list=items_per_page, msg_by="dev") }}" 
+                    class="btn btn-sm msg-btn {{ 'msg-active' if msg_by == 'dev' }}">Developers</a>
+
+                <a href="{{ url_for("my_messages", page=1, list=items_per_page, msg_by="sys") }}" 
+                    class="btn btn-sm msg-btn {{ 'msg-active' if msg_by == 'sys' }}">System</a>
+                
+
+                <a href="{{ url_for("my_messages", page=1, list=items_per_page, msg_by="unread") }}"
+                    class="btn btn-sm msg-btn {{ 'msg-active' if msg_by == 'unread' }}">Unread</a>
+                
+                <a href="{{ url_for("my_messages", page=1, list=items_per_page, msg_by="chats") }}" 
+                    class="btn btn-sm msg-btn {{ 'msg-active' if msg_by == 'chats' }} position-relative">
+                    chats
+
+                    {% if tot_chats > 0 %}
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                            {{tot_chats}}
+                            <span class="visually-hidden">unread messages</span>
+                        </span>
+                    {% endif %}
+                </a>
+            </div>
+        </div>
+            
+        <!-- start message table here -->
+        <div class="table-responsive mt-2">
+            <table class="table table-striped align-middle">
+                <thead class="text-center table-light">
+                    <tr>
+                        <th scope="col"><span class="fs-6 fp-font">Sender</span></th>
+                        <th scope="col" class="text-start"><span class="fs-6 fp-font">Message Content</span></th>
+                        <th scope="col"><span class="fs-6 fp-font">Date</span></th>
+                        <th scope="col"><span class="fs-6 fp-font">Viewed</span></th>
+                        <th scope="col"><span class="fs-6 fp-font">Actions</span></th>
+                    </tr>
+                </thead>
+        
+                <tbody>
+                    {% if result and result.status_code == 204 %}
+                        <tr>
+                            <td colspan="6" class="text-center text-warning py-5">
+                                <div class="animate__animated animate__fadeInUp animate__slow">
+                                    <i class="bi bi-chat-text" style="font-size: 5rem;"></i>
+                                    <p class="mt-3 fs-3 fw-bold">
+                                        {{ result.detail[1] | safe if result.detail and result.detail|length > 1 else 'No messges found' }}
+                                    </p>
+                                </div>
+                            </td>
+                        </tr>
+                    {% else %}
+                        {% for msg in my_messages.get("messages", []) %}
+                            <tr class="{{ 'msg-unread-row fw-bold' if not msg.Viewed else '' }}">
+                                <!-- setting value for message sender an user or system message -->
+                                <td class="text-center smaller-texts fw-lighter text-nowrap">
+                                    {% if msg.replies and msg.replies[0].msg_sender.First_Name != user_in.First_Name %}
+                                        {{ msg.replies[0].msg_sender.First_Name }}
+                                    {% elif msg.System_Message %}
+                                        <span class="badge bg-secondary">FP Support</span>
+                                    {% else %}
+                                        {{ msg.msg_sender.First_Name }}
+                                    {% endif %}
+                                </td>
+
+                                <!-- showing message content -->
+                                <td class="smaller-texts fw-light text-break text-start">
+                                    <span>{{ msg.Message_Content | striptags | truncate(55) }}</span>
+                                </td>
+
+                                <!-- showing message date -->
+                                <td class="text-center">
+                                    <span class="smaller-texts fw-light text-muted">
+                                        {{ msg.Send_Date.strftime('%B, %d %Y') if msg.Send_Date else '' }}
+                                    </span>
+                                </td>
+                            
+                                <!-- message visualization status -->
+                                <td class="text-center">
+                                    {% if msg.Viewed %}
+                                        <i class="bi bi-check-all text-success fs-4" data-bs-toggle="tooltip" 
+                                        data-bs-animation="false" data-bs-placement="top" title="Viewed"></i>
+                                    {% else %}
+                                        <i class="bi bi-x text-danger fs-4"b data-bs-toggle="tooltip" 
+                                        data-bs-animation="false" data-bs-placement="top" title="Not Viewed"></i>
+                                    {% endif %}
+                                </td>
+                            
+                                <!-- message buttons actions (view or delete) -->
+                                <td class="text-center text-nowrap">
+                                    {% if msg.System_Message %}
+                                        <!-- this link trigger system message modal -->
+                                        <a href="#" data-bs-toggle="modal" data-bs-target="#mdl-system-msg-{{ msg.Id }}" 
+                                            class="fp-buttons fp-btn-posts fp-btn-post-view px-2 py-1 d-inline-block" 
+                                            title="View System Message">
+                                            <i class="bi bi-eye-fill"></i>
+                                        </a>
+                                    {% else %}
+                                        <!-- this link trigger reply message modal -->
+                                        <a href="#" data-bs-toggle="modal" data-bs-target="#mdl-reply-msg-{{ msg.Id }}" 
+                                            class="fp-buttons fp-btn-posts fp-btn-post-edit px-2 py-1 d-inline-block"
+                                            title="View & Reply">
+                                            <i class="bi bi-eye-fill"></i>
+                                        </a>
+                                    {% endif %}
+
+                                    <a href="{{ url_for('delete_message', msg_id=msg.Id, msg_by=msg_by|urlencode if msg_by else 'all') }}" 
+                                        class="mx-1 fp-buttons fp-btn-posts fp-btn-post-close px-2 py-1 d-inline-block" title="Delete Permanent">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+
+
+        <div class="col-12 d-flex justify-content-end smaller-texts text-danger fw-light">
+            <b> * </b> deleted message cannot be recovered
+        </div>
+
+
+        <!-- pagination block -->
+        {% if my_messages and my_messages.get('cur_page') not in my_messages.get('total', []) %}
+            <div class="row mt-5 py-5">
+                <div id="error_404" class="col-12 text-center text-danger py-5">
+                    <div class="animate__animated animate__bounce animate__slower animate__repeat-2">
+                        <i class="bi bi-file-earmark-excel-fill " style="font-size: 7rem;"></i>
+                    </div>
+                    
+                    <h1 class="page_title d-block animate__animated animate__fadeInUp animate__delay-1s animate__slow">
+                        Page {{my_messages.get('cur_page')}} not found!
+                    </h1>
+                </div>
+            </div>
+        {% elif my_messages and my_messages.get('total', [])|length > 1 %}
+            <nav class="py-5" aria-label="Messages Pagination">
+                <ul class="pagination justify-content-center">
+                    {% if my_messages.get('cur_page', 1) >= 2 %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ url_for("my_messages", page=my_messages.get('cur_page', 1) - 1, list=my_messages.get('items_per_page', 10), msg_by=msg_by|urlencode) }}" 
+                                tabindex="-1" aria-disabled="true">Previous</a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled">
+                            <span class="page-link" aria-disabled="true">Previous</span>
+                        </li>
+                    {% endif %}
+                        
+                    {% for page in my_messages.get('total', []) %}
+                        <li class="page-item {% if page == my_messages.get('cur_page') %}page-active{% endif %}">
+                            <a class="page-link {% if page == my_messages.get('cur_page') %} page-active {% endif %}" 
+                                href="{{ url_for("my_messages", page=page, list=my_messages.get('items_per_page', 10), msg_by=msg_by|urlencode) }}">
+                                {{page}}
+                            </a>
+                        </li>
+                    {% endfor %}
+                    
+                    {% if my_messages.get('cur_page') == my_messages.get('total', [])|length %}
+                        <li class="page-item disabled">
+                            <span class="page-link">Next</span>
+                        </li>
+                    {% else %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ url_for("my_messages", page=my_messages.get('cur_page', 1) + 1, list=my_messages.get('items_per_page', 10), msg_by=msg_by|urlencode) }}">
+                                Next
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+
+                <span class="d-flex justify-content-center fs-6 fw-lighter">
+                    Page: <b class="px-2"> {{ my_messages.get('cur_page', 1) }} </b> out of <b class="px-2"> {{ my_messages.get('total', [])|length }}.</b>
+                        &nbsp;&nbsp; Total of &nbsp;<b>{{ my_messages.get('items_found', 0) }}</b> &nbsp; messages found.
+                </span>
+            </nav>
+        {% endif %}
+
+
+        <!-- ================================== MESSAGES MODALS ========================================= -->
+        {% if result.status_code != 204 %}
+            {% for msg in my_messages.get("messages", []) %}
+                {% include "modal_system_messages.html" ignore missing with context %}
+                {% include "modal_reply_messages.html" ignore missing with context %}
+            {% endfor %}
+        {% endif %}
+    </main>
+{% endblock %}

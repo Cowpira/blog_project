@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+
+{% block title %}
+    <title>Activate User Account</title>
+{% endblock %}
+
+{% block content %}
+    <main class="row">
+        <div id="verifying" class="text-center text-dark mt-5 py-5">
+            <h1 class="mt-5 py-3">
+                <b class="lh-lg">We are verifying your account</b><br>
+                <img class="col-4" src="{{url_for("static", path="/images/loading.gif")}}" alt="">
+            </h1>
+        </div>
+    
+        <div id="alerts" class="d-none">
+            <!-- include alert page to handle alert messages -->
+            {% if result.status_code %}
+                {% include "alerts.html" ignore missing with context %}
+            {% endif %}
+        </div>
+        
+        <div id="valid" class="row d-none">
+            {% if result.status_code == 200 %}
+            <div class="container-fluid text-center animate__animated animate__fadeInUp animate__delay-1s" style="margin-top: 7rem;">
+                <p class="col-12 fs-2 animate__animated animate__fadeInUp animate__delay-1s">
+                    Now your're all set
+                </p>
+            
+                <div class="py-5 mb-5 animate__animated animate__fadeInUp animate__delay-2s">
+                    <a href="{{url_for("home")}}" class="fp-buttons fp-orange-btn">Home</a>
+            
+                </div>
+            </div>
+        </div>
+
+        {% elif result.status_code == 202 %}
+            <div class="container-fluid text-center animate__animated animate__fadeInUp animate__delay-1s" style="margin-top: 5rem;">
+                <h1 class="col-12 fs-2 mt-5">Account alredy activated!</h1>
+
+                <p class="col-12 fs-5 fw-lighter py-3">
+                    Your account had already been activated <br> <br>
+                    Please try to login into your account. <br>
+                    If you're having problems try to recover your access or contact our support.
+                </p>
+
+                <div class="py-5 animate__animated animate__fadeInUp animate__delay-2s">
+                    <a href="{{url_for("home")}}" class="fp-buttons fp-orange-btn">
+                        Home
+                    </a>
+                </div>
+            </div>
+
+        {% elif result.status_code == 404 %} 
+            <div class="container-fluid text-center animate__animated animate__fadeInUp animate__delay-1s" style="margin-top: 10rem;">
+                <span class="col-12 fs-2">No Account Found</span>
+
+                <p class="col-12 fs-5 fw-lighter py-3">
+                    Create your account <br><br>
+                    As developer to post questions, add your resume and apply for jobs <br>
+                    Or employeer to post jobs and find the top developers
+                </p>
+
+                <div class="py-3 mb-5 animate__animated animate__fadeInUp animate__delay-2s">
+                    <a href="{{url_for("add_employeer")}}" class="fp-buttons fp-orange-btn">
+                        Employeer Account
+                    </a>
+                    <a href="{{url_for("add_user")}}" class="fp-buttons ms-4 fp-orange-btn">
+                        Developer Account
+                    </a>
+                </div>
+            </div>
+
+        {% elif result.status_code == 406 %}
+            <div class="container-fluid text-center" style="margin-top: 10rem;">
+                <div class="animate__animated animate__fadeInUp animate__slow">
+                    <i class="bi bi-calendar2-week" style="font-size: 8rem;"></i>
+                </div>
+
+                <span class="col-12 fs-1 text-warning">Account not Activated</span>
+
+                <p class="col-12 fs-5 fw-lighter py-3 animate__animated animate__fadeIn animate__delay-1s">
+                    Invalid developer ID or expired Token <br>
+                    If you click on the link you received from Future Programmers and you're having problem <br>
+                    Please contact the support and provide the link you received or the 'User ID' and 'Token' parameters
+                </p>
+
+                <div class="py-2 mb-5 animate__animated animate__fadeInUp animate__delay-2s">
+                    <a href="{{url_for("contact_page")}}" class="fp-buttons fp-orange-btn">
+                        Contact Support
+                    </a>
+                </div>
+            </div>
+
+        {% else %}
+            <div class="container-fluid mb-5 text-center animate__animated animate__fadeInUp animate__delay-1s" style="margin-top: 7rem;">
+                <span class="col-12 fs-2 mb-5">Invalid URL Request</span>
+
+                <p class="col-12 fs-5 fw-lighter py-3">
+                    No valid Token or account not found <br>
+                    You might accessed an invalid url
+                </p>
+
+                <div class="py-4 animate__animated animate__fadeInDown animated__slower animate__delay-2s">
+                    <span class="col-12 fs-2">Visit Future Programmers</span>
+                
+                    <div class="py-3">
+                        <a href="{{url_for("home")}}" class="fp-buttons fp-orange-btn">
+                            Home 
+                        </a>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+        
+        <img class="waves-img" src="{{ url_for("static", path='images/backgrounds/waves.jpeg') }}" alt="">
+
+        <script>
+            setTimeout(() => {
+                // Hide the first div
+                document.getElementById('verifying').classList.add('d-none');
+                
+                // Show the second div
+                document.getElementById('alerts').classList.remove('d-none');
+                document.getElementById('valid').classList.remove('d-none');
+            }, 3000); 
+        </script>
+    </main>
+{% endblock %}

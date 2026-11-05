@@ -1,0 +1,16 @@
+# Create virtual enviroment
+
+# Executing virstual enviroment
+    soruce env_name/bin/activate
+
+# Running imports from a TXT file
+    pip3 install -r requirements.txt
+
+# Executing uvicorn Server 
+   uvicorn blog.main:app --reload
+
+
+# Need to install redis for request limit storage
+    pip3 install redis 
+    or
+    pip3 install --upgrade "redis>=3.0"

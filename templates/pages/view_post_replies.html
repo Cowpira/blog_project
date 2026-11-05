@@ -1,0 +1,39 @@
+{% block content %}
+    <div class="accordion py-2 mb-5" id="accordion-answer" style="position: relative;">
+        <div class="accordion-item" style="background-color: #F57C00;">
+            <h2 class="py-1" id="headingOne">
+                <a href="#" class="small-texts text-dark mt-2 text-decoration-none fw-light d-flex 
+                    justify-content-around" data-bs-toggle="collapse" data-bs-target="#collapse-reply-{{reply.Id}}" 
+                        aria-expanded="false" aria-controls="collapseOne">
+                    
+                    <label class="mt-2">
+                        {{post.author.First_Name}} replied 
+                        <b class="text-light">
+                            {{answer.write_answer.First_Name.split(" ")[0]}}
+                        </b>
+                    </label>
+
+                    <i class="bi bi-arrow-bar-down" style="font-size: 1.5rem; -webkit-text-stroke: 2px;"></i>
+
+                    <i class="text-dark smaller-texts mt-2">
+                        Date: 
+                        <b class="text-light">
+                            {{answer.Posted.strftime('%B, %d %Y')}}
+                        </b>
+                    </i>
+                </a>
+            </h2>
+
+            <div id="collapse-reply-{{reply.Id}}" class="accordion-collapse collapse" aria-labelledby="headingOne" 
+                data-bs-parent="#accordion-answer" style="background-color: white;">
+            
+                <div class="accordion-body">
+                    <!-- GETTING REPLY RESPONSE AND TAGS TO ADD CODE HIGHLIGHT -->
+                    {% set text = reply.Response.split('``') %}
+                    {% set tags = reply.Tag.split(' ') if reply.Tag else [] %}
+                    {% include "code_highlight.html" with context %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

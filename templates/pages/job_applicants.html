@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}
+    <title>Jobs Applicants</title>
+{% endblock %}
+
+{% block content %}
+    <style>
+        .table>:not(caption)>*>*{padding: 1.3rem .2rem;}
+    </style>
+    <main class="container-fluid start-content">
+        <table class="table table-striped">
+            <thead class="text-center">
+                <tr>
+                    <th scope="col" ><span class="text-dark fs-4">Position</span></th>
+                    <th scope="col"><span class="text-dark fs-4">Aplicant</span></th>
+                    <th scope="col"><span class="text-dark fs-4">Status</span></th>
+                    <th scope="col"><span class="text-dark fs-4">Resume</span></th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% if result|length == 0 %}
+                    <div class="col-10 offset-1 alert alert-warning global-alerts alert-dismissible text-center animate__animated animate__fadeInDown" 
+                        style="color: rgb(206, 148, 66);">
+                        
+                        <a href="#" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></a>
+
+                        <i class="bi bi-bell-slash fw-bolder animate__animated animate__flash animate__delay-2s animate__repeat-3" 
+                            style="font-size: 1.7rem;"></i> <br> This job has no aplicants yet!!
+                    </div>
+                {% endif %}
+                
+                {% for aplic in result %}
+                    <tr>
+                        <th scope="row" class="text-center small-texts fw-light">
+                            {{aplic.job_position}}
+                        </th>
+
+                        <th class="text-center small-texts fw-light">
+                            <span class="d-inline-block" style="max-width: 295px;">
+                                {{aplic.f_name}} {{aplic.l_name}}
+                            </span>
+                        </th>
+
+                        <th class="text-center fw-bold">
+                            <span class="d-inline-block {{'text-success' if 'Receiving' in aplic.job_status}}
+                                {{'text-danger' if 'Closed' in aplic.job_status}} {{'text-warning' if 'Analyzing' in aplic.job_status}}" 
+                                style="max-width: 295px;">
+                                {{aplic.job_status.split(' ')[0]}}
+                            </span>
+                        </th>
+
+                        <th class="text-center fw-light">
+                            <a href="#" class="text-success animate__animated animate__fadeIn 
+                                animate__delay-1s animate__slower open-resume" data-id="{{ aplic.dev_id }}">
+                                
+                                <i class="bi bi-file-earmark-text-fill" data-bs-toggle="tooltip" data-bs-animation="false" data-bs-placement="top" 
+                                title="{{aplic.f_name}}' resume" style="font-size: 1.4rem;"></i>
+                            </a>
+                        </th>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- div is to display the developer modal -->
+        <div id="dislay_modal_resume"></div>
+
+        <div class="d-flex justify-content-center" {% if result|length == 0 %} style="margin-top: 10rem;" {% endif %}>
+            <a href="{{url_for("my_jobs")}}" class="fp-buttons fp-orange-btn">
+                <i class="bi bi-arrow-left-circle-fill" style="font-size: 1.3rem;"></i> &nbsp; Return
+            </a>
+        </div>
+    </main>
+{% endblock %}

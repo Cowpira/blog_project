@@ -1,0 +1,205 @@
+{% extends "base.html" %}
+{% set active_page = "posts" %}
+
+{% block title %}
+    <title>FP - Questions</title>
+{% endblock %}
+
+{% block content %}
+    <!-- include alert page to handle alert messages -->
+    {% if result and result.status_code %}
+        {% include "alerts.html" ignore missing with context %}
+    {% endif %}
+    
+    <main class="container-fluid start-content">
+        {% if posts %}    
+            <!-- toolbar for limit items and search post -->
+            <form class="row justify-content-around py-3 needs-validation" novalidate action="{{ url_for("search_posts") }}" method="GET"
+                style="background-color: rgba(36, 36, 36, 0.895);">
+                
+                <div class="col-4 col-sm-3 col-md-2 mt-2 mt-1 sm-0">
+                    <a href="#" class="fp-buttons fp-orange-btn dropdown-toggle" type="button" id="dropdownMenuCheck" 
+                        data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">View
+                    </a>
+
+                    <ul class="dropdown-menu px-3" aria-labelledby="dropdownMenuCheck">
+                        {% for limit in limit_items %}
+                            <div class="form-check ms-3">
+                                <input class="form-check-input" type="radio" name="posts" value="{{ limit }}" id="limit_post_{{ limit }}"
+                                    {% if limit == posts.get('items_per_page') %}checked{% endif %}>
+
+                                <p class="small-texts fw-light text-light" for="limit_post_{{ limit }}">
+                                    {{ limit }} posts
+                                </p>
+                            </div>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <div class="col-8 col-sm-7 col-md-6 col-lg-5 mt-sm-0">
+                    <div class="input-group input-group-sm">
+                        <input type="text" class="form-control search-input search_obj" name="search_post" maxlength="50" id="search"
+                            placeholder="Search by title, tag or developer..." required>
+                        
+                        <!-- inputs used only to send parameters not visible for end users -->
+                        <input type="hidden" name="author_id" value="0">
+                        <input type="hidden" name="page" value="1">
+                        <input type="hidden" name="list" value="{{ posts.get('items_per_page') }}">
+
+                        <button class="col-2 fp-buttons fp-orange-btn p-0 text-center" type="submit" id="search_btn">
+                            <i class="bi bi-search fw-bolder" style="font-size: 1.1rem;"></i>
+                        </button>
+                    </div>
+                </div>
+
+                {% if result %}
+                    <div class="col-12 smaller-texts text-warning text-center animate__animated animate__slideInDown animate__slow">
+                        {{ result }}
+                    </div>
+                {% endif %}
+            </form>
+
+            <!-- TAGS SLIDE MENU -->
+            <div class="tags-carousel">
+                <div class="tags-list">
+                    {% for language in languages %}
+                        {% set lang = language | lower | replace("#", "") | replace("+", "p") | replace(" ", "") %} 
+                        
+                        <a class="langs {{ lang }}" href="{{ url_for("search_posts") }}?search_post={{ lang | urlencode }}&author_id=0&page=1&list={{ total_items }}"> 
+                            <img class="rounded mb-1" alt="{{ lang }} icon" width="25" height="25" loading="lazy"
+                                src="{{ url_for('static', path='/images/' ~ lang ~ '.png') }}">
+                            <span class="smaller-texts">{{ lang }}</span>
+                        </a>
+                    {% endfor %}
+                </div>
+                <div aria-hidden class="tags-list">
+                    {% for language in languages %}
+                        {% set lang = language | lower | replace("#", "") | replace("+", "p") | replace(" ", "") %} 
+
+                        <a class="langs {{ lang}}" href="{{ url_for("search_posts") }}?search_post={{ lang | urlencode }}&author_id=0&page=1&list={{ total_items }}">
+                            <img class="rounded mb-1" alt="{{ lang }} icon" width="25" height="25" loading="lazy"
+                                src="{{ url_for('static', path='/images/' ~ lang ~ '.png') }}"><br>
+                            <span class="smaller-texts">{{ lang }}</span>
+                        </a>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- paginating posts -->
+            {% if posts.get('items_per_page', 0) > limit_items[-1] + 1 %}
+                <div class="py-3">
+                    <div id="error_limit" class="col-12 text-center text-warning py-5">
+                        <div class="animate__animated animate__bounce animate__slower animate__repeat-2">
+                            <i class="bi bi-grid-3x3-gap-fill" style="font-size: 7rem;"></i>
+                        </div>
+                        
+                        <span class="page_title animate__animated animate__fadeInUp animate__delay-1s animate__slow">
+                            {{ posts.get('items_per_page') }} items per page not permitted!
+                        </span>
+                    </div>
+                </div>
+            {% else %}
+                <!-- including page that share content with posts found -->
+                <div class="row d-flex justify-content-center">
+                    {% include 'posts_layout.html' %}
+                </div>
+            
+                <!-- pagination block -->
+                {% if posts.get('cur_page') not in posts.get('total', []) %}
+                    <div class="py-5">
+                        <div id="error_404" class="col-12 text-center text-danger py-5">
+                            <div class="animate__animated animate__bounce animate__slower animate__repeat-2">
+                                <i class="bi bi-file-earmark-excel-fill " style="font-size: 7rem;"></i>
+                            </div>
+                            
+                            <h1 class="page_title animate__animated animate__fadeInUp animate__delay-1s animate__slow">
+                                Page {{ posts.get('cur_page') }} not found!
+                            </h1>
+                        </div>
+                    </div>
+                {% elif posts.get('total')|length > 1 %}
+                    <nav class="mt-5 mb-1">
+                        <ul class="pagination justify-content-center">
+                            {% if posts.get('cur_page') >= 2 %}
+                                <li class="page-item">
+                                    <a class="page-link" href="{{ url_for("list_posts") }}?page={{ posts.get('cur_page', 1) -1 }}&list={{ posts.get('items_per_page', 10) }}">
+                                        Previous
+                                    </a>
+                                </li>
+                            {% else %}
+                                <li class="page-item disabled">
+                                    <span class="page-link">Previous</span>
+                                </li>
+                            {% endif %}
+                                
+                            {% for page in posts.get('total') %}
+                                <li class="page-item {% if page == posts.get('cur_page') %}page-active{% endif %}">
+                                    <a class="page-link {% if page == posts.get('cur_page') %}page-active{% endif %}" 
+                                        href="{{ url_for("list_posts") }}?page={{ page }}&list={{ posts.get('items_per_page', 10) }}">
+                                        {{page}}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                            
+                            {% if posts.get('cur_page') == posts.get('total')|length %}
+                                <li class="page-item disabled">
+                                    <span class="page-link">Next</span>
+                                </li>
+                            {% else %}
+                                <li class="page-item">
+                                    <a class="page-link" href="{{ url_for("list_posts") }}?page={{ posts.get('cur_page',1) + 1 }}&list={{ posts.get('items_per_page', 10) }}">
+                                        Next
+                                    </a> 
+                                </li>
+                            {% endif %}
+                        </ul>
+
+                        <span class="d-flex justify-content-center fs-6 fw-lighter">
+                            Page: <b class="px-2"> {{ posts.get('cur_page', 1) }} </b> out of <b class="px-2"> {{ posts.get('total', [])|length }}.</b>
+                            &nbsp;&nbsp; Total of &nbsp;<b>{{ posts.get('items_found', 0) }}</b> &nbsp; posts found.
+                        </span>
+                    </nav>
+                {% endif %}
+            {% endif %}
+        {% else %}
+            <div class="row text-center py-5">
+                <i class="bi bi-exclamation-circle animate__animated animate__fadeInUp 
+                animate__slow animate__delay-1s mt-5" style="font-size: 8rem;"></i>
+                
+                <span class="page_title animate__animated animate__fadeIn animate__delay-2s">
+                    No post available!
+                </span>
+            </div>
+        {% endif %}
+    </main>
+
+    <script>
+        //get the value user selected to load total items per page
+        document.addEventListener('DOMContentLoaded', function() {
+            const radio_selected = document.querySelectorAll('input[name="posts"]');
+
+            radio_selected.forEach(function(radio) {
+                radio.addEventListener('change', function() {
+                    if (this.checked) {
+                        localStorage.clear;
+                        const total_posts = this.value;
+                        localStorage.setItem('total_posts', total_posts);
+                        window.location.href = "http://127.0.0.1:8000/posts?page=1&list="+localStorage.getItem('total_posts');
+                        return localStorage;
+                    }
+                });
+            });
+        });
+
+        // keep total items radio selected after reload the page
+        window.addEventListener('load', function() {
+            const storedValue = localStorage.getItem('total_posts');
+            if (storedValue) {
+                const radioToSelect = document.querySelector(`input[type="radio"][name="posts"][value="${storedValue}"]`);
+                if (radioToSelect) {
+                    radioToSelect.checked = true;
+                }
+            }
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,142 @@
+[
+    {
+        "Message": "This is the second message sent by Valdir to check message filters",
+        "Parent_Id": null,
+        "Person_Id": 2,
+        "Send_Date": "2026-03-12 17:23:12.345267",
+        "Sender": "Valdir",
+        "System_Message": 0,
+        "To": 0,
+        "Viewed": 0
+    },
+    {
+        "Message": "Welcome to Future Programmers <span class=\"fw-light text-primary\"> Almir </span> <br><br>\n Your account is ready to post questions, answer posts and create your resume profile. <br><br>\n <b class=\"text-dark fs-5 fw-bolder\"> Congrats and good lucky <b>",
+        "Parent_Id": null,
+        "Person_Id": null,
+        "Send_Date": "2026-04-07 23:32:36.964467",
+        "Sender": "System",
+        "System_Message": 1,
+        "To": 2,
+        "Viewed": 0
+    },
+    {
+        "Message": "Another message to be delete and tested from Suzana",
+        "Parent_Id": null,
+        "Person_Id": 3,
+        "Send_Date": "2026-07-11 12:12:34.103401",
+        "Sender": "Suzana",
+        "System_Message": 0,
+        "To": 1,
+        "Viewed": 0
+    },
+    {
+        "Message": "Test to list messages by developers",
+        "Parent_Id": null,
+        "Person_Id": 4,
+        "Send_Date": "2026-02-15 16:32:17.243553",
+        "Sender": "Rogerio",
+        "System_Message": 0,
+        "To": 1,
+        "Viewed": 0
+    },
+    {
+        "Message": "This is a message sent by Suzana to test filters",
+        "Parent_Id": null,
+        "Person_Id": 3,
+        "Send_Date": "2026-01-03 12:03:07.141574",
+        "Sender": "Suzana",
+        "System_Message": 0,
+        "To": 1,
+        "Viewed": 0
+    },
+    {
+        "Message": "This is a second mesage from Suzana do we can filter it by developers",
+        "Parent_Id": null,
+        "Person_Id": 3,
+        "Send_Date": "2026-03-03 16:52:37.018382",
+        "Sender": "Suzana",
+        "System_Message": 0,
+        "To": 1,
+        "Viewed": 0
+    },
+    {
+        "Message": "Test to reply message to Suzana",
+        "Parent_Id": null,
+        "Person_Id": 1,
+        "Send_Date": "2026-05-16 06:18:07.109175",
+        "Sender": "Almir",
+        "System_Message": 0,
+        "To": "Suzana",
+        "Viewed": 0
+    },
+    {
+        "Message": "This is another message to test if Ricardo sent two messages.",
+        "Parent_Id": null,
+        "Person_Id": 4,
+        "Send_Date": "2026-04-12 11:32:09.453822",
+        "Sender": "Rogerio",
+        "System_Message": 0,
+        "To": 1,
+        "Viewed": 0
+    },
+    {
+        "Message": "Rogerio I'm sending this second message to let you know that your solution worked for me. Thanks again.",
+        "Parent_Id": 8,
+        "Person_Id": 1,
+        "Send_Date": "2026-05-21 20:20:33.290222",
+        "Sender": "Almir",
+        "System_Message": 0,
+        "To": 4,
+        "Viewed": 0
+    },
+    {
+        "Message": "i am happy for you Almir",
+        "Parent_Id": 8,
+        "Person_Id": 4,
+        "Send_Date": "2026-05-21 20:41:58.425050",
+        "Sender": "Rogerio",
+        "System_Message": 0,
+        "To": 1,
+        "Viewed": 0
+    },
+    {
+        "Message": "That is great Almir happy for you my friend ",
+        "Parent_Id": 8,
+        "Person_Id": 4,
+        "Send_Date": "2026-05-21 20:42:36.253034",
+        "Sender": "Rogerio",
+        "System_Message": 0,
+        "To": 1,
+        "Viewed": 0
+    },
+    {
+        "Message": "Hi Suzana why should i delete this message.\r\n If it's only for your test I can do that for sure.\r\n\r\n Let me know and I'll delete it.\r\n Bye. Almir Miller",
+        "Parent_Id": 4,
+        "Person_Id": 1,
+        "Send_Date": "2026-05-22 01:52:53.720119",
+        "Sender": "Almir",
+        "System_Message": 0,
+        "To": 3,
+        "Viewed": 0
+    },
+    {
+        "Message": "Suzana I did delete the message, so now let me know if you got my message back.",
+        "Parent_Id": 4,
+        "Person_Id": 1,
+        "Send_Date": "2026-05-22 01:54:24.629867",
+        "Sender": "Almir",
+        "System_Message": 0,
+        "To": 3,
+        "Viewed": 0
+    },
+    {
+        "Message": "Thanks again my man for your time and help.",
+        "Parent_Id": 10,
+        "Person_Id": 1,
+        "Send_Date": "2026-05-22 01:56:15.250772",
+        "Sender": "Almir",
+        "System_Message": 0,
+        "To": 4,
+        "Viewed": 0
+    }
+]

@@ -1,0 +1,75 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  
+  <title>Deactivating Account</title>
+</head>
+
+  <body style="margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, Helvetica, sans-serif;">
+    
+    <div style="width: 100%; background: #efefef; border-radius: 10px; padding: 10px;">
+      
+      <div style="margin: 0 auto; width: 90%; text-align: center;">
+        
+        <h1 style="background-color: #6F4E37 !important; color: white; padding: 5px 10px; border-radius: 5px;">
+          {{ app_name }}
+        </h1>
+        
+        <div style="margin: 30px auto; background: white; width: 60%; border-radius: 10px; 
+        padding: 50px; text-align: center;">
+          <h3 style="margin-bottom: 15px; font-size: 24px;">
+            Sorry, {{ user_name }} we already miss you!
+          </h3>
+
+          <img src="{{ icon_img }}" alt="">
+
+          <p style="margin-bottom: 30px; font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.8;">
+            Your account in {{ app_name }} has been deactivated.
+          </p>
+
+          <div style="margin-top: 20px;">
+            <label style="font-size: 26px; color:rgb(15, 15, 15);">You no longer can:</label> 
+            <div style="font-size: 17px; line-height: 2; color:rgb(70, 70, 70);"> 
+              <span style='font-size:20px;'>&#128221;</span> Post Questions <br>
+              <span style='font-size:20px;'>&#128236;</span> Respond Questions <br>
+              <span style='font-size:20px;'>&#128395;</span> Reply Answers <br>
+              <span style='font-size:20px;'>&#128270;</span> Look for Jobs <br>
+              <span style='font-size:20px;'>&#127919;</span> Apply for Jobs <br>
+            </div>
+          </div>
+          
+          <p style="padding: 18px; font-size: 16px; font-weight: 700; color: rgb(212, 100, 59);
+          font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;">
+            To reactivate your account contact our support. <br>
+            Hope you come back soon.
+          </p>
+
+          <p>
+            Click on the button to reactivate your account
+          </p>
+          
+          <a style="display: block; margin: 0 auto; border: none; background-color: #6F4E37 !important; color: white;
+          width: 200px; line-height: 24px; padding: 10px; font-size: 20px; border-radius: 7px; cursor: pointer; text-decoration: none;"
+            href="{{ url_link }}" target="_blank"> Reactivate Account
+          </a>
+
+          <div style="margin: 70px auto;">
+            <p style="margin-bottom: 15px;">Or copy and paste the URL below into your web browser</p>
+
+            <hr style="color: lightgrey;" />
+            <span style="margin: 15px auto 20px; color: dimgray; font-family: sans-serif; font-size: 23;">
+              Support Link: 
+            </span>
+            <a>{{ url_link }}</a>
+          </div>
+
+          <div style="margin-top: -35px">
+            <img class="ms-3" src="{{ fp_logo }}" alt="" width="115" height="100">
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

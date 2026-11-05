@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% set active_page = "contact" %}
+
+{% block title %}
+    <title>FP - Contact</title>
+{% endblock %}
+
+{% block content %} 
+    <!-- include alert page to handle alert messages -->
+    {% if result.status_code %}
+        {% include "alerts.html" with context %}
+    {% endif %}
+
+    <main class="container-fluid {{ 'contact-background' if result == '' }}">
+        <div class="row d-flex justify-content-center start-content">
+            {% if result.status_code == 200 %}
+                <div class="container-fluid d-flex justify-content-center mb-5">
+                    <img class="img-fluid" src="{{ url_for('static', path='/images/email_sent.gif') }}" alt="...">
+                    
+                    <div class="contact_text-overlay animate__animated animate__fadeInUp animate__slow animate__delay-2s">
+                        Thanks for contat <br> Future Programmer
+                    </div>
+                </div>
+            {% else %}
+                <div class="col-10 offset-1 col-lg-8 offset-lg-2 col-xxl-6 offset-xxl-3 contact-form-background px-5">
+                    <div class="row py-2 text-center fw-normal text-orange animate__animated animate__fadeInUp animate__slow">
+                        {% if user_in %}
+                            <span class="fw-normal fs-1 text-center"> 
+                                <div class="col-12">
+                                    Hi, <span class="page_title text-light">{{user_in.Last_Name}}</span>
+                                </div>
+                                how can we help you?
+                            </span>
+                        {% else %}
+                            <p class="page_title">
+                                How can we help you?
+                            </p>
+                        {% endif %}
+                    </div>
+
+                    <form id="contact_form" class="g-3 needs-validation d-flex justify-content-center" novalidate 
+                        action="{{url_for("contact")}}" method="POST">
+                        <div class="row">
+                            <div class="col-sm-12 col-md-10 offset-md-1 col-lg-6 offset-lg-0 p-2 mb-3">
+                                <label for="first_name" class="form-label fw-light text-light">Name <span class="fw-bolder text-danger">*</label>
+                                {% if user_in %}
+                                    <input type="text" class="form-control-glass form-control" tabindex="1" name="first_name" id="first_name" 
+                                    value="{{user_in.First_Name}}">
+                                {% else %}
+                                    <input type="text" class="form-control-glass form-control" tabindex="1" name="first_name" maxlength="30" id="first_name" 
+                                    placeholder="Informe your name" required>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-sm-12 col-md-10 offset-md-1 col-lg-6 offset-lg-0 p-2 mb-3">
+                                <label for="contact_topic" class="form-label fw-light text-light">Topic <span class="fw-bolder text-danger">*</label>
+                                <input type="text" class="form-control-glass form-control" tabindex="2" name="contact_topic" maxlength="50" id="contact_topic" 
+                                placeholder="Which topic you would like to talk?" required>
+                            </div>
+
+                            <div class="col-sm-6 col-md-5 offset-md-1 col-lg-6 offset-lg-0 p-2 mb-3">
+                                <label for="phone" class="form-label fw-light text-light">Phone</label>
+                                {% if user_in %}
+                                    <input type="text" class="form-control-glass form-control" tabindex="3" name="phone" id="phone" value="{{user_in.Phone}}">
+                                {% else %}
+                                    <input type="text" class="form-control-glass form-control" tabindex="3" name="phone" id="phone" placeholder="(999) 999-9999">
+                                {% endif %}
+                            </div>
+
+                            <div class="col-sm-6 col-md-5 col-lg-6 offset-lg-0 p-2 mb-3">
+                                <label for="email-address" class="form-label fw-light text-light">E-mail <span class="fw-bolder text-danger">*</label>
+                                {% if user_in %}
+                                    <input type="email" class="form-control form-control-glass form-control" tabindex="4" name="email-address" 
+                                    maxlength="50" id="email_address" value="{{user_in.Email}}">
+                                {% else %}
+                                    <input type="email" class="form-control-glass form-control" tabindex="4" name="email-address" maxlength="50" 
+                                    id="email_address" placeholder="your_email@email.com" required>
+                                {% endif %}
+                            </div>
+                    
+                            <div class="col-sm-12 col-md-10 offset-md-1 col-lg-12 offset-lg-0 p-2">
+                                <label for="message" class="form-label fw-light text-light">Message 
+                                    <span class="fw-bolder text-danger">*</span>
+                                </label>
+                                
+                                <textarea id="text-1" type="text" class="form-control-glass form-control mb-3" tabindex="5" name="message" 
+                                    maxlength="1000" oninput="updateCount(this, 'counter', 'bars')" required
+                                    style="height: 230px; white-space: pre-wrap;" placeholder="Tell us how can we assist you..."></textarea>
+                               
+                                <progress class="col-12" id="bars" value="0"></progress>
+                                <div class="row d-flex justify-content-around smaller-texts fw-light">
+                                    <span class="col-6 text-danger">* required fields</span>
+                                    <span id="counter" class="col-6 text-light text-end">0 / 800</span>
+                                </div>
+                            </div>
+
+                            <div id="form_valid" class="col-6 offset-3 alert-field mb-3 d-none animate__animated animate__fadeInUp animate__slow">
+                                <b>Red fields are required!</b>
+                            </div>
+                        
+                            <div class="col-12 text-center py-4 mb-5">
+                                <button type="submit" name="action" tabindex="6" class="fp-buttons fp-orange-btn" onclick="validate_contact();">
+                                    <i class="bi bi-envelope-arrow-up-fill" style="font-size: 1.5rem;"></i> Send Message
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            {% endif %}
+        </div>
+    </main>
+{% endblock%}

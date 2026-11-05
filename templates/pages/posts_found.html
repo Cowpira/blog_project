@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}
+    <title>Posts Found</title>
+{% endblock %}
+
+{% block content %}
+    <main class="container-fluid start-content">
+        <!-- include alert page to handle alert messages -->
+        {% if result.status_code %}
+            {% include "alerts.html" ignore missing with context %}
+        {% endif %}
+
+        <div class="row">
+            <div class="col-12 action_bar_menu d-flex justify-content-center">
+                <p class="text-light fw-light mt-3 mx-3 small-texts">
+                    <span class="fw-dolder">{{posts.get('items_found')}}</span>
+                    post{% if posts.get('items_found')>1 %}s{% endif %} found
+                </p>
+                
+                <a href="{{url_for("list_posts")}}?page=1&list={{total_items}}" class="fp-links small-texts mx-3">
+                    <i class="bi bi-arrow-counterclockwise"></i> Return
+                </a>
+
+                {% if user_in %}
+                    <a href="{{url_for("post_question", post_id=0)}}" class="fp-links small-texts mx-3">
+                        <i class="bi bi-file-earmark-text"></i> Add a Post
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- including page that share content with posts -->
+        <div class="d-flex justify-content-center py-4 mt-5">
+            {% include 'posts_layout.html' %}
+        </div>
+
+        {% if posts.get('items_found') > 0 and posts.get('cur_page') not in posts.get('total') %}
+            <div class="row py-5" data-spy="scroll" data-bs-offset="0">
+                <div id="list_of_users" class="col-12 text-center text-danger py-5">
+                    <div class="animate__animated animate__bounce animate__slower animate__repeat-2">
+                        <i class="bi bi-file-earmark-excel-fill " style="font-size: 7rem;"></i>
+                    </div>
+                    
+                    <h1 class="page_title animate__animated animate__fadeInUp animate__delay-1s animate__slow">
+                        Page {{posts.get('cur_page')}} not found!
+                    </h1>
+                </div>
+            </div>
+        {% elif posts.get('total')|length > 1 %}
+            <nav class="mt-1">
+                <ul class="pagination justify-content-center">
+                    {% if posts.get('cur_page') >= 2 %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{url_for("search_posts")}}?tag={{tag}}&page={{posts.get('cur_page')-1}}&list={{total_items}}" 
+                            tabindex="-1" aria-disabled="true">Previous
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+                        </li>
+                    {% endif %}
+                        
+                    {% for page in posts.get('total') %}
+                        <li class="page-item">
+                            <a class="page-link {% if page == posts.get('cur_page') %} page-active {% endif %}" 
+                            href="{{url_for("search_posts")}}?tag={{tag}}&page={{page}}&list={{total_items}}"> {{page}}
+                            </a>
+                        </li>
+                    {% endfor %}
+                    
+                    {% if posts.get('cur_page') == posts.get('total')|length %}
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#">Next</a>
+                        </li>
+                    {% else %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{url_for("search_posts")}}?tag={{tag}}&page={{posts.get('cur_page')+1}}&list={{total_items}}">Next</a>
+                        </li>
+                    {% endif %}
+                </ul>
+                <span class="d-flex justify-content-center fs-6 fw-lighter mb-3">Page: 
+                    <b class="px-2"> {{posts.get('cur_page')}} </b> out of 
+                    <b class="px-2"> {{posts.get('total')|length}}.</b>
+                    Total of {{posts.get('items_found')}} Posts found
+                </span>
+            </nav>
+        {% endif %}
+    </main>
+{% endblock %}

@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% set active_page = "applied" %}
+
+{% block title %}
+    <title>Jobs Applied</title>
+{% endblock %}
+
+{% block content %}
+    <style>
+        .table>:not(caption)>*>*{padding: 1.3rem .2rem;}
+    </style>
+
+    <main class="container-fluid start-content">
+        {% if result|length > 0 %}
+            <div class="row py-3 header-bg">
+                <div class="col d-flex justify-content-evenly ">
+                    <a href="#" class="fp-fp-btn-posts btn btn-sm fp-orange-btn">Open</a>
+                    
+                    <a href="#" class="fp-fp-btn-posts btn btn-sm fp-orange-btn">Analyzing Candidate</a>
+
+                    <a href="#" class="fp-fp-btn-posts btn btn-sm fp-orange-btn" type="button">Closed</a>
+                </div>
+            </div>
+
+            <table class="table table-striped">
+                <thead class="text-center">
+                    <tr>
+                        <th scope="col" ><span class="text-dark fs-4">Company</span></th>
+                        <th scope="col" ><span class="text-dark fs-4">Position</span></th>
+                        <th scope="col"><span class="text-dark fs-4">Applied</span></th>
+                        <th scope="col"><span class="text-dark fs-4">Status</span></th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for applic in result %}
+                        <tr>
+                            <th scope="row" class="text-center small-texts fw-light">
+                                {{applic.company_name.split(' ')[0:2] | join(' ')}}
+                            </th>
+                            <th class="text-center small-texts fw-light">
+                                <span class="d-inline-block text-truncate" style="max-width: 295px;">
+                                    {{applic.job_position}}
+                                </span>
+                            </th>
+                            <th class="text-center small-texts fw-light">
+                                <span class="d-inline-block text-truncate" style="max-width: 295px;">
+                                    {{applic.applied_date.strftime('%B, %d %Y')}}
+                                </span>
+                            </th>
+                            <td class="text-center small-texts fw-bolder
+                                {% if 'receiving' in applic.job_status|lower %} text-success 
+                                {% elif 'analyzing' in applic.job_status|lower %} text-info
+                                {% else %} text-danger {% endif %}">
+                                {{applic.job_status.split(' ')[0]}}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+        {% else %}
+            <div class="row text-center py-5 animate__animated animate__fadeInDown">
+                <i class="bi bi-bell-slash text-warning animate__animated 
+                    animate__swing animate__repeat-3 animate__delay-3s" style="font-size: 8rem;"></i>
+            </div>
+
+            <div class="text-center page_title animate__animated animate__fadeInUp animate__delay-1s">
+                    You haven't applied for jobs yet!!
+            </div>
+        {% endif %}
+    </main>
+{% endblock %}

@@ -1,0 +1,229 @@
+{% extends "base.html" %}
+{% set active_page = "ask" %}
+
+{% block title %}
+    <title>Add New Question</title>
+{% endblock %}
+
+{% block content %}
+    <!-- include alert page to handle alert messages -->
+    {% if result.status_code %}
+        {% include "alerts.html" ignore missing with context %}
+    {% endif %}
+
+
+    <main class="container-fluid start-content">
+        {% if edit_post %}
+            <!-- ######################################################################################################
+            ###################### IF DEVELOPER WANTS TO UPDATE A QUESTION DISPLAY THIS FORM ##################### -->
+            <h5 class="page_title mt-3 text-center animate__animated animate__fadeInDown animate__delay-1s">
+                Editing <p class="fs-3 text-info animate__animated animate__fadeInUp animate__delay-2s">{{edit_post.Title}}</p>
+            </h5>
+
+            <div class="col-10 offset-1 col-lg-8 offset-lg-2">
+                <form class="row d-flex justify-content-center g-3 mb-3 needs-validation question-form" data-mode="edit" 
+                    novalidate action="{{url_for("update_post", post_id=edit_post.Id)}}" method="POST">
+                    
+                    <div class="col-12 col-lg-11">
+                        <label for="title" class="form-label fw-light text-dark">Title 
+                            <span class="fw-bolder text-danger">*</span>
+                        </label>
+                        <input type="text" class="form-control" tabindex="1" name="edit-title" maxlength="70" id="edit_title" 
+                            value="{{edit_post.Title}}" required>
+                    </div>
+
+                    <!-- SMART EDITOR TOOLBAR CONTAINER -->
+                    <div class="col-12 col-lg-11 mt-4">
+                        <div class="row d-flex justify-content-around">
+                            <div class="col-10">
+                                <label for="question" class="form-label fw-light text-dark">Question 
+                                    <span class="fw-bolder text-danger">*</span>
+                                </label>
+                            </div>
+
+                            <div class="col-1">
+                                <a href="#" class="fp-btn-posts" data-bs-toggle="tooltip" data-bs-animation="false" data-bs-placement="top" 
+                                    title="To highlighted your code select the language and code inside the backthick: ``` ´´´">
+                                    <b><i class="bi bi-question-circle" style="font-size: 1.5rem;"></i></b>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-center justify-content-between bg-light border border-bottom-0 rounded-top p-2">
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="dropdown">
+                                    <!-- Visual Dropdown Trigger Button -->
+                                    <a href="#" class="fp-btn-posts fp-btn-post-view dropdown-toggle"
+                                        id="snippetDropdownMenu" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="bi bi-code-slash" style="font-size: 13px;"></i> Add Code Block...
+                                    </a>
+                                    
+                                    <!-- Pure Clickable Dropdown Options (Allows clicking the same language infinitely) -->
+                                    <ul class="dropdown-menu py-1" aria-labelledby="snippetDropdownMenu" 
+                                        style="min-width: 180px; max-height: 370px; overflow-y: auto;">
+                                        {% for language in languages %}
+                                            <li>
+                                                <button type="button" class="dropdown-item snippet-lang-btn fw-light py-1.5" value="{{ language }}">
+                                                    {{ language }}
+                                                </button>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <span class="text-muted smaller-texts fw-light d-sm-inline">
+                                * code inside the backticks
+                            </span>
+                        </div>
+
+                        <textarea type="text" tabindex="3" class="form-control question-textarea rounded-0 rounded-bottom" 
+                            style="height: 520px; border-top: none; white-space: pre-wrap;" name="edit-question" maxlength="1500"
+                            id="edit_question" oninput="updateCount(this, 'edit-counter', 'edit-bars')"
+                            required placeholder="Describe your question or use the dropdown to inject syntax blocks...">{{- edit_post.Question if edit_post -}}</textarea>
+
+                        <progress class="col-12" id="edit-bars" value="0"></progress>
+                        <span id="edit-counter" class="col-12 d-flex text-muted smaller-texts justify-content-end">0 / 1500</span>
+                       
+                        <!-- HIDDEN TRUE DROPDOWN LIST FOR FORMS (Replaced with clean inline checkboxes if you want visual indicator states) -->
+                        <div class="tag-checkbox-container d-none mb-3">
+                            {% for language in languages %}
+                                <input class="tag-checkbox" type="checkbox" id="chk-{{ language }}" value="{{ language }}" 
+                                {{ 'checked' if edit_post and language in edit_post.Tag }}>
+                            {% endfor %}
+                        </div>
+
+                        <div class="col-12">
+                            <p class="col-12 p-1 small-texts text-primary">
+                                * if you remove a Tag remove the backticks and the code inside it
+                            </p>
+                            <input name="edit-tags" class="form-control smaller-texts text-muted input-tag-list"
+                                value="{{ edit_post.Tag if edit_post else '' }}" placeholder="Selected languages will display here automatically">
+                        </div>
+
+                        <span class="smaller-texts text-danger">* required field</span>
+                        <div id="edit_form_valid" class="col-6 offset-3 mb-3 mt-3 d-none alert-field animate__animated animate__fadeInUp">
+                            <b>Red fields are required!</b>
+                        </div>
+                    </div>
+        
+                    <div class="py-3 mb-4 text-center">
+                        <button type="submit" name="action" class="fp-buttons fp-orange-btn" onclick="edit_question_validate();">
+                            <i class="bi bi-file-earmark-arrow-up" style="font-size: 1.3rem;"></i> Update Question
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+        {% else %}
+            <!-- ######################################################################################################
+            ###################### IF DEVELOPER WANTS TO POST NEW QUESTION DISPLAY THIS FORM ##################### -->
+            <p class="page_title text-orange mt-2 text-center animate__animated animate__fadeInDown animate__delay-1s">
+                Ask Question
+            </p>
+
+            <div class="col-10 offset-1 col-lg-8 offset-lg-2">
+                <form class="row d-flex justify-content-center g-3 needs-validation question-form" novalidate 
+                    data-mode="new" action="{{url_for("post_question", post_id=-1)}}" method="POST">
+                    
+                    <div class="col-12 col-lg-11">
+                        <label for="title" class="form-label fw-light text-dark">Title 
+                            <span class="fw-bolder text-danger">*</span>
+                        </label>
+                        <input type="text" class="form-control" tabindex="1" name="title" id="new_title"
+                            maxlength="70" placeholder="Question Title" required>
+                    </div>
+
+                    <!-- SMART EDITOR TOOLBAR CONTAINER -->
+                    <div class="col-12 col-lg-11 mt-4">
+                        <div class="row d-flex justify-content-around">
+                            <div class="col-10">
+                                <label for="question" class="form-label fw-light text-dark">Question 
+                                    <span class="fw-bolder text-danger">*</span>
+                                </label>
+                            </div>
+
+                            <div class="col-1">
+                                <a href="#" class="fp-btn-posts" data-bs-toggle="tooltip" data-bs-animation="false" data-bs-placement="top" 
+                                    title="To highlighted your code select the language and code inside the backthick: ``` ´´´">
+                                    <b><i class="bi bi-question-circle" style="font-size: 1.5rem;"></i></b>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-center justify-content-between bg-light border border-bottom-0 rounded-top p-2">
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="dropdown">
+                                    <!-- Visual Dropdown Trigger Button -->
+                                    <a href="#" class="fp-btn-posts fp-btn-post-view dropdown-toggle"
+                                        id="snippetDropdownMenu" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="bi bi-code-slash" style="font-size: 13px;"></i> Add Code Block...
+                                    </a>
+                                    
+                                    <!-- Pure Clickable Dropdown Options (Allows clicking the same language infinitely) -->
+                                    <ul class="dropdown-menu py-1" aria-labelledby="snippetDropdownMenu" 
+                                        style="min-width: 180px; max-height: 370px; overflow-y: auto;">
+                                        {% for language in languages %}
+                                            <li>
+                                                <button type="button" class="dropdown-item snippet-lang-btn fw-light py-1.5" value="{{ language }}">
+                                                    {{ language }}
+                                                </button>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <span class="text-muted smaller-texts fw-light d-sm-inline">
+                                * code inside the backticks
+                            </span>
+                        </div>
+
+                        <textarea type="text" tabindex="3" class="form-control question-textarea rounded-0 rounded-bottom" 
+                            style="height: 520px; border-top: none; white-space: pre-wrap;" name="question" id="question"
+                            maxlength="1500" oninput="updateCount(this, 'new-counter', 'new-bars')"
+                            required placeholder="Describe your question or use the dropdown to inject syntax blocks..."></textarea>
+
+                        <progress class="col-12" id="new-bars" value="0"></progress>
+                        <span id="new-counter" class="col-12 d-flex text-muted smaller-texts justify-content-end">0 / 1500</span>
+
+                        <!-- HIDDEN TRUE DROPDOWN LIST FOR FORMS (Replaced with clean inline checkboxes if you want visual indicator states) -->
+                        <div class="tag-checkbox-container d-none mb-3">
+                            {% for language in languages %}
+                                <input class="tag-checkbox" type="checkbox" id="chk-{{ language }}" value="{{ language }}">
+                            {% endfor %}
+                        </div>
+
+                        <div class="col-12">
+                            <p class="col-12 p-1 small-texts text-primary">
+                                * if you remove a Tag remove the backticks and the code inside it
+                            </p>
+                            <input name="tags_selected" class="form-control smaller-texts text-muted input-tag-list"
+                                value="" placeholder="Selected languages will display here automatically">
+                        </div>
+
+                        <span class="smaller-texts text-danger">* required field</span>
+                        <div id="form_valid" class="col-6 offset-3 mb-3 mt-3 d-none alert-field animate__animated animate__fadeInUp">
+                            <b>Red fields are required!</b>
+                        </div>
+                    </div>
+                    
+                    <div class="py-1 mb-4 text-center">
+                        {% if not user_in%}
+                            <div class="py-4">
+                                <a href="#" class="open_login fp-buttons fp-gray-btn py-3" data-bs-toggle="modal" data-bs-target="#loginModal">
+                                    <i class="bi bi-box-arrow-in-right px-2" style="font-size: 1.5rem;"></i> Need to Login
+                                </a>
+                            </div>
+                        {% else %}
+                            <button type="submit" name="action" class="fp-buttons fp-orange-btn" {{ "disabled" if not user_in }} 
+                                onclick="question_validate(event)">
+                                <i class="bi bi-file-earmark-text px-2" style="font-size: 1.5rem;"></i> Post Question
+                            </button>
+                        {% endif %}
+                    </div>
+                </form>
+            </div>
+        {% endif %}
+    </main>
+{% endblock%}

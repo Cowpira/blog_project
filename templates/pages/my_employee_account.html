@@ -1,0 +1,436 @@
+{% extends "base.html" %}
+{% set active_page = "account" %}
+
+{% block content %}
+    <!-- include alert page to handle alert messages -->
+    {% if result.status_code %}
+        {% include "alerts.html" ignore missing with context %}
+    {% endif %}
+
+    <main class="container-fluid start-content">
+        {% if user_in %}
+            <style>
+                .active{ color: rgb(100, 100, 100); font-weight: bolder; }
+            </style>
+
+            <div class="col-12 col-lg-8 offset-lg-2 py-3">
+                {% if not company %}
+                    <div class="col-10 col-lg-6 offset-1 alert alert-primary global-alerts text-center alert-dismissible 
+                        animate__animated animate__flipInX animate__slow" role="alert" 
+                        style="margin-top: 0 !important; z-index: 1;">
+                        
+                        <span class="smaller-text text-dark">
+                            <i class="bi bi-info-circle-fill alert-link" style="font-size: 1.2rem;"></i> 
+                            Company not saved
+                            <a href="#" onclick="edit_company_tab();" class="alert-link">add company</a> 
+                            so you can start post jobs!
+                        </span>
+
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endif %}
+
+                <ul class="nav mb-3 mt-2 d-flex justify-content-center" id="pills-tab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <a href="/me/my_data" class="nav-link navlink-tab-menu active" id="profile-tab" data-bs-toggle="pill" 
+                        data-bs-target="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="true">Profile</a>
+                    </li>
+
+                    <li class="nav-item" role="presentation">
+                        <a href="/me/edit" id="edit-data-tab" data-bs-toggle="pill" role="tab"
+                        data-bs-target="#pills-edit-data" aria-controls="pills-profile" aria-selected="false"></a>
+                    </li>
+
+                    <li class="nav-item" role="presentation">
+                        <a href="/me/my_company" class="nav-link navlink-tab-menu" id="company-tab" data-bs-toggle="pill" 
+                        data-bs-target="#pills-company" role="tab" aria-controls="pills-company" aria-selected="true">Company</a>
+                    </li>
+
+                    <li class="nav-item" role="presentation">
+                        <a href="/me/edit_company" id="edit-company-tab" data-bs-toggle="pill" role="tab"
+                        data-bs-target="#pills-edit-company" role="tab" aria-controls="pills-company" aria-selected="false"></a>
+                    </li>
+                    
+                    <li class="nav-item" role="presentation">
+                        <a href="/me/change_password" class="nav-link navlink-tab-menu" id="change-pass-tab" data-bs-toggle="pill" 
+                        data-bs-target="#pills-change-pass" role="tab" aria-controls="pills-change-pass" aria-selected="false">Change Password</a>
+                    </li>
+                </ul>
+
+                <div class="tab-content d-flex justify-content-center" id="pills-tabContent">
+                    <!-- tab to list employee data -->
+                    <div class="tab-pane col-10 show active" id="pills-profile" role="tabpanel" aria-labelledby="profile-tab">
+                        <h1 class="col-12 page_title text-center">User Info</h1>
+
+                        <div class="col-12 py-2 d-flex justify-content-between">
+                            <div class=" text-muted text-center fs-6">Type <br>
+                                <p class="badge bg-success">Employee</p>
+                            </div>
+
+                            <div class="text-muted text-center fs-6">ID <br>
+                                <p class="badge bg-light text-marine fw-normal">{{user_in.Id}}</p>
+                            </div>
+
+                            <div class="text-muted text-end fs-6">Status <br>
+                                {% if user_in.Activated_Date %}
+                                    <p class="badge bg-success">Active</p>
+                                {% else %}
+                                    <p class="badge bg-warning">Not Activated</p>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="row fs-6">
+                            <div class="row py-2">
+                                <label class="col-6 py-2 text-muted">Employee ID#
+                                    <p class="fw-light text-marine">{{user_in.Employee_Id}}</p>
+                                </label>
+
+                                <label class="col-6 py-2 text-muted text-end">Name
+                                    <p class="fw-light text-marine">{{user_in.First_Name + " " + user_in.Last_Name}}</p>
+                                </label>
+                            </div>
+
+                            <div class="row py-2">
+                                <label class="col-6 py-2 text-muted">Current Company
+                                    <p class="fw-light text-marine">{{user_in.Work_At}}</p>
+                                </label>
+
+                                <label class="col-6 py-2 text-muted text-end">Postion
+                                    <p class="fw-light text-marine">{{user_in.Position}}</p>
+                                </label>
+                            </div>
+                    
+                            <div class="row py-2">
+                                <label class="col-6 text-muted">Phone
+                                    <p class="fw-light text-marine">{{user_in.Phone}}</p>
+                                </label>
+
+                                <label class="col-6 text-muted text-end">Email
+                                    <p class="fw-light text-marine">{{user_in.Email}}</p>
+                                </label>
+                            </div>
+                        
+                            <div class="row py-2">
+                                <label class="col-6 text-muted">Created
+                                    <p class="fw-light text-marine">{{user_in.Created.strftime('%B, %d %Y @ %H:%M')}}</p>
+                                </label>
+
+                                <label class="col-6 text-muted text-end">Activated
+                                    <p class="fw-light text-marine">{{user_in.Activated_Date.strftime('%B, %d %Y @ %H:%M')}}</p>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-center py-4">
+                            <a href="#" onclick="edit_data_tab();" type="submit" class="fp-buttons fp-orange-btn" tabindex="7">
+                                <i class="bi bi-person-lines-fill" style="font-size: 1.2rem;"></i> Update my Data
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- tab to update employee data -->
+                    <div class="tab-pane col-12" id="pills-edit-data" role="tabpanel" aria-labelledby="edit-data-tab">
+                        <h1 class="col-12 col-sm-10 offset-sm-1 page_title text-center">Update Data</h1>
+
+                        <form class="row needs-validation d-flex justify-content-center" novalidate action="{{url_for("update_employee_data")}}" method="POST">
+                            <div class="col-10 col-sm-5 col-lg-4 py-3">
+                                <label for="employee_id" class="form-label fw-light text-dark">Employeer ID <span class="fw-bolder text-danger">*</span></label>
+                                <input type="text" tabindex="1" class="form-control" id="employee_id" name="employee_id" maxlength="15" value="{{user_in.Employee_Id}}" required>
+                            </div>
+
+                            <div class="col-10 col-sm-5 col-lg-4 offset-lg-1 py-3">
+                                <label for="position" class="form-label fw-light text-dark">Position <span class="fw-bolder text-danger">*</span></label>
+                                <input type="text" tabindex="2" class="form-control" id="position" name="position" maxlength="70" value="{{user_in.Position}}" required>
+                            </div>
+
+                            <div class="col-10 col-sm-5 col-lg-4 py-3">
+                                <label for="first_name" class="form-label fw-light text-dark">First Name <span class="fw-bolder text-danger">*</span></label>
+                                <input type="text" tabindex="3" class="form-control" id="first_name" name="first_name" maxlength="25" value="{{user_in.First_Name}}" required>
+                            </div>
+
+                            <div class="col-10 col-sm-5 col-lg-4 offset-lg-1 py-3">
+                                <label for="last_name" class="form-label fw-light text-dark">Last Name <span class="fw-bolder text-danger">*</span></label>
+                                <input type="text" tabindex="4" class="form-control" id="first_name" name="last_name" maxlength="25" value="{{user_in.Last_Name}}" required>
+                            </div>
+            
+                            <div class="col-10 col-sm-5 col-lg-4 py-3">
+                                <label for="phone" class="form-label fw-light text-dark">Phone</label>
+                                <input type="text" tabindex="5" class="form-control" id="phone" name="phone" maxlength="15" value="{{user_in.Phone}}">
+                            </div>
+
+                            <div class="col-10 col-sm-5 col-lg-4 offset-lg-1 py-3">
+                                <label for="email" class="form-label fw-light text-dark">E-mail <span class="fw-bolder text-danger">*</span></label>
+                                <input type="email" tabindex="6" class="form-control" id="email" name="email" maxlength="100" value="{{user_in.Email}}" required>
+
+                                <span class="fw-light smaller-texts text-danger">* required fields</span>
+                            </div>
+                            <span class="d-none d-lg-block col-lg-6"></span>
+                            
+                            
+                            <div id="form_valid" class="col-10 offset-1 col-md-6 offset-md-3 mb-3 d-none alert-field animate__animated animate__fadeInUp">
+                                <b>Red fields are required!</b>
+                            </div>
+                            
+                            <div class="col-12 text-center py-3">
+                                <button type="submit" name="action" tabindex="7" class="fp-buttons fp-orange-btn mt-4" onclick="validate_create_update_account();">
+                                    <i class="bi bi-database-fill-up" style="font-size: 1.3rem;"></i> Save Changes
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- tab to list employee company -->
+                    <div class="tab-pane col-12" id="pills-company" role="tabpanel" aria-labelledby="company-tab">
+                        <h1 class="col-12 page_title text-center">My Company</h1>
+
+                        {% if company %}
+                            <div class="row d-flex justify-content-center mt-3">
+                                <div class="col-10 col-sm-4 text-center">
+                                    <img class="rounded img-thumbnail" src="{{ url_for('uploaded_comp_images', path=company.Image) }}" 
+                                        width="175" height="195" alt="{{company.Company}}">
+                                </div>
+
+                                <div class="col-10 col-sm-6 ms-3 mt-4">
+                                    <span class="col-6 text-muted fs-6 mt-3">Company
+                                        <p class="fw-light text-marine"> {{company.Company}} </p>
+                                    </span>
+
+                                    <div class="col-12 d-flex justify-content-around mt-4">
+                                        <span class="col-4 text-muted fs-6">Country
+                                            <p class="fw-light text-marine"> {{company.Country}} </p>
+                                        </span>
+
+                                        <span class="col-4 text-muted fs-6">Sate
+                                            <p class="fw-light text-marine"> {{company.State}} </p>
+                                        </span>
+
+                                        <span class="col-4 text-muted fs-6">City
+                                            <p class="fw-light text-marine"> {{company.City}} </p>
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="col-10 mt-4">
+                                    <label class="text-muted fs-6">Website
+                                        <p class="fw-light text-marine"> {{company.Website}} </p>
+                                    </label>
+                                </div>
+
+                                <div class="col-10 mt-3">
+                                    <div class="col">
+                                        <label class="text-muted fs-6">Description
+                                            <p class="fw-light text-marine">{{company.About}}</p>
+                                        </label>
+                                    </div>
+
+                                    <div class="col">
+                                        <label class="text-muted fs-6">Registred
+                                            <p class="fw-light text-marine"> {{company.Created_Date.strftime('%B, %d %Y @ %H:%M')}} </p>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex justify-content-center py-4">
+                                    <a href="#" onclick="edit_company_tab();" type="submit" class="fp-buttons fp-orange-btn" tabindex="7">
+                                        <i class="bi bi-person-lines-fill" style="font-size: 1.2rem;"></i> Update Company
+                                    </a>
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="col-12 text-center mt-4">
+                                <div class="py-3 animate__animated animate__fadeInUp animate__delay-1s">
+                                    <span class="col-12 fw-light text-muted fs-3">You dit not add a company yet</span>
+                                    <p class="small-text text-dark">Register your company so you can start posting the positions available</p>
+                                </div>
+
+                                <div class="animate__animated animate__fadeInDown animate__delay-1s animate__slow">
+                                    <button onclick="edit_company_tab();" class="fp-buttons fp-orange-btn" tabindex="7">
+                                        <i class="bi bi-person-lines-fill" style="font-size: 1.2rem;"></i> Add Company
+                                    </button>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- tab to update employee company -->
+                    <div class="tab-pane col-12" id="pills-edit-company" role="tabpanel" aria-labelledby="edit-company-tab">
+                        <h1 class="col-12 col-sm-10 offset-sm-1 page_title text-center">Add Company</h1>
+
+                        <form class="row needs-validation d-flex justify-content-center" novalidate action="{{url_for("add_company")}}" 
+                            method="POST" enctype="multipart/form-data">
+                            
+                            <div class="mt-3 text-center">
+                                {% if company.Image %}
+                                    <img class="rounded img-thumbnail" width="155" height="155"
+                                    src="{{ url_for('uploaded_comp_images', path=company.Image) }}" alt="{{company.Company}}">
+                                {% else %}
+                                <img class="rounded img-thumbnail" width="155" height="155"
+                                    src="{{ url_for('uploaded_comp_images', path='default.png') }}" alt="Company Logo">
+                                {% endif %}
+                                <div class="col-12 mt-3">
+                                    <input type="file" class="btn-upload" tabindex="1" id="image" name="file" accept="image/*" onchange="validate_Image(this);">
+                                </div>
+                            </div>
+
+                            <div class="row text-center py-2">
+                                <i id="alert-icon" style="font-size: 2.3rem;"></i> <br>
+                                <span id="error-message"></span>
+                            </div>
+                            
+                            <div class="col-10 col-sm-5 py-3">
+                                <label class="form-label fw-light text-dark">
+                                    Company Name <span class="fw-bolder text-danger">*</span>
+                                </label>
+                                <input type="text" tabindex="2" class="form-control" name="company" 
+                                    maxlength="100" value="{{company.Company or ''}}" placeholder="Company name">
+                            </div>
+
+                            <div class="col-10 col-sm-5 py-3">
+                                <label class="form-label fw-light text-dark">
+                                    Country <span class="fw-bolder text-danger">*</span>
+                                </label>
+                                <input type="text" tabindex="3" class="form-control" name="country" 
+                                    maxlength="100" value="{{company.Country or ''}}" placeholder="Company country">
+                            </div>
+
+                            <div class="col-10 col-sm-5 py-3">
+                                <label class="form-label fw-light text-dark">
+                                    State <span class="fw-bolder text-danger">*</span>
+                                </label>
+                                <input type="text" tabindex="4" class="form-control" name="state" 
+                                    maxlength="100" value="{{company.State or ''}}" placeholder="Company state">
+                            </div>
+
+                            <div class="col-10 col-sm-5 py-3">
+                                <label class="form-label fw-light text-dark">
+                                    City <span class="fw-bolder text-danger">*</span>
+                                </label>
+                                <input type="text" tabindex="5" class="form-control" name="city" 
+                                    maxlength="100" value="{{company.City or ''}}" placeholder="Company city">
+                            </div>
+
+                            <div class="col-10 col-sm-6 py-3">
+                                <label class="form-label fw-light text-dark">Website <span class="fw-bolder text-danger">*</span></label>
+
+                                <div class="input-group">
+                                    <span class="input-group-text" id="basic-addon3">http://</span>
+                                    <input type="text" tabindex="6" class="form-control" name="website" id="basic-url" maxlength="100"
+                                        aria-describedby="basic-addon3" value="{{company.Website or ''}}" placeholder="Website url">
+                                </div>
+                                
+                                <span class="text-center fw-lighter text-primary smaller-texts">
+                                    If <i>http:// or https://</i> is missing http:// will be add as default
+                                </span>
+                            </div>
+
+                            <div class="col-10 py-3">
+                                <label class="form-label fw-light text-dark">Desription <span class="fw-bolder text-danger">*</span></label>
+                                
+                                <textarea type="text" tabindex="7" class="form-control" name="about" maxlength="1300" 
+                                    placeholder="Tell us about the company..." style="height: 240px; white-space: pre-wrap;"
+                                    oninput="updateCount(this, 'counter', 'bars')">{{company.About or ''}}</textarea>
+                                
+                                <progress class="col-12" id="bars" value="0"></progress>
+                                <div class="row d-flex justify-content-around smaller-texts fw-light">
+                                    <span class="col-6 text-danger">* required fields</span>
+                                    <span id="counter" class="col-6 text-muted text-end">0 / 1300</span>
+                                </div>
+                            </div>
+
+                            <div class="col-4 py-3">
+                                {% if company %}
+                                    <button type="submit" class="fp-buttons fp-orange-btn" tabindex="8" formaction="{{url_for("update_company")}}">
+                                        <i class="bi bi-person-lines-fill" style="font-size: 1.2rem;"></i> Update Company
+                                    </button>
+                                {% else %}
+                                    <button type="submit" class="fp-buttons fp-orange-btn" tabindex="8">
+                                        <i class="bi bi-person-lines-fill" style="font-size: 1.2rem;"></i> Add Company
+                                    </button>
+                                {% endif %}
+                            </div>
+                        </form>
+                    </div>
+                    
+
+                    <!-- tab to update password -->
+                    <div class="tab-pane col-12" id="pills-change-pass" role="tabpanel" aria-labelledby="change-pass-tab">
+                        <h1 class="col-12 col-sm-10 offset-sm-1 page_title text-center mt-3">Update Password</h1>
+
+                        <form class="row needs-validation d-flex justify-content-center" novalidate action="{{url_for("update_employeer_password")}}" method="POST">
+                            <div class="col-10 col-sm-7 col-md-6 py-3">
+                                <label for="cur_password" class="form-label fw-light text-dark">Current Password <span class="fw-bolder text-danger">*</span></label>
+                                <input type="password" tabindex="1" class="form-control" name="cur_password" maxlength="50" id="cur_password" placeholder="Current Password" required>
+                            </div>
+                            <span class="col-12"></span>
+
+                            <div class="col-10 col-sm-7 col-md-6 py-3">
+                                <label for="new_password" class="form-label fw-light text-dark">New Password <span class="fw-bolder text-danger">*</span></label>
+                                <input type="password" tabindex="2" class="form-control" name="new_password" maxlength="12" id="user_reg_password" 
+                                    placeholder="New Password" required onkeyup="checkPasswordMatch();">
+                            </div>
+                            <span class="col-12"></span>
+            
+                            <div class="col-10 col-sm-7 col-md-6 py-3">
+                                <label for="conf_password" class="form-label fw-light text-dark">Confirm Password <span class="fw-bolder text-danger">*</span></label>
+                                <input type="password" tabindex="3" class="form-control" name="conf_password" maxlength="12" id="user_reg_conf_password" 
+                                    placeholder="Confirm Password" required onkeyup="checkPasswordMatch();">
+
+                                <div id="form_update_pass" class="mt-3 alert-field d-none animate__animated animate__fadeInUp">
+                                    <b>Red fields are required!</b>
+                                </div>
+                            </div>
+                            
+                            <div class="col-12 text-center py-2">
+                                <i id="pass-icon"></i>
+                                <span id="message"></span>
+                            </div>
+                   
+                            <div class="container text-center">
+                                <span class="password-info mb-3 form-text animate__animated animate__fadeInUp animate__delay-1s" style="color:dodgerblue; font-size: 6px;">
+                                    Strong password usea at least one cappital and special char.<br>
+                                    And mix of numbers and letters.
+                                </span><br>
+
+                                <span class="fw-light smaller-texts text-danger">* required fields</span>
+                            </div>
+
+                            <div class="col-12 text-center py-3">
+                                <button type="submit" tabindex="4" class="fp-buttons fp-orange-btn" onclick="update_password_validation();">
+                                    <i class="bi bi-shield-lock-fill" style="font-size: 1.3rem;"></i> Update Password
+                                </button>
+                            </div>
+                        </form>
+                    </div>    
+                </div>
+            </div>
+        {% else %}
+            <div class="d-flex justify-content-center">
+                <div class="col-10 mb-5 alert alert-info alert-dismissible text-center animate__animated animate__fadeInDown">
+                    <i class="bi bi-exclamation-diamond-fill" style="font-size: 2rem; color: rgb(64, 104, 235);"></i> <br>
+                    <p class="fs-5 fw-light mt-2 text-break" style="color: rgb(67, 131, 240) ;">
+                        This page is restricted to loged in users!
+                    </p>
+                </div>     
+            </div>
+
+            <div class="col-12 text-center mb-2 fs-3 text-dark fw-light animate__animated animate__fadeInUp animate__delay-1s" 
+                style="margin-top: 12rem;">You can
+            </div>
+
+            <div class="col-6 offset-3 mb-5 d-flex justify-content-evenly animate__animated animate__fadeInUp animate__delay-2s">
+                <a href="{{url_for("home")}}" class="fp-buttons fp-orange-btn px-4 mt-5">
+                    Home
+                </a>
+
+                <a href="{{url_for("add_employeer")}}" class="fp-buttons fp-orange-btn px-4 mt-5">
+                    Create Account
+                </a>
+            </div>
+
+            <div class="row py-3">
+                <img class="waves-img" src="{{ url_for("static", path='images/backgrounds/waves.jpeg') }}" alt="">
+            </div>
+        {% endif %}
+    </main>
+{% endblock %}

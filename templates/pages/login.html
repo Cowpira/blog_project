@@ -1,0 +1,153 @@
+<!-- MODAL LOGIN -->
+<div id="loginModal" class="modal modal-login animate__animated animate__bounceInDown animate__slow" tabindex="-1" 
+    data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="loginBackdrop" aria-hidden="true">
+
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header d-flex justify-content-around">
+                <h1 class="col-11 text-center title-headers">
+                    <i class="bi bi-person-x" style="font-size: 2.2rem;"></i> Login
+                </h1>
+
+                <div class="col-1 mt-0">
+                    <a href="#" class="close_login btn-close-modal">
+                        <i class="bi bi-x-circle-fill" style="font-size: 1.7rem;"></i>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- alert messages -->
+            <div class="col-12 global-alerts alert d-none alert-dismissible text-center 
+                animate__animated animate__fadeInDown">
+                <button type="button" class="btn-close text-end text-muted" data-bs-dismiss="alert" aria-label="Close"></button>
+
+                <div class="fs-6 fw-light">
+                    <i id="icon-login" class="bi fw-bolder animate__animated animate__flash animate__delay-2s animate__repeat-3" 
+                        style="font-size: 1.3rem;"></i> &nbsp; <span id="msg-login"></span>
+                </div>
+            </div>
+
+            <form class="col-12 needs-validation" action="{{url_for("login")}}" novalidate method="POST">
+                <div id="login_limit" class="d-none col-12 text-center py-3" style="background-color: #E0E0E0;">
+                    <i class="bi bi-exclamation-diamond-fill text-orange animate__animated animate__flash 
+                        animate__slow animate__repeat-3 animate__delay-3s" style="font-size: 4.5rem;"></i> <br>
+                    
+                    <div class="text-orange fs-4 py-3 fw-normal">
+                        You've reached login limit. <br> 
+                        Please reset your pessword.
+                    </div>
+
+                    <label class="col-10 alert alert-light text-center fw-light small-texts mt-4">
+                        You'll be able to recover your account in <br>
+                        <b id="sec" class="fw-bolder text-dark "></b> seconds 
+
+                        <div id="div-recover-account" class="d-none py-3 animate__animated animate__fadeInUp animate__slow animate__delay-1s">
+                            <a href="#" class="fp-buttons fp-blue-btn" data-bs-toggle="modal" 
+                                data-bs-target="#findEmailModal"> 
+                                <i class="bi bi-recycle" style="font-size: 1.5rem;"></i> Recover Account
+                            </a>
+                        </div>
+                    </label>
+                </div>
+
+                <div id="login_form" class="row d-flex justify-content-center">
+                    <div class="col-10 col-md-8 mt-4">
+                        <!-- input to store current url to redirec user after login -->
+                        <input type="hidden" name="cur_url" value="{{request.url}}">
+
+                        <div class="mb-2">
+                            <label class="form-label fw-light text-muted">Email <span class="fw-bolder text-danger">*</span></label>
+                            <input type="email" class="form-control" name="username" maxlength="50" id="username" 
+                                placeholder="user_email@email.com" required>
+                        </div>
+
+                        <div class="py-3">
+                            <label class="form-label fw-light text-muted">Password <span class="fw-bolder text-danger">*</span></label>
+                            <input type="password" class="form-control mb-2" name="password" maxlength="25" id="password" 
+                                placeholder="Password#123" required>
+
+                            <span class="fw-light smaller-texts text-danger">* required fields</span>
+                        </div>
+
+                        <div id="login_valid" class="alert-field d-none animate__animated animate__fadeInUp animate__slow">
+                            <b>Red fields are required!</b>
+                        </div>
+
+                        <div class="mt-3 d-flex justify-content-evenly">
+                            <p class="form-text text-muted smaller-texts">Forgot your password?
+                                <a id="recover-account" href="#" class="fw-light text-info text-decoration-none" data-bs-toggle="modal" 
+                                    data-bs-target="#findEmailModal">
+                                    Recover
+                                </a>
+                            </p>
+                        </div>
+
+                        <div class="modal-footer d-flex justify-content-center">
+                            <button id="btn_login" type="submit" name="action" class="fp-buttons fp-orange-btn" onclick="validate_login()">
+                                <i class="bi bi-box-arrow-in-right px-2" style="font-size: 1.5rem;"></i> Login
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="col-10 text-center py-4" style="background-color: #F5F5F5;">
+                        <p class="form-text text-muted smaller-texts"> Don't have account?<br>
+                            Create
+                            <a href="{{url_for("add_developer")}}?new_user=1" name="action" class="fw-light text-info">
+                                Developer
+                            </a>
+                            or 
+                            <a href="{{url_for("add_employeer")}}" name="action" class="fw-light text-info">
+                                Employeer
+                            </a>
+                            account
+                        </p>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- MODAL TO ALLOW USER TO RECOVER ACCOUNT -->
+<div id="findEmailModal" class="modal animate__animated animate__bounceInDown animate__slow" tabindex="-1"
+    aria-labelledby="recoverBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header d-flex justify-content-around">
+                <h1 class="col-11 text-center title-headers">
+                    <i class="bi bi-envelope-at-fill px-1" style="font-size: 1.7rem;"></i>
+                    Recover Account
+                </h1>
+
+                <div class="col-1 mt-0">
+                    <a href="#" class="close_recover btn-close-modal">
+                        <i class="bi bi-x-circle-fill" style="font-size: 1.7rem;"></i>
+                    </a>
+                </div>
+            </div>
+
+            <form class="needs-validation" action="{{url_for("find_account")}}" method="POST" novalidate>
+                <div class="modal-body">
+                    <div class="col-10 offset-1 p-2">
+                        <label for="email_address" class="form-label fw-light text-dark">E-mail Registered 
+                            <span class="fw-bolder text-danger">*</span></label>
+                        <input type="email" class="form-control mb-2" name="email_address" maxlength="50" tabindex="1" 
+                        id="email_address" placeholder="your_email@email.com" required>
+
+                        <div class="alert-field invalid-feedback animate__animated animate__fadeInUp animate__duration-1s">
+                            <b>You must informe your e-mail!</b>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 modal-footer d-flex justify-content-center">
+                    <button type="submit" name="action" tabindex="4" class="fp-buttons fp-orange-btn">
+                        <i class="bi bi-send-check" style="font-size: 1.3rem;"></i> Send
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

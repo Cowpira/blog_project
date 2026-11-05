@@ -1,0 +1,45 @@
+{% block content %}
+    <div class="col-12 col-sm-10 col-lg-8 col-xxl-6 py-3 mx-auto">
+        {% for post in posts.get('post', []) %}
+            <div class="post-banner-display {% if not post.Opened %} closed-post {% endif %} py-3 mb-3">
+                <div class="container-fluid">
+                    <span class="fw-light animate__animated animate__flipInX animate__slow">
+                        <a href="{{ url_for('view_post', post_id=post.Id) }}" class="post_title">{{ post.Title }} </a>
+                    </span>
+            
+                    <div class="row justify-content-between mt-2 g-1">
+                        <div class="col-4 text-center">
+                            {% if not post.Opened %}
+                                <span class="mt-2 animate__animated animate__flipInX animate__delay-1s 
+                                    animate__repeat-2 badge rounded-pill bg-danger">
+                                    closed
+                                </span>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-4 text-center text-muted small-texts leading-sm">
+                            {{ post.Total_Answer }} <br>
+                            answer{% if post.Total_Answer > 1 %}s{% endif %}
+                        </div>
+
+                        <span class="col-4 text-end fw-lighter fs-6">
+                            <span class="text-muted small-texts">
+                                By: <a href="{{ url_for('search_posts') }}?search_post=_FP_&author_id={{ post.author.Id }}&page=1&list={{ total_items }}" 
+                                    class="fs-6 text-dark"> 
+                                    <b>{{ post.author.First_Name }}</b>
+                                </a>
+                            </span><br>
+                            <small class="text-dark smaller-texts mt-1">{{ post.Posted.strftime('%B, %d %Y @ %H:%M') }}</small>
+                        </span>
+                    </div>
+                   
+                    {% for tag in (post.Tag or '').split() | unique %}
+                        <span class="mt-2 language-badges badge bg-{{ tag|replace("#", "")|lower }}">
+                            {{tag}}
+                        </span> 
+                    {% endfor %}  
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

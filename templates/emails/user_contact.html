@@ -1,0 +1,86 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  
+  <title>Contact Received</title>
+</head>
+
+  <body style="margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, Helvetica, sans-serif;">
+    <div style="width: 100%; background: #efefef; border-radius: 10px; padding: 10px;">
+      <div style="margin: 0 auto; width: 90%; text-align: center;">
+
+        <h1 style="background-color: rgb(150, 72, 245); color: black; padding: 5px 10px; border-radius: 5px;">
+          {{ app_name }}
+        </h1>
+        
+        <div style="margin: 30px auto; background: white; width: 60%; border-radius: 10px; padding: 50px; text-align: center;">
+          <h3 style="margin-bottom: 15px; font-size: 24px;">
+            Thanks for your message {{user_name}}
+          </h3>
+
+          <img src="{{ icon_img }}" alt="">
+
+          <p style="margin-bottom: 15px; color: black; font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.8;">
+            Our support team received your message and will answer as soon as possible.
+          </p>
+
+          <hr style="height: 1px; color: lightgrey;">
+          <h3 style="margin-bottom: 20px; font-size: 24px;">Message Content</h3>
+
+          <div style="text-align: left;">
+            <p style="margin-bottom: 10px; font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.8;">
+                Name: 
+                <i style="font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 14px;">
+                  {{user_name}}
+                </i>
+            </p>
+
+            <p style="margin-bottom: 10px; font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.8;">
+                Topic: 
+                <i style="font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 14px;">
+                  {{topic}}
+                </i>
+            </p>
+
+            <p style="margin-bottom: 10px; font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.8;">
+                Phone: 
+                <i style="font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 14px;">
+                  {{phone}}
+                </i>
+            </p>
+
+            <p style="margin-bottom: 10px; font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.8;">
+                Email: 
+                <i style="font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 14px;">
+                  {{email}}
+                </i>
+            </p>
+
+            <p style="margin-bottom: 10px; font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.8;">
+                Message: 
+                <pre style="font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 14px; white-space: pre-wrap;">
+                  {{- message -}}
+                </pre>
+            </p>
+          </div>
+
+          <hr style="height: 1px; margin-top: 20px; color: lightgrey;">
+          <p style="margin-bottom: 10px;">Click on the button to go to home page</p>
+          
+          <a style="display: block; margin: 0 auto; border: none; background-color: rgb(150, 72, 245); color: black;
+          width: 200px; line-height: 24px; padding: 10px; font-size: 20px; border-radius: 7px; cursor: pointer; text-decoration: none;"
+            href="{{ url_link }}" target="_blank"> Future Programmers
+          </a>
+
+          <p style="margin-top: 30px; text-decoration: underline;">Automatic e-mail. Do not reply this message</p>
+        </div>
+
+        <div style="margin-top: -30px">
+          <img class="ms-3" src="{{ fp_logo }}" alt="" width="115" height="100">
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
