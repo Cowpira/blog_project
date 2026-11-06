@@ -1,16 +1,16 @@
 import time, uuid
 from fastapi import BackgroundTasks, Depends, FastAPI, Request, Response
 from fastapi.staticfiles import StaticFiles
-from fastapi.middleware.cors import CORSMiddleware
 from services import db_connection, helper, http_responses
 from services.authentication import get_current_user
 from data_model.models import Person
 from routers import company, developers, employeer, login, post, jobs, answer, message, reply, send_emails
 from post_dao import person_dao
 from sqlalchemy.orm import Session
-from starlette.middleware.sessions import SessionMiddleware
 from slowapi.errors import RateLimitExceeded
+from starlette.middleware.sessions import SessionMiddleware
 from starlette.exceptions import HTTPException as StarletteHTTPException
+from fastapi.middleware.cors import CORSMiddleware
 
 
 # instance of the fastAPI routers

@@ -1,3 +1,4 @@
+import os
 import random
 from datetime import datetime, timezone
 from fastapi.security import OAuth2PasswordRequestForm
@@ -17,7 +18,7 @@ public_api= APIRouter()
 
 
 # setting the slowAPI request limiter 
-limiter= Limiter(key_func= get_remote_address, storage_uri= "redis://localhost:6379/0")
+limiter= Limiter(key_func= get_remote_address, storage_uri= os.environ.get('RATELIMIT_STORAGE_URI'))
 
 # function to create a session list and add the user loged-in into it
 def create_session(user_id: int):
@@ -110,7 +111,7 @@ def reset_password(request: Request, user_email: str):
 
 # function to update users password
 @public_api.post("/reset-password/{user_email}", include_in_schema= False, response_model=Password_Reset, status_code=status.HTTP_200_OK)
-@limiter.limit("1/hour") # limit 1 reset password request per hour
+@limiter.limit("1/day") # limit 1 reset password request per hour
 async def reset_password(request: Request, user_email: str, bg_task: BackgroundTasks, db: Annotated[Session, Depends(get_db)]):
     # calling function to reset user password
     result= await authentication.reset_password(user_email, await request.form(), bg_task, db)
