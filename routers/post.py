@@ -62,7 +62,7 @@ async def load_post_view_content(request, post_id, result, cur_user, db):
 
 
 # function to load posts founs by tags or author
-async def load_posts_found(request, result, page, list_items, cur_user):
+async def load_posts_found(request, result, page, list_items, cur_user, search_val):
     if list_items and list_items >=1:
         helper.total_items= list_items
 
@@ -73,7 +73,7 @@ async def load_posts_found(request, result, page, list_items, cur_user):
         
     return helper.templates.TemplateResponse("posts_found.html", 
                                               {'request': request, 'result': result, 'posts': paginated_posts, 
-                                               'user_in': cur_user, 'total_items': helper.total_items})
+                                               'tag':search_val, 'user_in': cur_user, 'total_items': helper.total_items})
 
 
 
@@ -99,15 +99,16 @@ async def view_post(request: Request, post_id: uuid.UUID, db: Session= Depends(g
 
 
 # function to get post by title, user name
-@search_post_api.get('', status_code=status.HTTP_200_OK, include_in_schema= False)
-async def search_posts(request:Request, search_post: str, author_id: uuid.UUID, page: int= 1, list: int= 0, 
+@search_post_api.get('' , status_code=status.HTTP_200_OK, include_in_schema= False)
+async def search_posts(request:Request, tag: str, author_id: uuid.UUID | None= None, 
+                       page: int= 1, list: int= 0, 
                        cur_user: Developer= Depends(get_current_user), db: Session= Depends(get_db)):
     
     # list all posts found and return as paginated
-    result= await post_dao.search_post(search_post, author_id, db)
+    result= await post_dao.search_post(tag, author_id, db)
 
     if result:
-        return await load_posts_found(request, result, page, list, cur_user)
+        return await load_posts_found(request, result, page, list, cur_user, tag)
     else:
         return await load_posts(page, list, request, "Sorry. No post found!", cur_user, db)
 

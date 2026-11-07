@@ -15,6 +15,7 @@
             <div class="col-12 action_bar_menu d-flex justify-content-center">
                 <p class="text-light fw-light mt-3 mx-3 small-texts">
                     <span class="fw-dolder">{{posts.get('items_found')}}</span>
+                    <span class="smaller-texts language-badges badge bg-{{ tag|replace("#", "")|lower }}">{{ tag | upper }}</span>
                     post{% if posts.get('items_found')>1 %}s{% endif %} found
                 </p>
                 

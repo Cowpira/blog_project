@@ -65,7 +65,7 @@
                     {% for language in languages %}
                         {% set lang = language | lower | replace("#", "") | replace("+", "p") | replace(" ", "") %} 
                         
-                        <a class="langs {{ lang }}" href="{{ url_for("search_posts") }}?search_post={{ lang | urlencode }}&author_id=0&page=1&list={{ total_items }}"> 
+                        <a class="langs {{ lang }}" href="{{ url_for("search_posts") }}?tag={{ lang | urlencode }}&page=1&list={{ total_items }}"> 
                             <img class="rounded mb-1" alt="{{ lang }} icon" width="25" height="25" loading="lazy"
                                 src="{{ url_for('static', path='/images/' ~ lang ~ '.png') }}">
                             <span class="smaller-texts">{{ lang }}</span>
@@ -76,7 +76,7 @@
                     {% for language in languages %}
                         {% set lang = language | lower | replace("#", "") | replace("+", "p") | replace(" ", "") %} 
 
-                        <a class="langs {{ lang}}" href="{{ url_for("search_posts") }}?search_post={{ lang | urlencode }}&author_id=0&page=1&list={{ total_items }}">
+                        <a class="langs {{ lang}}" href="{{ url_for("search_posts") }}?tag={{ lang | urlencode }}&page=1&list={{ total_items }}">
                             <img class="rounded mb-1" alt="{{ lang }} icon" width="25" height="25" loading="lazy"
                                 src="{{ url_for('static', path='/images/' ~ lang ~ '.png') }}"><br>
                             <span class="smaller-texts">{{ lang }}</span>
