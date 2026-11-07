@@ -17,18 +17,18 @@
             <form class="row justify-content-around py-3 needs-validation" novalidate action="{{ url_for("search_posts") }}" method="GET"
                 style="background-color: rgba(36, 36, 36, 0.895);">
                 
-                <div class="col-4 col-sm-3 col-md-2 mt-2 mt-1 sm-0">
+                <div class="col-3 col-md-2 mt-1">
                     <a href="#" class="fp-buttons fp-orange-btn dropdown-toggle" type="button" id="dropdownMenuCheck" 
                         data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">View
                     </a>
 
-                    <ul class="dropdown-menu px-3" aria-labelledby="dropdownMenuCheck">
+                    <ul class="dropdown-menu col-3" aria-labelledby="dropdownMenuCheck">
                         {% for limit in limit_items %}
-                            <div class="form-check ms-3">
+                            <div class="form-check d-flex justify-content-center">
                                 <input class="form-check-input" type="radio" name="posts" value="{{ limit }}" id="limit_post_{{ limit }}"
                                     {% if limit == posts.get('items_per_page') %}checked{% endif %}>
 
-                                <p class="small-texts fw-light text-light" for="limit_post_{{ limit }}">
+                                <p class="small-texts fw-light text-light ms-2" for="limit_post_{{ limit }}">
                                     {{ limit }} posts
                                 </p>
                             </div>
@@ -36,7 +36,18 @@
                     </ul>
                 </div>
 
-                <div class="col-8 col-sm-7 col-md-6 col-lg-5 mt-sm-0">
+                <!-- link for new users to sign up -->
+                <div class="col-3 col-md-3 col-lg-3 text-center mt-1">
+                    {% if user_in and user_in.Type == 'developer' %}
+                        <a href="{{url_for("post_question", post_id=0)}}" 
+                            class="fp-links create_new_account animate__animated animate__fadeInDown animate__slow">
+                            <i class="bi bi-person-raised-hand" style="font-size: 1.2rem;"></i> New Post
+                        </a>
+                    {% endif %}
+                </div>
+
+                <!-- seach field -->
+                <div class="col-6 col-lg-4">
                     <div class="input-group input-group-sm">
                         <input type="text" class="form-control search-input search_obj" name="search_post" maxlength="50" id="search"
                             placeholder="Search by title, tag or developer..." required>

@@ -28,16 +28,16 @@
                 novalidate action="{{ url_for('search_developer') }}" method="GET">
         
                 <!-- dropdown to select developers per page -->
-                <div class="col-4 col-sm-3 col-md-3 col-lg-2">
-                    <a href="#" class="fp-buttons fp-orange-btn dropdown-toggle w-100 text-center" type="button" id="dropdownMenuCheck" 
+                <div class="col-3 col-lg-2">
+                    <a href="#" class="fp-buttons fp-orange-btn dropdown-toggle" type="button" id="dropdownMenuCheck" 
                         data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">View
                     </a>
 
-                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuCheck">
+                    <ul class="dropdown-menu col-3" aria-labelledby="dropdownMenuCheck">
                         {% for limit in limit_items %}
                             <div class="form-check d-flex justify-content-center">
-                                <input class="form-check-input" type="radio" name="users" value="{{ limit }}" id="limit_dev_{{ limit }}"
-                                {% if limit == users.get('items_per_page') %}checked{% endif %}>
+                                <input class="form-check-input" type="radio" name="users" value="{{ limit }}" 
+                                id="limit_dev_{{ limit }}" {% if limit == users.get('items_per_page') %}checked{% endif %}>
 
                                 <p class="small-texts fw-light text-light ms-2" for="limit_dev_{{ limit }}">
                                     {{ limit }} developers
@@ -48,7 +48,7 @@
                 </div>
 
                 <!-- link for new users to sign up -->
-                <div class="col-4 col-sm-3 col-md-3 col-lg-3 text-center">
+                <div class="col-3 col-md-3 col-lg-3 text-center">
                     {% if not user_in %}
                         <a href="#" data-bs-toggle="modal" data-bs-target="#modalNewUser" 
                             class="fp-links create_new_account animate__animated animate__fadeInDown animate__slow">
@@ -58,7 +58,7 @@
                 </div>
                
                 <!-- seach field -->
-                <div class="col-12 col-sm-6 col-md-6 col-lg-5 mt-2 mt-sm-0">
+                <div class="col-6 col-lg-4 mt-1">
                     <div class="input-group input-group-sm">
                         <input type="text" class="form-control search-input search_obj" name="search_dev" maxlength="50"
                             value="{{ request.query_params.get('search_dev', '') if request else '' }}" id="search_dev_input"
