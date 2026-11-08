@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 from fastapi import APIRouter, BackgroundTasks, Depends, status, Request
-from post_dao import employee_dao, company_dao
+from post_dao import developers_dao, employee_dao, company_dao
 from services import helper, db_connection, authentication
 from routers.login import limiter
 from data_model.models import Employee
@@ -35,7 +35,7 @@ async def add_employeer(request: Request, bg_task: BackgroundTasks, db: Annotate
     result= await employee_dao.create_employeer(await request.form(), request.url_for, db, bg_task)
      
     if result.status_code == 200:
-        developers= await helper.get_top_developers(db)
+        developers= await developers_dao.get_random_developers(db)
         return helper.templates.TemplateResponse('index.html', context= {'request': request, 'user_in': '', 'result': result, 'users': developers})
     else:
         return helper.templates.TemplateResponse("create_employeer_account.html", 

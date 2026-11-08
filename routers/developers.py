@@ -89,7 +89,7 @@ async def add_developer(request: Request, bg_task: BackgroundTasks, db: Session=
         result= await developers_dao.create_user(dev_data, request.url_for, bg_task, db)
     
     if result.status_code == 200:
-        developers= await helper.get_top_developers(db)
+        developers= await developers_dao.get_random_developers(db)
         return helper.templates.TemplateResponse('index.html', context= {'request': request, 'user_in': '', 'result': result, 'users': developers})
     else:   
         return helper.templates.TemplateResponse("create_developer_account.html", 
