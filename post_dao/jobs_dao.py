@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
-from sqlalchemy import Integer, cast, or_, select
-from sqlalchemy.orm import Session, aliased, joinedload, selectinload
+from sqlalchemy import or_, select
+from sqlalchemy.orm import Session, aliased, joinedload
 from data_model.models import Company, Developer, Jobs, Job_Application
 from services import http_responses
 
@@ -12,9 +12,10 @@ async def list_all_jobs(db: Session):
         .options(joinedload(Jobs.job_belongs_company)) \
         .order_by(Jobs.Posted_Date.desc())
 
-        return db.execute(query).scalars().all()
+        result= db.execute(query).scalars().all()
+        return result
     except ValueError:
-        return http_responses.status_204_no_content("bi bi-clipboard-x-fill", "There is no job available yet!")
+       return http_responses.status_204_no_content("bi bi-clipboard-x-fill", "There is no job available yet!")
 
 
 
@@ -114,7 +115,7 @@ async def update_job(job_data, job_id, db: Session):
 # function to search job by Title, or Company
 async def search_jobs(job_param, contracts, durations, states, locations, db:Session):
     if not job_param:
-            return []
+        return []
     
     param= job_param.strip()
 

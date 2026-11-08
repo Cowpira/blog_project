@@ -1,7 +1,7 @@
 import io
 import uuid
 from typing import List
-from fastapi import APIRouter, Depends, Request, Response
+from fastapi import APIRouter, Depends, HTTPException, Request, Response
 from sqlalchemy.orm import Session
 from post_dao import developers_dao, jobs_dao, portfolio_dao
 from routers import post
@@ -34,8 +34,12 @@ async def load_jobs(jobs, page, list, job_param, request, result, cur_user, db):
     jobs_applied= []
     if cur_user:
         jobs_applied= await jobs_dao.get_jobs_applies(cur_user, db)
-    
-    
+
+    # in case job return an error http_response
+    if type(jobs) is HTTPException:
+        result= jobs
+        jobs= []
+
     paginated_jobs= helper.pagination_settings(jobs, page, 'jobs', helper.total_items)
     return helper.templates.TemplateResponse("jobs.html", {'request': request, 'result': result, 'user_in': cur_user, 'job_param': job_param, 
                                                         'contracts': contracts, 'durations': durations, 'locations': locations, 'jobs': paginated_jobs, 

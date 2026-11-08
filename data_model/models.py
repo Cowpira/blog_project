@@ -389,13 +389,13 @@ class Jobs(Base):
 
     Id: Mapped[uuid.UUID]= mapped_column(Uuid(as_uuid=True), primary_key= True, index=True, nullable=False, default=uuid.uuid4)
     Title: Mapped[str]= mapped_column(String(70))
-    Lang_Requirements: Mapped[List[str]]= mapped_column(JSON, default="")
-    Location: Mapped[str]= mapped_column(String(10))
-    Contract: Mapped[str]= mapped_column(String(5))
+    Lang_Requirements: Mapped[List[str]]= mapped_column(JSON, default="", nullable=True)
+    Location: Mapped[str]= mapped_column(String(10), nullable=True)
+    Contract: Mapped[str]= mapped_column(String(5), nullable=True)
     Duration: Mapped[str]= mapped_column(String(10), default='Full-Time', nullable=False)
-    Payment_Type: Mapped[str]= mapped_column(String(10))
-    Salary_Start: Mapped[Decimal]= mapped_column(Numeric(precision=9, scale=2))
-    Salary_End: Mapped[Decimal]= mapped_column(Numeric(precision=9, scale=2))
+    Payment_Type: Mapped[str]= mapped_column(String(10), nullable=True)
+    Salary_Start: Mapped[Decimal]= mapped_column(Numeric(precision=9, scale=2, asdecimal=True), nullable=True)
+    Salary_End: Mapped[Decimal]= mapped_column(Numeric(precision=9, scale=2, asdecimal=True))
     Other_Requirements: Mapped[str]= mapped_column(String(1000), nullable=True)
     Description: Mapped[str]= mapped_column(String(2000), nullable=False)
     Benefits: Mapped[str]= mapped_column(String(1000), nullable=True)
@@ -404,7 +404,7 @@ class Jobs(Base):
     Posted_Date: Mapped[datetime]= mapped_column(DateTime(timezone= True), nullable= False, default=lambda: datetime.now(timezone.utc))
     
     # defining Response & User relationship
-    employeer_id: Mapped[uuid.UUID]= mapped_column(ForeignKey("employeer.Id"), nullable= False, index=True)
+    employeer_id: Mapped[uuid.UUID]= mapped_column(Uuid(as_uuid=True), ForeignKey("employeer.Id"), nullable= False, index=True)
     add_job : Mapped["Employee"]= relationship(back_populates= "jobs")
 
     company_id: Mapped[uuid.UUID]= mapped_column(ForeignKey("company.Id"), nullable= False)

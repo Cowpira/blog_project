@@ -19,10 +19,10 @@ FORGOT_PASSWORD= 'password-reset'
 APP_NAME= 'Future Programmers'
 
 #variables to user login access
-JWT_SECRET: str | None= os.environ.get('jwt-secret')
-JWT_ALGORITHM: str | None= os.environ.get('jwt-algo')
+JWT_SECRET: str | None= os.environ.get('jwt_secret')
+JWT_ALGORITHM: str | None= os.environ.get('jwt_algo')
 TOKEN_EXPIRE_MINUTES: int= 60
-SECRET_KEY: str | None= os.environ.get('secret-key')
+SECRET_KEY: str | None= os.environ.get('secret_key')
 COOKIE_NAME= "Authorization"
 
 
