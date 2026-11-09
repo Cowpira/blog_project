@@ -88,12 +88,16 @@ async def add_developer(request: Request, bg_task: BackgroundTasks, db: Session=
         dev_data= await request.form()
         result= await developers_dao.create_user(dev_data, request.url_for, bg_task, db)
     
-    if result.status_code == 200:
+    if result:
+        response= http_responses.status_200_ok("bi bi-person-badge", 
+                                            f"Welcome to Future Programmers <br> Follow instructios in the e-mail to activate your account")
         developers= await developers_dao.get_random_developers(db)
-        return helper.templates.TemplateResponse('index.html', context= {'request': request, 'user_in': '', 'result': result, 'users': developers})
+        return helper.templates.TemplateResponse('index.html', context= {'request': request, 'user_in': '', 'result': response, 'users': developers})
     else:   
+        response= http_responses.status_503_service_unavailable("bi bi-send-exclamation-fill", 
+                                                                                 f"Account created but couldn't send activation link <br> Contact support to activate your account!")
         return helper.templates.TemplateResponse("create_developer_account.html", 
-                                                  {'request': request, 'data': dev_data, 'result': result })
+                                                  {'request': request, 'data': dev_data, 'result': response })
         
     
 

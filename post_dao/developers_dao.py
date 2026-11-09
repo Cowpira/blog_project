@@ -122,11 +122,9 @@ async def create_user(new_dev, url_for, bg_task, db: Session):
     
         # send email to activate user account
         if  await send_emails.activate_account(developer, token, url_for, bg_task):
-            return http_responses.status_200_ok("bi bi-person-badge", 
-                                                f"Welcome to Future Programmers {developer.Last_Name} <br> Follow instructios in the e-mail to activate your account")
+            return True
         else:
-            return http_responses.status_503_service_unavailable("bi bi-send-exclamation-fill", 
-                                                                 f"Account created but couldn't send activation link <br> Contact support to activate your account!")
+            return False
     
 
 
