@@ -15,7 +15,6 @@
         <h3 class="page_title text-orange text-center animate__animated animate__fadeInDown animate__delay-1s">
             Employee Account
         </h3>
-
     
         <ul class="nav mb-3 mt-4 d-flex justify-content-center" id="pills-tab" role="tablist">
             <li class="nav-item" role="presentation">
@@ -23,7 +22,7 @@
                 data-bs-target="#pills-personal" role="tab" aria-controls="pills-personal" aria-selected="false">Personal</a>
             </li>
 
-            <li class="nav-item" role="presentation">
+            <li class="ms-3 nav-item" role="presentation">
                 <a href="#pills-access" class="nav-link navlink-tab-menu" id="access-tab" data-bs-toggle="pill" 
                 data-bs-target="#pills-access" role="tab" aria-controls="pills-access" aria-selected="false">Access</a>
             </li>
@@ -100,20 +99,20 @@
                                 placeholder="Confirm your password" required onkeyup="checkPasswordMatch();">
                         </div>
                         
-                        <div class="col-12 py-2">
+                        <div class="col-12 py-1">
                             <i id="pass-icon"></i>
                             <span id="message"></span>
                         </div>
-                        <div class="col-12 text-center smaller-texts">
-                            <span class="fw-light text-danger">* required fields</span>
 
-                            <p class="fw-lighter text-primary">
-                                Strong password has at least one cappital letter and special char<br>
-                                Also mix of numbers and letters
+                        <div class="col-12 text-center fw-light smaller-texts">
+                            <span class="text-danger">* required fields</span>
+
+                            <p class="text-primary">
+                                Use a mix of letter (including caps) numbers and special chars
                             </p>
 
-                            <span id="form_valid" class="d-none col-6 col-md-4 mt-2 alert-field animate__animated 
-                                animate__fadeInUp animate__duration-1s">
+                            <span id="form_valid" class="d-none col-8 col-sm-4 mt-2 alert-field 
+                                animate__animated animate__fadeInUp animate__duration-1s">
                                     <b>Red fields are required!</b>
                             </span> 
                         </div> 

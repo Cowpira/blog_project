@@ -1,5 +1,7 @@
-from collections import defaultdict
+
+import os
 import uuid
+from collections import defaultdict
 from post_dao import post_dao, answer_dao, reply_dao
 from data_model.models import Developer, Post
 from data_model.schemas import New_Post, Post_Response
@@ -33,7 +35,7 @@ async def load_posts(page, list, request, result, cur_user, db):
         paginated_posts= helper.pagination_settings(data_posts, page, 'post', helper.total_items)
         return helper.templates.TemplateResponse("posts.html", {'request': request, 'languages': languages, 'user_in': cur_user,
                                                                 'result': result, 'posts': paginated_posts, 'total_items': helper.total_items,
-                                                                'limit_items': helper.limit_items})
+                                                                'limit_items': helper.limit_items, 'website_url': os.environ.get("website_url")})
     else:
         return helper.templates.TemplateResponse("posts.html", {'request': request, 'user_in': cur_user})
 

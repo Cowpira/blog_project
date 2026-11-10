@@ -1,3 +1,4 @@
+import os
 import uuid
 from fastapi import APIRouter, Depends, Request, status, UploadFile, BackgroundTasks
 from services import helper, http_responses, image_utils
@@ -46,8 +47,9 @@ async def developers_page_destination(request, search_dev, page, items_per_page,
 
     paginated_users= helper.pagination_settings(user_list, page, 'user', items_per_page)
     return helper.templates.TemplateResponse("users.html", 
-                                              {'request': request, 'user_in': cur_user, 'search': search_dev, 'null_search': null_search, 
-                                               'result': result, 'users': paginated_users, 'limit_items': helper.limit_items})
+                                              {'request': request, 'user_in': cur_user, 'search': search_dev, 'null_search': null_search,
+                                               'result': result, 'users': paginated_users, 'limit_items': helper.limit_items,
+                                               'website_url': os.environ.get("website_url")})
 
 
 ##############################################################################################################################

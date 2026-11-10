@@ -29,10 +29,11 @@
                 <b class="text-orange fs-6">Future Programmers</b>
             </div>
         {% else %}
-            <div class="col-12 py-3 header-bg mb-4 d-flex justify-content-around">
-                <div class="dropdown">
-                    <a class="btn btn-sm msg-btn {{ 'msg-active' if msg_by == 'state' }} dropdown-toggle" 
-                        href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">View
+            <div class="row header-bg text-center">
+                <div class="col py-2">
+                    <a class="mt-2 mb-2 btn btn-sm msg-btn {{ 'msg-active' if msg_by == 'state' }} dropdown-toggle" 
+                        href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                        View
                     </a>
                     
                     <ul class="dropdown-menu px-3" aria-labelledby="dropdownMenuCheck">
@@ -45,10 +46,8 @@
                             </div>
                         {% endfor %}
                     </ul>
-                </div>
-
-                <div class="dropdown">
-                    <a class="btn btn-sm msg-btn {{ 'msg-active' if job_param in locations }} dropdown-toggle" 
+                
+                    <a class="mx-2 mt-2 mb-2 btn btn-sm msg-btn {{ 'msg-active' if job_param in locations }} dropdown-toggle" 
                         href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
                         Location
                     </a>
@@ -63,10 +62,8 @@
                             </li>
                         {% endfor %}
                     </ul>
-                </div>
-
-                <div class="dropdown">
-                    <a class="btn btn-sm msg-btn {{ 'msg-active' if job_param in contracts }} dropdown-toggle" 
+                
+                    <a class="mt-2 mb-2 btn btn-sm msg-btn {{ 'msg-active' if job_param in contracts }} dropdown-toggle" 
                         href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
                         Contract
                     </a>
@@ -81,10 +78,8 @@
                             </li>
                         {% endfor %}
                     </ul>
-                </div>
-
-                <div class="dropdown">
-                    <a class="btn btn-sm msg-btn {{ 'msg-active' if job_param in durations }} dropdown-toggle" 
+                
+                    <a class="mx-2 mt-2 mb-2 btn btn-sm msg-btn {{ 'msg-active' if job_param in durations }} dropdown-toggle" 
                         href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
                         Duration
                     </a>
@@ -99,10 +94,8 @@
                             </li>
                         {% endfor %}
                     </ul>
-                </div>
-
-                <div class="dropdown">
-                    <a class="btn btn-sm msg-btn {{ 'msg-active' if job_param in states }} dropdown-toggle" 
+                
+                    <a class="mt-2 mb-2 btn btn-sm msg-btn {{ 'msg-active' if job_param in states }} dropdown-toggle" 
                         href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
                         State
                     </a>
@@ -280,7 +273,7 @@
 
                                 <!-- Modal Body -->
                                 <div class="modal-body">
-                                    <ul class="nav mb-3 d-flex justify-content-center sticky-top" style="background-color: #EBEBEB;" id="pills-tab" role="tablist">
+                                    <ul class="nav mb-3 d-flex justify-content-center sticky-top" id="pills-tab" role="tablist">
                                         <li class="nav-item" role="presentation">
                                             <a href="/overview" class="nav-link navlink-tab-menu active" id="overview-tab-{{ job.Id }}" data-bs-toggle="pill" 
                                                 data-bs-target="#pills-overview-{{ job.Id }}" role="tab" aria-controls="pills-overview-{{ job.Id }}" aria-selected="true">
@@ -289,7 +282,7 @@
                                         </li>
 
                                         <li class="nav-item" role="presentation">
-                                            <a href="/description" class="nav-link navlink-tab-menu" id="description-tab-{{ job.Id }}" data-bs-toggle="pill"
+                                            <a href="/description" class="mx-2 nav-link navlink-tab-menu" id="description-tab-{{ job.Id }}" data-bs-toggle="pill"
                                                 data-bs-target="#pills-description-{{ job.Id }}" role="tab" aria-controls="pills-description-{{ job.Id }}" aria-selected="false">
                                                 <i class="bi bi-file-text"></i> Description
                                             </a>
@@ -588,7 +581,7 @@
                             localStorage.clear;
                             const total_jobs = this.value;
                             localStorage.setItem('total_jobs', total_jobs);
-                            window.location.href = "http://127.0.0.1:8000/jobs?page=1&list="+localStorage.getItem('total_jobs');
+                            window.location.href = "{{ website_url }}/jobs?page=1&list="+localStorage.getItem('total_jobs');
                             return localStorage;
                         }
                     });

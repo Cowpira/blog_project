@@ -12,9 +12,9 @@
     {% endif %}
 
     <main class="container-fluid {{ 'contact-background' if result == '' }}">
-        <div class="row d-flex justify-content-center start-content">
+        <div class="row d-flex justify-content-center start-content mb-3">
             {% if result.status_code == 200 %}
-                <div class="container-fluid d-flex justify-content-center mb-5">
+                <div class="container-fluid d-flex justify-content-center">
                     <img class="img-fluid" src="{{ url_for('static', path='/images/email_sent.gif') }}" alt="...">
                     
                     <div class="contact_text-overlay animate__animated animate__fadeInUp animate__slow animate__delay-2s">
@@ -23,7 +23,7 @@
                 </div>
             {% else %}
                 <div class="col-11 col-lg-8 col-xxl-6 contact-form-background">
-                    <div class="12 py-2 text-center fw-normal text-orange animate__animated animate__fadeInUp animate__slow">
+                    <div class="12 py-1 text-center fw-normal text-orange animate__animated animate__fadeInUp animate__slow">
                         {% if user_in %}
                             <span class="fw-normal fs-1 text-center"> 
                                 <div class="col-12">
@@ -32,9 +32,7 @@
                                 how can we help you?
                             </span>
                         {% else %}
-                            <p class="page_title">
-                                How can we help you?
-                            </p>
+                            <p class="page_title">Need help?</p>
                         {% endif %}
                     </div>
 
@@ -98,7 +96,7 @@
                                 <b>Red fields are required!</b>
                             </div>
                         
-                            <div class="col-12 text-center py-4 mb-5">
+                            <div class="col-12 text-center py-4">
                                 <button type="submit" name="action" tabindex="6" class="fp-buttons fp-orange-btn" onclick="validate_contact();">
                                     <i class="bi bi-envelope-arrow-up-fill" style="font-size: 1.5rem;"></i> Send Message
                                 </button>

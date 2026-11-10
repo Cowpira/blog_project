@@ -288,32 +288,34 @@
                                     id="user_reg_conf_password" placeholder="Confirm your password" required onkeyup="checkPasswordMatch();">
                             </div>
 
-                            <div class="col-12 text-center py-2">
+                            <div class="col-12 text-center py-1">
                                 <i id="pass-icon"></i>
                                 <span id="message"></span>
                             </div>
-                    
-                            <p class="text-center fw-light text-primary smaller-texts">
-                                Strong password has at least one cappital letter and special char<br>
-                                Also mix of numbers and letters
-                            </p>
-                            <span class="fw-light smaller-texts text-danger mt-1">* required fields</span>
 
-                            <div id="form_valid" class="d-none col-6 col-md-4 mt-2 alert-field animate__animated 
-                                animate__fadeInUp animate__duration-1s">
-                                <b>Red fields are required!</b>
-                            </div>                      
+                            <div class="col-12 text-center fw-light smaller-texts">
+                                <span class="text-danger mt-1">* required fields</span>
+
+                                <p class="text-primary">
+                                    Use a mix of letter (including caps) numbers and special chars
+                                </p>
+
+                                <span id="form_valid" class="d-none col-8 col-sm-4 mt-2 alert-field 
+                                    animate__animated animate__fadeInUp animate__duration-1s">
+                                    <b>Red fields are required!</b>
+                                </span> 
+                            </div>   
+                        </div>                  
                             
-                            <!-- tab navigation buttons -->
-                            <div class="d-flex justify-content-between py-4">
-                                <a href="#" onclick="level_tab();" class="fp-buttons fp-gray-btn" tabindex="25">
-                                    <i class="bi bi-arrow-left-circle-fill px-2" style="font-size: 1.3rem;"></i> Previous &nbsp;
-                                </a>
-                            
-                                <button type="submit" name="action" tabindex="24" class="fp-buttons fp-orange-btn" onclick="validate_dev_account();">
-                                    <i class="bi bi-person-plus-fill" style="font-size: 1.5rem;"></i> Create
-                                </button>
-                            </div>
+                        <!-- tab navigation buttons -->
+                        <div class="d-flex justify-content-between py-4">
+                            <a href="#" onclick="level_tab();" class="fp-buttons fp-gray-btn" tabindex="25">
+                                <i class="bi bi-arrow-left-circle-fill px-2" style="font-size: 1.3rem;"></i> Previous &nbsp;
+                            </a>
+                        
+                            <button type="submit" name="action" tabindex="24" class="fp-buttons fp-orange-btn" onclick="validate_dev_account();">
+                                <i class="bi bi-person-plus-fill" style="font-size: 1.5rem;"></i> Create
+                            </button>
                         </div>
                     </div>
 

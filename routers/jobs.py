@@ -1,3 +1,4 @@
+import os
 import io
 import uuid
 from typing import List
@@ -42,8 +43,9 @@ async def load_jobs(jobs, page, list, job_param, request, result, cur_user, db):
 
     paginated_jobs= helper.pagination_settings(jobs, page, 'jobs', helper.total_items)
     return helper.templates.TemplateResponse("jobs.html", {'request': request, 'result': result, 'user_in': cur_user, 'job_param': job_param, 
-                                                        'contracts': contracts, 'durations': durations, 'locations': locations, 'jobs': paginated_jobs, 
-                                                        'states': states, 'limit_items': helper.limit_items, 'total_items': helper.total_items, 'jobs_applied': jobs_applied})
+                                                        'contracts': contracts, 'durations': durations, 'locations': locations, 
+                                                        'jobs': paginated_jobs, 'states': states, 'limit_items': helper.limit_items, 
+                                                        'total_items': helper.total_items, 'jobs_applied': jobs_applied, 'website_url': os.environ.get("website_url")})
 
 ##############################################################################################################################
 ############################################### PUBLIC FUNCTIONS FOR ALL USERS  ##############################################

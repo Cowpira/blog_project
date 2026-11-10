@@ -195,7 +195,7 @@
                         localStorage.clear;
                         const total_posts = this.value;
                         localStorage.setItem('total_posts', total_posts);
-                        window.location.href = "http://127.0.0.1:8000/posts?page=1&list="+localStorage.getItem('total_posts');
+                        window.location.href = "{{ website_url }}/posts?page=1&list="+localStorage.getItem('total_posts');
                         return localStorage;
                     }
                 });

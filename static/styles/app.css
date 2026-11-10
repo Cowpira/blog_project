@@ -480,8 +480,8 @@ progress::-moz-progress-bar {
 .post_title:hover{ text-decoration: underline; }
 
 .contact-form-background{
-    margin-top: 60px;
-    margin-bottom: 130px;
+    margin-top: 20px;
+    margin-bottom: 40px;
     background-color: rgba(28, 28, 28, 0.729);
     box-shadow: inset 0 0 15px rgba(135, 135, 135, .1), 0 0 18px 3px rgba(0, 0, 0, 0.336);
     border-radius: 18px;
@@ -496,11 +496,10 @@ progress::-moz-progress-bar {
 }
 
 .contact-background{
-    margin-top: 0px;
-    margin: 0;
     background-image: url("../images/backgrounds/contact-background.jpg");
     background-size: cover;
-    background-position: center top;
+    background-position: top center;
+    margin-bottom: -2px;
 }
 
 .waves-img{
@@ -520,12 +519,6 @@ progress::-moz-progress-bar {
     font-size: 60px;
     right: 48%;
     z-index: 999;
-}
-
-.create_new_account{
-    margin-top: -1px;
-    color: black;
-    text-decoration: none;
 }
 
 .users-title{
@@ -878,6 +871,15 @@ input[type="file"]::file-selector-button {
     background: linear-gradient(90deg, #f6c70b, #f70d0d, #f77300, #222c44);
     background-clip: text;
     color: transparent;
+}
+
+.new_dev_text{
+    background-color: rgba(13, 13, 13, 0.908); 
+    padding: 35px; 
+    border-radius: 10px;
+    text-align: justify;
+    font-weight: lighter;
+    font-size: 20px;
 }
 
 /* CHECKBOX BUTTONS */
@@ -1499,4 +1501,24 @@ a[data-bs-toggle="collapse"] .bi-chevron-double-down {
         border-radius: none;
         background-color: transparent;
     }
-}
+
+    .create_account_title{ 
+        font-size: 4.3rem; 
+        margin-top: -75px !important; 
+    }
+
+    .new_dev_text{
+        background-color: rgba(13, 13, 13, 0.908); 
+        padding: 35px; 
+        border-radius: 10px;
+        text-align: justify;
+    }
+
+    .new_dev_text{ font-size: 17px; }
+    
+    .btn-create-account{
+        width: 10rem;
+        padding: 10px;
+        font-size: 17px;
+    }
+}   
