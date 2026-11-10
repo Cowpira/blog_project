@@ -38,7 +38,7 @@
 
                     <form id="contact_form" class="px-3 offset-md-2 offset-lg-0 needs-validation" novalidate 
                         action="{{url_for("contact")}}" method="POST">
-                        <div class="row">
+                        <div class="row d-flex justify-content-center">
                             <div class="col-sm-12 col-md-10 col-lg-6 mb-4">
                                 <label for="first_name" class="form-label fw-light text-light">Name <span class="fw-bolder text-danger">*</label>
                                 {% if user_in %}
@@ -92,12 +92,13 @@
                                 </div>
                             </div>
 
-                            <div id="form_valid" class="col-6 alert-field mb-3 d-none animate__animated animate__fadeInUp animate__slow">
-                                <b>Red fields are required!</b>
-                            </div>
+                            <span id="form_valid" class="col-9 col-sm-6 alert-field d-none animate__animated 
+                                animate__fadeInUp animate__slow">Red fields are required!
+                            </span>
                         
                             <div class="col-12 text-center py-4">
-                                <button type="submit" name="action" tabindex="6" class="fp-buttons fp-orange-btn" onclick="validate_contact();">
+                                <button type="submit" name="action" tabindex="6" class="fp-buttons 
+                                fp-orange-btn" onclick="validate_contact();">
                                     <i class="bi bi-envelope-arrow-up-fill" style="font-size: 1.5rem;"></i> Send Message
                                 </button>
                             </div>

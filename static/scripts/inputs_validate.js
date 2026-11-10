@@ -266,31 +266,17 @@ window.checkPasswordMatch= checkPasswordMatch;
 
 
 // script for fade out alerts and form msg erros
-setTimeout(() => {
-    $("#form_valid").fadeTo(3000, 800).slideUp(800, function() {
-        $("form_valid").slideUp(800);
-    });
+$("#form_valid").delay(6000).fadeIn(500).delay(3000).slideUp(800);
 
-    $("#login_valid").fadeTo(3000, 800).slideUp(800, function() {
-        $("login_valid").slideUp(800);
-    });
+$("#login_valid").delay(6000).fadeIn(500).delay(3000).slideUp(800);
 
-    $("#validate_ocupation").fadeTo(3000, 800).slideUp(800, function() {
-        $("validate_ocupation").slideUp(800);
-    });
+$("#validate_ocupation").delay(6000).fadeIn(500).delay(3000).slideUp(800);
 
-    $("#validate_coding").fadeTo(3000, 800).slideUp(800, function() {
-        $("validate_coding").slideUp(800);
-    });
+$("#validate_coding").delay(6000).fadeIn(500).delay(3000).slideUp(800);
 
-    $("#validate_resume").fadeTo(3000, 600).slideUp(600, function() {
-        $("validate_resume").slideUp(900);
-    });
+$("#validate_resume").delay(6000).fadeIn(500).delay(3000).slideUp(800);
 
-    $("#form_update_pass").fadeTo(3000, 800).slideUp(800, function() {
-        $("form_update_pass").slideUp(800);
-    });
-}, 6000);
+$("#form_update_pass").delay(6000).fadeIn(500).delay(3000).slideUp(800);
 
 
 // Example starter JavaScript for disabling form submissions if there are invalid fields
