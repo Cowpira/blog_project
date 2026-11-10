@@ -17,25 +17,25 @@
             Developer Account
         </p>
 
-        <div class="col-10 offset-1 col-lg-8 offset-lg-2 col-xxl-6 offset-xxl-3">
-            <ul class="nav mb-3 mt-4 d-flex justify-content-center" id="pills-tab" role="tablist">
+        <div class="col-12 col-sm-10 col-lg-8 offset-sm-1 offset-lg-2">
+            <ul class="nav d-flex justify-content-center mb-3" id="pills-tab" role="tablist">
                 <li class="nav-item" role="presentation">
                     <a href="#pills-personal" class="nav-link navlink-tab-menu active" id="personal-tab" data-bs-toggle="pill" 
                     data-bs-target="#pills-personal" role="tab" aria-controls="pills-personal" aria-selected="true">Personal</a>
                 </li>
 
                 <li class="nav-item" role="presentation">
-                    <a href="#pills-ocupation" class="nav-link navlink-tab-menu" id="ocupation-tab" data-bs-toggle="pill" 
+                    <a href="#pills-ocupation" class="ms-2 nav-link navlink-tab-menu" id="ocupation-tab" data-bs-toggle="pill" 
                     data-bs-target="#pills-ocupation" role="tab" aria-controls="pills-ocupation" aria-selected="false">Ocupation</a>
                 </li>
 
                 <li class="nav-item" role="presentation">
-                    <a href="#pills-level" class="nav-link navlink-tab-menu" id="level-tab" data-bs-toggle="pill" 
-                    data-bs-target="#pills-level" role="tab" aria-controls="pills-level" aria-selected="false">Coding Level</a>
+                    <a href="#pills-level" class="ms-2 nav-link navlink-tab-menu" id="level-tab" data-bs-toggle="pill" 
+                    data-bs-target="#pills-level" role="tab" aria-controls="pills-level" aria-selected="false">Dev Type</a>
                 </li>
 
                 <li class="nav-item" role="presentation">
-                    <a href="#pills-access" class="nav-link navlink-tab-menu" id="access-tab" data-bs-toggle="pill" 
+                    <a href="#pills-access" class="ms-2 nav-link navlink-tab-menu" id="access-tab" data-bs-toggle="pill" 
                     data-bs-target="#pills-access" role="tab" aria-controls="pills-access" aria-selected="false">Access</a>
                 </li>
             </ul>
@@ -58,6 +58,18 @@
                                     value="{{data.last_name or ''}}" placeholder="Informe your last name" required>
                             </div>
 
+                            <div class="col-12 col-sm-6 mb-4">
+                                <label for="address" class="form-label fw-light text-dark">Address</label>
+                                <input type="text" class="form-control" tabindex="5" name="address" maxlength="50" id="address" 
+                                    value="{{data.address or ''}}" placeholder="Informe your address">
+                            </div>
+                        
+                            <div class="col-12 col-sm-6 mb-4">
+                                <label for="phone" class="form-label fw-light text-dark">Phone</label>
+                                <input type="text" class="form-control" tabindex="6" name="phone" maxlength="15" id="phone" 
+                                    value="{{data.phone or ''}}" placeholder="(999) 999-9999">
+                            </div>
+
                             <div class="col-12 col-sm-6 offset-sm-3 text-center mb-4">
                                 <label for="last_name" class="col-12 form-label fw-light text-dark">Gender <span class="fw-bolder text-danger">*</label>
                                 <div class="form-check form-check-inline">
@@ -73,20 +85,8 @@
                                 </div>
                             </div>
 
-                            <div class="col-12 col-sm-6 mb-4">
-                                <label for="address" class="form-label fw-light text-dark">Address</label>
-                                <input type="text" class="form-control" tabindex="5" name="address" maxlength="50" id="address" 
-                                    value="{{data.address or ''}}" placeholder="Informe your address">
-                            </div>
-                        
-                            <div class="col-12 col-sm-6 mb-4">
-                                <label for="phone" class="form-label fw-light text-dark">Phone</label>
-                                <input type="text" class="form-control" tabindex="6" name="phone" maxlength="15" id="phone" 
-                                    value="{{data.phone or ''}}" placeholder="(999) 999-9999">
-                            </div>
-
                             <!-- tab navigation buttons -->
-                            <div class="d-flex justify-content-between mt-4 py-4">
+                            <div class="d-flex justify-content-between py-3">
                                 <span class="fw-light smaller-texts text-danger mt-3">* required fields</span>
 
                                 <a href="#" onclick="ocupation_tab();" tabindex="7" class="fp-buttons fp-gray-btn" data-bs-target="#pills-ocupation" 
@@ -99,7 +99,7 @@
 
                     <!-- TAB TO ADD CURRENT OCUPATION -->
                     <div class="tab-pane" id="pills-ocupation" role="tabpanel" aria-labelledby="ocupation-tab">
-                        <div class="row py-3">
+                        <div class="row d-flex justify-content-center py-3">
                             <div class="col-12 col-sm-6 mb-3">
                                 <label class="form-label fw-light text-dark">Company <span class="fw-bolder text-danger">*</label>
                                 <input type="text" tabindex="8" class="form-control" name="company" id="company" maxlength="50" 
@@ -116,7 +116,7 @@
                                 <span class="text-primary smaller-texts fw-lighter">Enter unemployed if not working</span>
                             </div>
 
-                            <div class="row justify-content-evenly mb-4">
+                            <div class="row justify-content-evenly mb-3">
                                 <div class="col-6 col-md-4">
                                     <label class="form-label fw-light text-dark">Started</label>
                                     <input type="text" tabindex="10" class="form-control" name="started" id="started" 
@@ -127,9 +127,8 @@
                                     <label for="ended" class="form-label fw-light text-dark">Ended</label>
                                     <input type="text" tabindex="11" class="form-control" name="ended" id="ended" 
                                         value="{{data.ended or ''}}" placeholder="01/01/2020">
-
-                                    <p class="text-primary smaller-texts fw-lighter ms-2">Enter today's date if current job</p>
                                 </div>
+                                <p class="col-12 col-md-8 text-primary text-end smaller-texts fw-lighter ms-2">Enter today's date in 'Ended' if current job</p>
                             </div>
                        
                             <div class="col-12 col-sm-10 offset-sm-1 badge bg-highlight text-wrap fst-italic lh-base text-dark py-3 mb-3">
@@ -148,15 +147,16 @@
                                 <div class="text-end smaller-texts fw-light">
                                     <span id="counter" class="col-6 text-muted text-end">0 / 1000</span>
                                 </div>
+
+                                <span class="fw-light smaller-texts text-danger mt-3">* required fields</span>
                             </div>
 
                             <!-- tab navigation buttons -->
-                            <div class="d-flex justify-content-between mt-4 py-4">
+                            <div class="d-flex justify-content-between py-3">
                                 <a href="#" onclick="personal_tab();" class="fp-buttons fp-gray-btn" tabindex="14">
                                     <i class="bi bi-arrow-left-circle-fill px-2" style="font-size: 1.3rem;"></i> Previous &nbsp;
                                 </a>
-                                <span class="fw-light smaller-texts text-danger mt-3">* required fields</span>
-                           
+                                
                                 <a href="#" onclick="level_tab();" class="fp-buttons fp-gray-btn" tabindex="13">
                                     &nbsp; Next <i class="bi bi-arrow-right-circle-fill px-2" style="font-size: 1.3rem;"></i>
                                 </a>
@@ -166,9 +166,9 @@
 
                     <!-- TAB TO ADD CODING LEVEL -->
                     <div class="tab-pane" id="pills-level" role="tabpanel" aria-labelledby="level-tab">
-                        <div class="row py-3">
-                            <div class="col-12 col-md-10 offset-md-1 mb-4">
-                                <label for="title" class="form-label fw-light text-dark">What type of developer are you?</label>
+                        <div class="row d-flex justify-content-center py-3">
+                            <div class="col-12 col-md-10 mb-4">
+                                <label for="title" class="form-label fw-light text-dark">Developer level</label>
                                 <select class="form-select form-control" tabindex="15" name="title" aria-label="Select a developer title">
                                     {% if data.title %}
                                         <option value="{{ data.title }}" selected>
@@ -194,8 +194,8 @@
                                 </select>
                             </div>
 
-                            <div class="col-6 col-md-5 offset-md-1 mb-4">
-                                <label for="prog_language" class="form-label fw-light text-dark">Prefered code Language</label>
+                            <div class="col-12 col-sm-6 col-md-5 mb-2">
+                                <label for="prog_language" class="form-label fw-light text-dark">Primary Language</label>
                                 <select class="form-select form-control" tabindex="16" name="prog_language" aria-label="Select a developer title">
                                     {% if data.prog_language %}
                                         <option value="{{ data.prog_language }}" selected>
@@ -218,10 +218,10 @@
                                     <option value="Other">Other</option>
                                 </select>
 
-                                <p class="text-primary smaller-texts fw-lighter">Select your primary programming language</p>
+                                <p class="text-primary smaller-texts fw-lighter">Select the language you have more experience</p>
                             </div>
 
-                            <div class="col-6 col-md-5 mb-4">
+                            <div class="col-12 col-sm-6 col-md-5 mb-4">
                                 <label for="experience" class="form-label fw-light text-dark">Experience</label>
                                 <div class="input-group input-group-sm">
                                     <input type="text" tabindex="17" class="form-control" min="1" max="50" maxlength="2" name="experience" id="experience" 
@@ -231,17 +231,17 @@
                                 </div>
                             </div>
 
-                            <div class="col-12 col-md-10 offset-md-1 badge bg-highlight text-wrap fst-italic lh-base text-dark py-3 mt-3">
-                                If title or seguiment aren't listed. Fill up the title and/ or seguiment into the input below.
+                            <div class="col-12 col-md-10 badge bg-highlight text-wrap fst-italic lh-base text-dark py-2 mb-3">
+                                If dev level or primary language aren't listed. Fill up inputs below
                             </div>
 
-                            <div class="col-6 col-md-5 offset-md-1 py-3">
+                            <div class="col-12 col-sm-6 col-md-5 mb-4">
                                 <label for="input_title" class="form-label fw-light text-dark">Programmer Title</label>
                                 <input type="text" tabindex="18" class="form-control" name="input_title" maxlength="100" id="input_title" 
                                     value="{{data.input_title or ''}}" placeholder="Programming Title">
                             </div>
 
-                            <div class="col-6 col-md-5 py-3">
+                            <div class="col-12 col-sm-6 col-md-5">
                                 <label for="input_prog_language" class="form-label fw-light text-dark">Primary code Language</label>
                                 <input type="text" tabindex="19" class="form-control" name="input_prog_language" maxlength="100" id="input_prog_language" 
                                     value="{{data.input_prog_language or ''}}" placeholder="Programming Language">
@@ -249,13 +249,14 @@
                                 <p class="text-primary smaller-texts fw-lighter">Enter primary programming language</p>
                             </div>
 
+                            <span class="fw-light smaller-texts text-danger mt-3">* required fields</span>
+
                             <!-- tab navigation buttons -->
-                            <div class="d-flex justify-content-between mt-4 py-4">
+                            <div class="d-flex justify-content-between py-4">
                                 <a href="#" onclick="ocupation_tab();" class="fp-buttons fp-gray-btn" tabindex="21">
                                     <i class="bi bi-arrow-left-circle-fill px-2" style="font-size: 1.3rem;"></i> Previous &nbsp;
                                 </a>
-                                <span class="fw-light smaller-texts text-danger mt-3">* required fields</span>
-                            
+                                
                                 <a href="#" onclick="access_tab();" class="fp-buttons fp-gray-btn" tabindex="20">
                                     &nbsp; Next <i class="bi bi-arrow-right-circle-fill px-2" style="font-size: 1.3rem;"></i>
                                 </a>
@@ -265,25 +266,26 @@
 
                     <!-- TAB TO ADD DEVELOPER ACCESS -->
                     <div class="tab-pane" id="pills-access" role="tabpanel" aria-labelledby="access-tab">
-                        <div class="row py-3">
-                             <div class="col-12 col-sm-10 offset-sm-1 col-md-8 offset-md-2">
+                        <div class="row d-flex justify-content-center py-3">
+                             <div class="col-12 col-sm-8 col-md-8">
                                 <label for="email" class="form-label fw-light text-dark">E-mail <span class="fw-bolder text-danger">*</label>
                                 <input type="email" class="form-control" tabindex="21" name="email" maxlength="40" id="email_address" 
                                     value="{{data.email or ''}}" placeholder="your_email@email.com" required>
                             </div>
+                            <span class="col-12 d-sm-block"></span>
                             
-                            <div class="col-12 col-sm-5 offset-sm-1 col-md-4 offset-md-2 mt-4">
+                            <div class="col-12 col-sm-4 col-md-4 mt-4">
                                 <label for="password" class="form-label fw-light text-dark">Password <span class="fw-bolder text-danger">*</span></label>
                                 <input type="password" class="form-control" tabindex="22" name="password" maxlength="12" id="user_reg_password" 
                                     placeholder="Enter your password" required onkeyup="checkPasswordMatch();">
                             </div>
 
-                            <div class="col-12 col-sm-5 col-md-4 mt-4">
+                            <div class="col-12 col-sm-4 col-md-4 mt-4">
                                 <label for="conf_password" class="form-label fw-light text-dark">
                                     Confirm Password <span class="fw-bolder text-danger">*</span>
                                 </label>
-                                <input type="password" class="form-control" tabindex="23" name="conf_password" maxlength="12" id="user_reg_conf_password" 
-                                    placeholder="Confirm your password" required onkeyup="checkPasswordMatch();">
+                                <input type="password" class="form-control" tabindex="23" name="conf_password" maxlength="12" 
+                                    id="user_reg_conf_password" placeholder="Confirm your password" required onkeyup="checkPasswordMatch();">
                             </div>
 
                             <div class="col-12 text-center py-2">
@@ -291,25 +293,25 @@
                                 <span id="message"></span>
                             </div>
                     
-                            <p class="text-center fw-lighter text-primary smaller-texts">
+                            <p class="text-center fw-light text-primary smaller-texts">
                                 Strong password has at least one cappital letter and special char<br>
                                 Also mix of numbers and letters
                             </p>
+                            <span class="fw-light smaller-texts text-danger mt-1">* required fields</span>
 
-                            <div id="form_valid" class="d-none col-6 offset-3 col-md-4 offset-md-4 mt-2 alert-field animate__animated 
+                            <div id="form_valid" class="d-none col-6 col-md-4 mt-2 alert-field animate__animated 
                                 animate__fadeInUp animate__duration-1s">
                                 <b>Red fields are required!</b>
                             </div>                      
                             
                             <!-- tab navigation buttons -->
-                            <div class="d-flex justify-content-between mt-2 py-4">
+                            <div class="d-flex justify-content-between py-4">
                                 <a href="#" onclick="level_tab();" class="fp-buttons fp-gray-btn" tabindex="25">
                                     <i class="bi bi-arrow-left-circle-fill px-2" style="font-size: 1.3rem;"></i> Previous &nbsp;
                                 </a>
-                                <span class="fw-light smaller-texts text-danger mt-3">* required fields</span>
                             
                                 <button type="submit" name="action" tabindex="24" class="fp-buttons fp-orange-btn" onclick="validate_dev_account();">
-                                    <i class="bi bi-person-plus-fill" style="font-size: 1.5rem;"></i> Create Account
+                                    <i class="bi bi-person-plus-fill" style="font-size: 1.5rem;"></i> Create
                                 </button>
                             </div>
                         </div>

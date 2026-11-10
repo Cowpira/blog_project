@@ -40,7 +40,7 @@ function validate_employee_account(){
     var position = document.getElementById("position").value;
     var email = document.getElementById("email_address").value;
     var password = document.getElementById("password").value;
-    var conf_pass = document.getElementById("conf_password").value;
+    var conf_pass = document.getElementById("user_reg_conf_password").value;
 
 
     if (employee_id === "" || f_name === "" || l_name === "" || phone === "" || 
@@ -70,7 +70,7 @@ function validate_dev_account(){
     var position = document.getElementById("position").value;
     var email = document.getElementById("email_address").value;
     var password = document.getElementById("password").value;
-    var conf_pass = document.getElementById("conf_password").value;
+    var conf_pass = document.getElementById("user_reg_conf_password").value;
 
     if (f_name === "" || l_name === "" || company === "" || position === "" || 
         email === "" || password === "" || conf_pass === "") {

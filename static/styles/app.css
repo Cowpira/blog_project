@@ -301,10 +301,22 @@ main{  min-height: calc(100vh - 360px); }
 /* PORTFOLIO TAB MENU STYLE */
 .navlink-tab-menu{
     font-family: var(--fp-font);
+    font-size: 14px !important;
     color: var(--fp-light-gray-color);
+    border: .5px solid var(--fp-light-gray-color);
+    border-radius: 50px;
+    padding: 5px 8px;
 }
-.navlink-tab-menu:hover{ color: var(--fp-black-color); }
-.navlink-tab-menu.active{ color: var(--fp-orange-color); font-weight: 600; }
+.navlink-tab-menu:hover{ 
+    color: var(--fp-black-color);
+    border: .5px solid var(--fp-black-color);
+}
+.navlink-tab-menu.active{ 
+    color: var(--fp-orange-color); 
+    font-weight: 600; 
+    background-color: #f5f3f4;
+    border: .5px solid var(--fp-orange-color);
+}
 
 
 .portfolio_menu { position: sticky; top: 120px; }
@@ -320,7 +332,7 @@ main{  min-height: calc(100vh - 360px); }
 .banner-title{
     margin-top: 52vh;
     font-family: var(--fp-font);
-    font-size: 6.5rem;
+    font-size: 8.2rem;
     font-weight: 900;
     color: rgb(82, 172, 242);
     background-image: var(--gradient);
@@ -951,7 +963,7 @@ input[type="file"]::file-selector-button {
 
 .fp-links:hover { color: var(--fp-orange-color); transition: ease-in-out .4s; }
 
-.banner-languages{ color: var(--fp-orange-color);}
+.banner-languages{ color: var(--fp-orange-color); }
 .banner-languages:HOVER{
     color: rgb(240, 240, 240);
     transition: ease-in-out;
@@ -966,6 +978,7 @@ input[type="file"]::file-selector-button {
       0 0 102px #1375fe,
       0 0 151px #13a0fe;
 }
+.banner-languages i{font-size: 4rem; }
 
 .youtube i:hover{ color: var(--fp-red-color); transition: .5s; }
 .github:hover{ color: var(--fp-purple-color); transition: .5s; }
@@ -1170,14 +1183,15 @@ input[type="file"]::file-selector-button {
 /* HELP PAGE STYLES */
  .help-background{
     background-image: url("../images/backgrounds/help.JPG");
-    height: 80vh;
-    margin-top: -40px;
+    height: 120vh;
+    margin-top: -20px;
     background-repeat: no-repeat;
     background-attachment: fixed;
-    background-position: center top;
+    background-position: top center;
 }
 
 .help-page-gradient{
+    position: inherit;
     background: linear-gradient(180deg, rgba(80, 149, 223, 0.81) 19%,
     rgba(159, 197, 237, 0.89) 24%, rgba(232, 239, 255, 1) 43%, 
     rgba(255, 255, 255, 1) 72%);
@@ -1186,7 +1200,7 @@ input[type="file"]::file-selector-button {
 .help-menu{
     height: 46px;
     padding: 5px 15px;
-    margin-top: 185px;
+    margin-top: 180px;
     border: 0.7px solid gray;
     border-radius: 20px;
     position: fixed;
@@ -1200,7 +1214,7 @@ input[type="file"]::file-selector-button {
 /* help titles */
 .help-links{
     font-family: var(--fp-font);
-    font-size: 15px;
+    font-size: 13px;
     text-decoration: none;
     color: black;
     border: 1px solid transparent;
@@ -1330,7 +1344,7 @@ input[type="file"]::file-selector-button {
     margin-top: auto;
     bottom: -2px !important;
     position: relative;
-    height: 300px;
+    height: 330px;
     background: var(--fp-black-color);
     
 }
@@ -1454,4 +1468,35 @@ a[data-bs-toggle="collapse"] .bi-chevron-double-down {
     max-height: 560px;
     scrollbar-width: thin;
     overflow-y: auto;
+}
+
+
+
+
+
+
+/* style for mobile devices */
+@media screen and (max-width: 665px) {
+    .banner-title {
+        margin-left: 15px;
+        margin-top: 48vh;
+        font-family: var(--fp-font);
+        font-size: 4rem;
+        font-weight: 700;
+        color: rgb(82, 172, 242);
+        background-image: var(--gradient);
+        background-clip: text;
+        color: transparent;
+        transition:  background-position 1s;
+    }
+
+    .banner-languages i{font-size: 2.6rem; }
+    .page_title{font-size: 2.2rem; margin-top: 20px;}
+
+    .help-menu{
+        margin-top: 160px;
+        border: 0.7px solid transparent;
+        border-radius: none;
+        background-color: transparent;
+    }
 }

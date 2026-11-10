@@ -22,8 +22,8 @@
                     </div>
                 </div>
             {% else %}
-                <div class="col-10 offset-1 col-lg-8 offset-lg-2 col-xxl-6 offset-xxl-3 contact-form-background px-5">
-                    <div class="row py-2 text-center fw-normal text-orange animate__animated animate__fadeInUp animate__slow">
+                <div class="col-11 col-lg-8 col-xxl-6 contact-form-background">
+                    <div class="12 py-2 text-center fw-normal text-orange animate__animated animate__fadeInUp animate__slow">
                         {% if user_in %}
                             <span class="fw-normal fs-1 text-center"> 
                                 <div class="col-12">
@@ -38,10 +38,10 @@
                         {% endif %}
                     </div>
 
-                    <form id="contact_form" class="g-3 needs-validation d-flex justify-content-center" novalidate 
+                    <form id="contact_form" class="px-3 offset-md-2 offset-lg-0 needs-validation" novalidate 
                         action="{{url_for("contact")}}" method="POST">
                         <div class="row">
-                            <div class="col-sm-12 col-md-10 offset-md-1 col-lg-6 offset-lg-0 p-2 mb-3">
+                            <div class="col-sm-12 col-md-10 col-lg-6 mb-4">
                                 <label for="first_name" class="form-label fw-light text-light">Name <span class="fw-bolder text-danger">*</label>
                                 {% if user_in %}
                                     <input type="text" class="form-control-glass form-control" tabindex="1" name="first_name" id="first_name" 
@@ -52,13 +52,13 @@
                                 {% endif %}
                             </div>
 
-                            <div class="col-sm-12 col-md-10 offset-md-1 col-lg-6 offset-lg-0 p-2 mb-3">
+                            <div class="col-sm-12 col-md-10 col-lg-6 p-2 mb-3">
                                 <label for="contact_topic" class="form-label fw-light text-light">Topic <span class="fw-bolder text-danger">*</label>
                                 <input type="text" class="form-control-glass form-control" tabindex="2" name="contact_topic" maxlength="50" id="contact_topic" 
                                 placeholder="Which topic you would like to talk?" required>
                             </div>
 
-                            <div class="col-sm-6 col-md-5 offset-md-1 col-lg-6 offset-lg-0 p-2 mb-3">
+                            <div class="col-sm-6 col-md-5 col-lg-6 p-2 mb-3">
                                 <label for="phone" class="form-label fw-light text-light">Phone</label>
                                 {% if user_in %}
                                     <input type="text" class="form-control-glass form-control" tabindex="3" name="phone" id="phone" value="{{user_in.Phone}}">
@@ -67,7 +67,7 @@
                                 {% endif %}
                             </div>
 
-                            <div class="col-sm-6 col-md-5 col-lg-6 offset-lg-0 p-2 mb-3">
+                            <div class="col-sm-6 col-md-5 col-lg-6 p-2 mb-3">
                                 <label for="email-address" class="form-label fw-light text-light">E-mail <span class="fw-bolder text-danger">*</label>
                                 {% if user_in %}
                                     <input type="email" class="form-control form-control-glass form-control" tabindex="4" name="email-address" 
@@ -78,13 +78,13 @@
                                 {% endif %}
                             </div>
                     
-                            <div class="col-sm-12 col-md-10 offset-md-1 col-lg-12 offset-lg-0 p-2">
+                            <div class="col-sm-12 col-md-10 col-lg-12 p-2">
                                 <label for="message" class="form-label fw-light text-light">Message 
                                     <span class="fw-bolder text-danger">*</span>
                                 </label>
                                 
-                                <textarea id="text-1" type="text" class="form-control-glass form-control mb-3" tabindex="5" name="message" 
-                                    maxlength="1000" oninput="updateCount(this, 'counter', 'bars')" required
+                                <textarea id="text-1" type="text" class="form-control-glass form-control mb-3" 
+                                    tabindex="5" name="message" maxlength="1000" oninput="updateCount(this, 'counter', 'bars')" required
                                     style="height: 230px; white-space: pre-wrap;" placeholder="Tell us how can we assist you..."></textarea>
                                
                                 <progress class="col-12" id="bars" value="0"></progress>
@@ -94,7 +94,7 @@
                                 </div>
                             </div>
 
-                            <div id="form_valid" class="col-6 offset-3 alert-field mb-3 d-none animate__animated animate__fadeInUp animate__slow">
+                            <div id="form_valid" class="col-6 alert-field mb-3 d-none animate__animated animate__fadeInUp animate__slow">
                                 <b>Red fields are required!</b>
                             </div>
                         
