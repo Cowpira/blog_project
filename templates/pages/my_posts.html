@@ -61,54 +61,53 @@
                 <h3 class="text-orange py-3 text-center animate__animated animate__fadeInDown animate__delay-1s">
                     You posted {{my_posts.get('items_found')}} questions
                 </h3>
-
+               
+            
                 {% for post in my_posts.get('post') %}
                     <div class="d-flex justify-content-center">
-                        <div class="accordion accordion-flush py-3 col-12 col-md-10 col-lg-8 col-xxl-6" id="accordion-posts">
+                        <div class="accordion accordion-flush py-2 col-12 col-md-10 col-lg-8 col-xxl-6" id="accordion-posts">
                             <div class="accordion-item">
-                                <h2 class="accordion-header row" id="flush-heading-post">
-                                    <button {% if not post.Opened %} id="closed-post" {% endif %} class="post-banner-display accordion-button collapsed mb-3" 
-                                        type="button" aria-expanded="false" data-bs-toggle="collapse" data-bs-target="#collapse-post-{{post.Id}}" 
-                                        aria-controls="collapse-post-{{post.Id}}">
-                                        <div class="container-fluid">
-                                            <div class="row justify-content-between">
-                                                <h5 class="col-11 text-start animate__animated animate__flipInX animate__slow">
-                                                    <p class="post_title fw-light">{{post.Title}}</p>
-                                                </h5>
-                                                
-                                                <div class="col-1 text-end">
-                                                    <a href="#" class="badge rounded-pill bg-light text-dark smaller-texts" 
-                                                        data-bs-toggle="tooltip" data-bs-animation="false" 
-                                                        data-bs-placement="top" title="{{post.Id}}">View ID
-                                                    </a>
+                                <h2 class="row accordion-header post-banner-display" id="flush-heading-post">
+                                    <button {% if not post.Opened %} id="closed-post" {% endif %} class="accordion-button collapsed mb-3" type="button" aria-expanded="false" data-bs-toggle="collapse" 
+                                        data-bs-target="#collapse-post-{{post.Id}}" aria-controls="collapse-post-{{post.Id}}">
+                                        
+                                        <div class="row d-flex justify-content-around">
+                                            <h5 class="col-10 animate__animated animate__flipInX animate__slow">
+                                                <p class="post_title fw-light">{{post.Title}}</p>
+                                            </h5>
+                                            
+                                            <div class="col-2">
+                                                <a href="#" class="badge rounded-pill bg-light text-dark smaller-texts" 
+                                                    data-bs-toggle="tooltip" data-bs-animation="false" 
+                                                    data-bs-placement="top" title="{{post.Id}}">View ID
+                                                </a>
+                                            </div>
+                                            
+                                            <div class="row justify-content-center">
+                                                <div class="col-3 text-center fs-6 mb-1">
+                                                    {{post.Total_Answer}} answer{% if post.Total_Answer > 1 %}s{% endif %}
                                                 </div>
-                                                
-                                                <div class="row justify-content-center">
-                                                    <div class="col-3 text-center fs-6 mb-1">
-                                                        {{post.Total_Answer}} answer{% if post.Total_Answer > 1 %}s{% endif %}
-                                                    </div>
 
-                                                    {% if not post.Opened %}
-                                                        <div class="col-2">
-                                                            <span class="animate__animated animate__flipInX animate__delay-1s animate__repeat-2 
-                                                                badge rounded-pill bg-danger">
-                                                                closed 
-                                                            </span>
-                                                        </div>
-                                                    {% endif %}
-                                                </div>
-                                                
-                                                <div class="py-2">
-                                                    {% for tag in post.Tag.split(' ')|unique %}
-                                                        <span class="language-badges badge bg-{{tag | lower}}">{{tag}}</span>
-                                                    {% endfor %}
-                                                </div>
+                                                {% if not post.Opened %}
+                                                    <div class="col-2">
+                                                        <span class="animate__animated animate__flipInX animate__delay-1s animate__repeat-2 
+                                                            badge rounded-pill bg-danger">
+                                                            closed 
+                                                        </span>
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                            
+                                            <div class="py-1">
+                                                {% for tag in post.Tag.split(' ')|unique %}
+                                                    <span class="language-badges badge bg-{{tag | lower}}">{{tag}}</span>
+                                                {% endfor %}
                                             </div>
                                         </div>
                                     </button>
                                 </h2>
 
-                                <div id="collapse-post-{{post.Id}}" class="accordion-collapse collapse accordion-content answer-box row" 
+                                <div id="collapse-post-{{post.Id}}" class="row p-1 accordion-collapse collapse accordion-content answer-box" 
                                     aria-labelledby="flush-heading-post" data-bs-parent="#accordion-posts">
                                     <div class="accordion-body">
                                         <div class="fw-light lh-base">
@@ -119,11 +118,6 @@
                                                 {% include "code_highlight.html" with context %} 
                                             </span>
                                         </div>
-
-                                        <i class="row text-muted d-flex justify-content-end" style="font-size: 10px;">
-                                            {% set date= post.Posted %}
-                                            Posted: {{post.Posted.strftime('%B, %d %Y @ %H:%M')}}
-                                        </i>
                                         
                                         <div class="col-12 mb-2 d-flex justify-content-center">
                                             {% if user_in %}
@@ -146,6 +140,11 @@
                                                 {% endif %}
                                             {% endif %}
                                         </div>
+
+                                        <i class="row text-muted d-flex justify-content-end" style="font-size: 10px;">
+                                            {% set date= post.Posted %}
+                                            Posted: {{post.Posted.strftime('%B, %d %Y @ %H:%M')}}
+                                        </i>
                                     </div>
                                 </div>
                             </div>

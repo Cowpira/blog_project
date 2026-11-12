@@ -121,7 +121,7 @@ function update_password_validation() {
     let form = document.getElementById("form_update_pass");
     var cur_pass = document.getElementById("cur_password").value;
     var new_pass = document.getElementById("password").value;
-    var conf_pass = document.getElementById("conf_password").value;
+    var conf_pass = document.getElementById("user_reg_conf_password").value;
 
     if (cur_pass === "" || new_pass === "" || conf_pass === "") {
         form.classList.remove('d-none');
@@ -133,7 +133,7 @@ function update_password_validation() {
 function validate_reset_password() {
     let form = document.getElementById("form_valid");
     var new_pass = document.getElementById("password").value;
-    var conf_pass = document.getElementById("conf_password").value;
+    var conf_pass = document.getElementById("user_reg_conf_password").value;
 
     if (new_pass === "" || conf_pass === "") {
         form.classList.remove('d-none');

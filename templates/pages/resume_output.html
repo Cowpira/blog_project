@@ -1,513 +1,302 @@
 {% block content %}
     {% if user_in.Has_Resume %}
-        <h1 class="col-12 col-sm-10 offset-sm-1 page_title text-center">Resume</h1>
+        <h1 class="col-12 text-center page_title mb-3">{{ user_in.First_Name }}'s Resume</h1>
 
-        <div class="col-12 fs-6">
-            <!-- education -->
-            <div class="card-title fs-4 text-success mt-1">Education ___________________</div>
-            
-            {% set education= resume.get("education") %}
-            <div class="row">
-                <label class="col-6 text-muted">Scool:
-                    <p class="fw-light text-marine">{{education.School}}</p>
-                </label>
+        <!-- education -->
+        <span class="card-title fs-4 text-success">Education</span>
         
-                <label class="col-6 text-muted">Type:
-                    <p class="fw-light text-marine">{{education.Education_Type}}</p>
-                </label>
-            </div>
+        {% set education= resume.get("education") %}
+        <div class="row">
+            <label class="col-8 text-muted">Scool:
+                <p class="fw-light text-marine">{{ education.School }}</p>
+            </label>
+    
+            <label class="col-4 text-muted">Type:
+                <p class="fw-light text-marine">{{ education.Education_Type }}</p>
+            </label>
         
-            <div class="row">
-                <label class="col-6 text-muted">Area of Study:
-                    <p class="fw-light text-marine">{{education.Graduated_At}}</p>
-                </label>
-
-                <label class="col-6 text-muted">Status:
-                    <p class="fw-light text-marine">{{education.Grad_Status}}</p>
-                </label>
-            </div>
-
-            {% if education.New_Education | lower != 'null' and education.New_Education | length >= 5 %}
-                <label class="col-12 text-muted">Others:
-                    <p class="fw-light text-marine">{{education.New_Education}}</p>
-                </label>
-            {% endif %}
-            
-
-            <!-- developer title -->
-            <div class="card-title fs-4 text-success mt-2">Professional __________________</div>
-            <label class="col-12 text-muted">Title:
-                <p class="fw-light text-marine">{{user_in.Coding_Title}}
-                </p>
+            <label class="col-8 text-muted">Area of Study:
+                <p class="fw-light text-marine">{{ education.Graduated_At }}</p>
             </label>
 
-            <div class="row">
-                <label class="col-9 text-muted">Primary Programming Language:
-                    <p class="fw-light text-marine">{{user_in.Coding_Language}}</p>
-                </label>
+            <label class="col-4 text-muted">Status:
+                <p class="fw-light text-marine">{{ education.Grad_Status }}</p>
+            </label>
+        </div>
 
-                <label class="col-3 text-muted">Experience:
-                    <p class="fw-light text-marine">{{user_in.Years_Experience}} years</p>
-                </label>
-            </div>
+        {% if education.New_Education | lower != 'null' and education.New_Education | length >= 5 %}
+            <label class="col-12 text-muted">Others:
+                <p class="fw-light text-marine">{{ education.New_Education }}</p>
+            </label>
+        {% endif %}
+            
+
+        <!-- developer title -->
+        <span class="card-title fs-4 text-success mt-3">Professional</span>
+        <label class="col-12 text-muted">Title:
+            <p class="fw-light text-marine">{{ user_in.Cod_Title }}</p>
+        </label>
+
+        <div class="row">
+            <label class="col-8 text-muted">Primary Language:
+                <p class="fw-light text-marine">{{ user_in.Cod_Lang }}</p>
+            </label>
+
+            <label class="col-4 text-muted">Experience:
+                <p class="fw-light text-marine">{{ user_in.Years_Exp }} years</p>
+            </label>
+        </div>
 
             
-            <!-- certifications -->
-            <div class="card-title fs-4 text-success mt-2">Certifications ________________</div>
-            {% set certifications= resume.get("certifications") %}
+        <!-- certifications -->
+        <span class="card-title fs-4 text-success mt-3">Certifications</span>
+        {% set certifications= resume.get("certifications") %}
 
-            {% if certifications %}
-                {% if certifications.Certification1 %}
-                    <div class="row">
-                        <label class="col-6 text-muted">Title:
-                            <p class="fw-light text-marine">{{certifications.Certification1}}</p>
+        {% if certifications %}
+            {% for i in range(1, 4) %}
+                {% if certifications['Certification'~i] %}
+                    <div class="row d-flex justify-content-around">
+                        <label class="col-8 text-muted">Title:
+                            <p class="fw-light text-marine">{{ certifications['Certification'~i] }}</p>
                         </label>
 
-                        <label class="col-6 text-muted">Issued:
-                            <p class="fw-light text-marine">{{certifications.Cert1_Date}}</p>
-                        </label>
-                    </div>
-                {% endif %}
-
-                {% if certifications.Certification2 %}
-                    <div class="row">
-                        <label class="col-6 text-muted">Title:
-                            <p class="fw-light text-marine">{{certifications.Certification2}}</p>
-                        </label>
-
-                        <label class="col-6 text-muted">Issued:
-                            <p class="fw-light text-marine">{{certifications.Cert2_Date}}</p>
+                        <label class="col-4 text-muted">Issued:
+                            <p class="fw-light text-marine">{{ certifications['Cert'~ i ~'_Date'] }}</p>
                         </label>
                     </div>
                 {% endif %}
+            {% endfor %}
+        {% else %}
+            <p class="col-12 text-center fw-bold text-warning">No certification informed!</p>
+        {% endif %}
 
-                {% if certifications.Certification3 %}
-                    <div class="row">
-                        <label class="col-6 text-muted">Title:
-                            <p class="fw-light text-marine">{{certifications.Certification3}}</p>
-                        </label>
+        <!-- skills -->
+        <span class="card-title fs-4 text-success mt-3">Skills</span>
 
-                        <label class="col-6 text-muted">Issued:
-                            <p class="fw-light text-marine">{{certifications.Cert3_Date}}</p>
-                        </label>
-                    </div>
-                {% endif %}
-            {% else %}
-                <p class="fw-bolder text-warning">No certification informed!</p>
-            {% endif %}
-
-            <!-- skills -->
-            <div class="card-title fs-4 text-success mt-2">Skills ______________________</div>
-
-            <!-- front-end skills -->
-            <div class="col-12 mt-3">
-                <span class="col-3 col-md-2 ms-3 badge rounded-pill bg-dark"><b>Front-End</b></span>
-            </div>
+        <!-- front-end skills -->
+        <div class="row d-flex justify-content-around">
+            <span class="col-6 col-md-3 badge rounded-pill bg-dark">
+                <b>Front-End</b>
+            </span>
             {% set front_end= resume.get("front_end") %}
 
             {% if front_end %}
-                {% if front_end.Frontend_Lang1 %}
-                    <div class="row">
-                        <label class="col-6 text-muted">Language:
-                            <p class="fw-light text-marine">{{front_end.Frontend_Lang1}}</p>
+                {% for i in range(1, 4) %}
+                    {% if front_end['Frontend_Lang'~i] %}
+                        <label class="col-8 text-muted">Language:
+                            <p class="fw-light text-marine">{{ front_end['Frontend_Lang'~i] }}</p>
                         </label>
 
-                        <label class="col-6 text-muted">Experience:
-                            <p class="fw-light text-marine">{{front_end.Exp_Frontend1}} years</p>
+                        <label class="col-4 text-muted">Experience:
+                            <p class="fw-light text-marine">{{ front_end['Exp_Frontend'~i] }} years</p>
                         </label>
-                    </div>
-                {% endif %}
-
-                {% if front_end.Frontend_Lang2 %}
-                    <div class="row">
-                        <label class="col-6 text-muted">Language:
-                            <p class="fw-light text-marine">{{front_end.Frontend_Lang2}}</p>
-                        </label>
-
-                        <label class="col-6 text-muted">Experience:
-                            <p class="fw-light text-marine">{{front_end.Exp_Frontend2}} years</p>
-                        </label>
-                    </div>
-                {% endif %}
-
-                {% if front_end.Frontend_Lang3 %}
-                    <div class="row">
-                        <label class="col-6 text-muted">Language:
-                            <p class="fw-light text-marine">{{front_end.Frontend_Lang3}}</p>
-                        </label>
-
-                        <label class="col-6 text-muted">Experience:
-                            <p class="fw-light text-marine">{{front_end.Exp_Frontend3}} years</p>
-                        </label>
-                    </div>
-                {% endif %}
+                    {% endif %}
+                {% endfor %}
             {% else %}
-                <p class="fw-bolder text-warning">No front-end informed!</p>
+                <p class="col-12 text-center py-2 fw-bold text-warning">No front-end informed!</p>
             {% endif %}
+        
 
             <!-- back-end skills -->
-            <div class="col-12 mt-3">
-                <span class="col-3 col-md-2 ms-3 badge rounded-pill bg-dark"><b>Back-End</b></span>
-            </div>
+            <span class="col-6 col-md-3 mt-3 badge rounded-pill bg-dark">
+                <b>Back-End</b>
+            </span>
             {% set back_end= resume.get("back_end") %}
 
             {% if back_end %}
-                {% if back_end.Backend_Lang1 %}
-                    <div class="row">
-                        <label class="col-6 text-muted">Language:
-                            <p class="fw-light text-marine">{{back_end.Backend_Lang1}}</p>
+                {% for i in range(1, 4) %}
+                    {% if back_end['Backend_Lang'~i] %}
+                        <label class="col-8 text-muted">Language:
+                            <p class="fw-light text-marine">{{ back_end['Backend_Lang'~i] }}</p>
                         </label>
 
-                        <label class="col-6 text-muted">Experience:
-                            <p class="fw-light text-marine">{{back_end.Exp_Backend1}} years</p>
+                        <label class="col-4 text-muted">Experience:
+                            <p class="fw-light text-marine">{{ back_end['Exp_Backend'~i] }} years</p>
                         </label>
-                    </div>
-                {% endif %}
-
-                {% if back_end.Backend_Lang2 %}
-                    <div class="row">
-                        <label class="col-6 text-muted">Language:
-                            <p class="fw-light text-marine">{{back_end.Backend_Lang2}}</p>
-                        </label>
-
-                        <label class="col-6 text-muted">Experience:
-                            <p class="fw-light text-marine">{{back_end.Exp_Backend2}} years</p>
-                        </label>
-                    </div>
-                {% endif %}
-
-                {% if back_end.Backend_Lang3 %}
-                    <div class="row">
-                        <label class="col-6 text-muted">Language:
-                            <p class="fw-light text-marine">{{back_end.Backend_Lang3}}</p>
-                        </label>
-
-                        <label class="col-6 text-muted">Experience:
-                            <p class="fw-light text-marine">{{back_end.Exp_Backend3}} years</p>
-                        </label>
-                    </div>
-                {% endif %}
+                    {% endif %}
+                {% endfor %}
             {% else %}
-                <p class="fw-bolder text-warning">No back-end informed!</p>
+                <p class="col-12 text-center py-2 fw-bold text-warning">No back-end informed!</p>
             {% endif %}
 
 
             <!-- database skills -->
-            <div class="ol-12 mt-3">
-                <span class="col-3 col-md-2 ms-3 badge rounded-pill bg-dark"><b>Database</b></span>
-            </div>
+            <span class="col-6 col-md-3 mt-3 badge rounded-pill bg-dark">
+                <b>Database</b>
+            </span>
             {% set database= resume.get("databases") %}
 
             {% if database %}
-                {% if database.Database1 %}
-                    <div class="row">
-                        <label class="col-6 text-muted">Database:
-                            <p class="fw-light text-marine">{{database.Database1}}</p>
+                {% for i in range(1, 4) %}
+                    {% if database['Database'~i] %}
+                        <label class="col-8 text-muted">Database:
+                            <p class="fw-light text-marine">{{ database['Database'~i] }}</p>
                         </label>
 
-                        <label class="col-6 text-muted">Experience:
-                            <p class="fw-light text-marine">{{database.Exp_Database1}} years</p>
+                        <label class="col-4 text-muted">Experience:
+                            <p class="fw-light text-marine">{{ database['Exp_Database'~i] }} years</p>
                         </label>
-                    </div>
-                {% endif %}
-
-                {% if database.Database2 %}
-                    <div class="row">
-                        <label class="col-6 text-muted">Database:
-                            <p class="fw-light text-marine">{{database.Database2}}</p>
-                        </label>
-
-                        <label class="col-6 text-muted">Experience:
-                            <p class="fw-light text-marine">{{database.Exp_Database2}} years</p>
-                        </label>
-                    </div>
-                {% endif %}
-
-                {% if database.Database3 %}
-                    <div class="row">
-                        <label class="col-6 text-muted">Database:
-                            <p class="fw-light text-marine">{{database.Database3}}</p>
-                        </label>
-
-                        <label class="col-6 text-muted">Experience:
-                            <p class="fw-light text-marine">{{database.Exp_Database3}} years</p>
-                        </label>
-                    </div>
-                {% endif %}
+                    {% endif %}
+                {% endfor %}
             {% else %}
-                <p class="fw-bolder text-warning">No database informed!</p>
+                <p class="col-12 text-center py-2 fw-bold text-warning">No database informed!</p>
             {% endif %}
 
 
             <!-- cloud skills -->
-            <div class="col-12 mt-3">
-                <span class="col-4 col-md-3 ms-3 badge rounded-pill bg-dark"><b>Cloud Computing</b></span>
-            </div>
+            <span class="col-6 col-md-3 mt-3 badge rounded-pill bg-dark">
+                <b>Cloud Computing</b>
+            </span>
             {% set cloud= resume.get("clouds") %}
 
             {% if cloud and cloud.Cloud1 and cloud.Cloud2 and cloud.Cloud3 %}
-                {% if cloud.Cloud1 %}
-                    <div class="row">
-                        <label class="col-6 text-muted">Cloud:
-                            <p class="fw-light text-marine">{{cloud.Cloud1}}</p>
-                        </label>
+                {% for i in range(1, 4) %}
+                    {% if cloud['Cloud'~i] %}
+                        <div class="row">
+                            <label class="col-6 text-muted">Cloud:
+                                <p class="fw-light text-marine">{{ cloud['Cloud'~i] }}</p>
+                            </label>
 
-                        <label class="col-6 text-muted">Experience:
-                            <p class="fw-light text-marine">{{cloud.Exp_Cloud1}} years</p>
-                        </label>
-                    </div>
-                {% endif %}
+                            <label class="col-6 text-muted">Experience:
+                                <p class="fw-light text-marine">{{ cloud['Exp_Cloud'~i] }} years</p>
+                            </label>
+                        </div>
+                    {% endif %}
+                {% endfor %}
 
-                {% if cloud.Cloud2 %}
-                    <div class="row">
-                        <label class="col-6 text-muted">Cloud:
-                            <p class="fw-light text-marine">{{cloud.Cloud2}}</p>
-                        </label>
-
-                        <label class="col-6 text-muted">Experience:
-                            <p class="fw-light text-marine">{{cloud.Exp_Cloud2}} years</p>
-                        </label>
-                    </div>
-                {% endif %}
-
-                {% if cloud.Cloud3 %}
-                    <div class="row">
-                        <label class="col-6 text-muted">Cloud:
-                            <p class="fw-light text-marine">{{cloud.Cloud3}}</p>
-                        </label>
-
-                        <label class="col-6 text-muted">Experience:
-                            <p class="fw-light text-marine">{{cloud.Exp_Cloud3}} years</p>
-                        </label>
-                    </div>
-                {% endif %}
             {% else %}
-                <p class="fw-bolder text-warning">No cloud computing informed!</p>
+                <p class="col-12 text-center py-2 fw-bold text-warning">No cloud computing informed!</p>
             {% endif %}
+        </div>
 
-            <div class="col-12 mt-4">
-                <span class="col-3 col-md-2 ms-3 badge rounded-pill bg-dark"><b>Others Skills</b></span>
-                {% if cloud.Other_Skills %}
-                    <p class="fw-light text-marine">{{cloud.Other_Skills}}</p>
-                {% else %}
-                    <p class="fw-bolder text-warning">No skills informed!</p>
-                {% endif %}
-            </div>
-
-
-            <!-- work experiences -->
-            <div class="card-title fs-4 text-success mt-2">Experiences _________________</div>
-
-            {% set work = resume.get("works") %}
-            <div class="row">
-                <label class="col-6 text-muted">Company:
-                    <p class="fw-light text-marine">{{work.Company1}}</p>
-                </label>
-
-                <label class="col-6 text-muted">Position:
-                    <p class="fw-light text-marine">{{work.Position1}}</p>
-                </label>
-            </div>
-
-            <div class="row">
-                <label class="col-6 text-muted">Started:
-                    <p class="fw-light text-marine">{{work.Started1}}</p>
-                </label>
-
-                <label class="col-6 text-muted">Ended:
-                    <p class="fw-light text-marine">{{work.Ended1}}</p>
-                </label>
-            </div>
-
-            <label class="col-12 text-muted">Contributions:
-                <p class="fw-light text-marine">{{work.Contribution1}}</p>
+        <div class="col-12 mt-4">
+            {% if cloud.Other_Skills %}
+            <label class="text-muted">Other Skills:
+                <p class="fw-light text-marine" style="text-align: justify;">{{cloud.Other_Skills}}</p>
             </label>
-            <hr class="col-6 offset-3 text-muted">
+            {% else %}
+                <p class="col-12 text-center py-2 fw-bold text-warning">No skills informed!</p>
+            {% endif %}
+        </div>
 
-            {% if work.Company2 and work.Position2 %}
+
+        <!-- work experiences -->
+        <span class="card-title fs-4 text-success mt-3">Experiences</span>
+
+        {% set work = resume.get("works") %}
+        {% for i in range(1, 4) %}
+            {% if work['Company'~i] and work['Position'~i] %}
                 <div class="row">
                     <label class="col-6 text-muted">Company:
-                        <p class="fw-light text-marine">{{work.Company2}}</p>
+                        <p class="fw-light text-marine">{{work['Company'~i]}}</p>
                     </label>
 
                     <label class="col-6 text-muted">Position:
-                        <p class="fw-light text-marine">{{work.Position2}}</p>
+                        <p class="fw-light text-marine">{{work['Position'~i]}}</p>
                     </label>
-                </div>
-
-                <div class="row">
+                
                     <label class="col-6 text-muted">Started:
-                        <p class="fw-light text-marine">{{work.Started2}}</p>
+                        <p class="fw-light text-marine">{{work['Started'~i] or 'No started date!'}}</p>
                     </label>
 
                     <label class="col-6 text-muted">Ended:
-                        <p class="fw-light text-marine">{{work.Ended2}}</p>
+                        <p class="fw-light text-marine">{{work['Ended'~i] or 'No ended date!'}}</p>
                     </label>
                 </div>
 
                 <label class="col-12 text-muted">Contributions:
-                    <p class="fw-light text-marine">{{work.Contribution2}}</p>
+                    <p class="fw-light text-marine">{{work['Contribution'~i] or 'No contribution informed!'}}</p>
                 </label>
-
                 <hr class="col-6 offset-3 text-muted">
             {% endif %}
-
-            {% if work.Company3 and work.Position3 %}
-                <div class="row">
-                    <label class="col-6 text-muted">Company:
-                        <p class="fw-light text-marine">{{work.Company3}}</p>
-                    </label>
-
-                    <label class="col-6 text-muted">Position:
-                        <p class="fw-light text-marine">{{work.Position3}}</p>
-                    </label>
-                </div>
-
-                <div class="row">
-                    <label class="col-6 text-muted">Started:
-                        <p class="fw-light text-marine">{{work.Started3}}</p>
-                    </label>
-
-                    <label class="col-6 text-muted">Ended:
-                        <p class="fw-light text-marine">{{work.Ended3}}</p>
-                    </label>
-                </div>
-
-                <label class="col-12 text-muted">Contributions:
-                    <p class="fw-light text-marine">{{work.Contribution3}}</p>
-                </label>
-            {% endif %}
+        {% endfor %}
 
 
-            <!-- projects developed -->
-            <div class="card-title fs-4 text-success mt-2">Projects ____________________</div>
-            {% set projects= resume.get("projects") %}
+        <!-- projects developed -->
+        <div class="card-title fs-4 text-success mt-3">Projects</div>
+        {% set projects= resume.get("projects") %}
 
-            {% if projects %}
-                {% if projects.Project1 and projects.Prj_Desc1 %}
-                    <div class="row">
-                        <label class="col-6 text-muted">Name:
-                            <p class="fw-light text-marine">{{projects.Project1}}</p>
+        {% if projects %}
+            {% for i in range(1, 4) %}
+                {% if projects['Project'~i] and projects['Prj_Desc'~i] %}
+                    <div class="row d-flex justify-content-around">
+                        <label class="col-12 col-sm-6 text-muted">Name:
+                            <p class="fw-light text-marine">{{projects['Project'~i]}}</p>
                         </label>
 
-                        <label class="col-6 text-muted">Link Access:
-                            <p class="fw-light text-marine">{{projects.Link1}}</p>
+                        <label class="col-12 col-sm-6 text-muted">Access Link:
+                            <p class="fw-light text-marine">{{projects['Link'~i]}}</p>
                         </label>
                     </div>
 
                     <label class="col-12 text-muted">Description:
-                        <p class="fw-light text-marine">{{projects.Prj_Desc1}}</p>
+                        <p class="fw-light text-marine" style="text-align: justify;">{{projects['Prj_Desc'~i]}}</p>
                     </label>
 
                     <hr class="col-6 offset-3 text-muted">
                 {% endif %}
+            {% endfor %}
+        {% else %}
+            <p class="col-12 text-center py-2 fw-bold text-warning">No project informed!</p>
+        {% endif %}
 
-                {% if projects.Project2 and projects.Prj_Desc2 %}
-                    <div class="row">
-                        <label class="col-6 text-muted">Name:
-                            <p class="fw-light text-marine">{{projects.Project2}}</p>
-                        </label>
-
-                        <label class="col-6 text-muted">Link Access:
-                            <p class="fw-light text-marine">{{projects.Link2}}</p>
-                        </label>
-                    </div>
-
-                    <label class="col-12 text-muted">Description:
-                        <p class="fw-light text-marine">{{projects.Prj_Desc2}}</p>
-                    </label>
-
-                    <hr class="col-6 offset-3 text-muted">
-                {% endif %}
-
-                {% if projects.Project3 and projects.Prj_Desc3 %}
-                    <div class="row">
-                        <label class="col-6 text-muted">Name:
-                            <p class="fw-light text-marine">{{projects.Project3}}</p>
-                        </label>
-
-                        <label class="col-6 text-muted">Link Access:
-                            <p class="fw-light text-marine">{{projects.Link3}}</p>
-                        </label>
-                    </div>
-
-                    <label class="col-12 text-muted">Description:
-                        <p class="fw-light text-marine">{{projects.Prj_Desc3}}</p>
-                    </label>
-                {% endif %}
-            {% else %}
-                <p class="fw-bolder text-warning">No project informed!</p>
-            {% endif %}
-
-            <!-- tab navigation buttons -->
-            <div class="d-flex navigation_menu justify-content-between py-4">
-                <a href="#" onclick="data_tab();" class="fp-buttons fp-gray-btn p-2" tabindex="8">
-                    <i class="bi bi-arrow-left-circle-fill px-2" style="font-size: 1.3rem;"></i> Previous &nbsp;
-                </a>
-            
-                <a href="#" onclick="portfolio_tab();" class="fp-buttons fp-orange-btn py-2" tabindex="7">
-                    <i class="bi bi-file-earmark-text" style="font-size: 1.3rem;"></i> Update
-                </a>
-            </div>
+        <!-- tab navigation buttons -->
+        <div class="d-flex navigation_menu justify-content-center py-4">
+            <a href="#" onclick="edit_portfolio_tab();" class="fp-buttons fp-orange-btn py-2" tabindex="1">
+                <i class="bi bi-file-earmark-text" style="font-size: 1.3rem;"></i> Update
+            </a>
         </div>
     {% else %}
-        <div class="col-10 offset-1 text-center py-1" style="background-color: rgba(44, 44, 44, 0.758);">
+        <div class="col-12 col-sm-10 text-center py-1" style="background-color: rgba(44, 44, 44, 0.758);">
             <label class="fs-3 text-light animate__animated animate__fadeInDown animate__delay-1s animate__slow py-4">
                 Incomplete Resume
             </label>
 
             <div class="mb-4 animate__animated animate__fadeInUp animate__delay-1s animate__slow">
-                <a href="#" onclick="portfolio_tab();" class="fp-buttons fp-orange-btn" tabindex="1">
+                <a href="#" onclick="edit_portfolio_tab();" class="fp-buttons fp-orange-btn" tabindex="1">
                     <i class="bi bi-person-vcard px-1" style="font-size: 1.3rem;"></i> Fill Resume
                 </a>
             </div>
         </div>
 
-        <div class="row fs-6 mt-4">
-            <div class="card-title fs-4 text-success mt-2">Programmer __________________</div>
+        <div class="row d-flex justify-content-around">
+            <div class="card-title fs-4 text-success mt-3">Programmer</div>
             <label class="col-12 text-muted">Title
                 <p class="fw-light text-marine">{{user_in.Cod_Title}}
                 </p>
             </label>
 
-            <div class="row">
-                <label class="col-12 col-sm-6 text-muted">Primary Language
-                    <p class="fw-light text-marine">{{user_in.Cod_Lang}}</p>
-                </label>
+            <label class="col-8 col-sm-6 text-muted">Primary Language
+                <p class="fw-light text-marine">{{user_in.Cod_Lang}}</p>
+            </label>
 
-                <label class="col-12 col-sm-6 text-muted">Experience
-                    <p class="fw-light text-marine">{{user_in.Years_Exp}} years</p>
-                </label>
-            </div>
+            <label class="col-4 col-sm-6 text-muted">Experience
+                <p class="fw-light text-marine">{{user_in.Years_Exp}} years</p>
+            </label>
 
-            <div class="card-title fs-4 text-success mt-2">Current Job ___________________</div>
-            
+            <div class="card-title fs-4 text-success mt-2">Current Job</div>
             {% set work = resume.get("works") %}
-            <div class="row">
-                <label class="col-12 col-sm-6 text-muted">Company
-                    <p class="fw-light text-marine">{{work.Company1}}
-                    </p>
-                </label>
+            <label class="col-6 text-muted">Company
+                <p class="fw-light text-marine">{{ work.Company1 }}
+                </p>
+            </label>
 
-                <label class="col-12 col-sm-6 text-muted">Position
-                    <p class="fw-light text-marine">{{work.Position1}}</p>
-                </label>
+            <label class="col-6 text-muted">Position
+                <p class="fw-light text-marine">{{ work.Position1 }}</p>
+            </label>
 
-                <label class="col-12 col-sm-6 text-muted">Started
-                    <p class="fw-light text-marine">{{work.Started1}}</p>
-                </label>
+            <label class="col-6 text-muted">Started
+                <p class="fw-light text-marine">{{ work.Started1 or 'No started date!' }}</p>
+            </label>
 
-                <label class="col-12 col-sm-6 text-muted">Ended
-                    {% if work.Ended1 %}
-                        <p class="fw-light text-marine">{{work.Ended1}}</p>
-                    {% else %}
-                        <p class="fw-light text-marine">{{today}}</p>
-                    {% endif %}
-                </label>
-            </div>
+            <label class="col-6 text-muted">Ended
+                <p class="fw-light text-marine">{{ work.Ended1 or 'No eded date!' }}</p>
+            </label>
 
             <label class="col-12 text-muted">Contributions
-                <p class="fw-light text-marine">{{work.Contribution1}}</p>
+                <p class="fw-light text-marine" style="text-align: justify;">
+                    {{ work.Contribution1 or 'No contributions informed!'}}
+                </p>
             </label>
         </div>
     {% endif %}

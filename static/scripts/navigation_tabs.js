@@ -2,9 +2,6 @@
 function edit_data_tab(){
     var show_edit_data = document.querySelector('#edit-data-tab');
     new bootstrap.Tab(show_edit_data).show();
-
-    show_edit_data.textContent= 'Edit Profile';
-    show_edit_data.classList.add("nav-link", "navlink-tab-menu");
 }
 
 // function to trigger edit data tab
@@ -49,12 +46,6 @@ function projects_tab(){
     new bootstrap.Tab(show_projects).show();
 }
 
-// function to trigger data tab
-function data_tab(){
-    var show_data = document.querySelector('#v-pills-profile-data');
-    new bootstrap.Tab(show_data).show();
-}
-
 // function to trigger COMPANY tab
 function company_tab(){
     var show_company = document.querySelector('#company-tab');
@@ -80,12 +71,9 @@ function ocupation_tab(){
 }
 
 // function to trigger resume data tab
-function portfolio_tab(){
-    var show_portfolio = document.querySelector('#portfolio-tab');
+function edit_portfolio_tab(){
+    var show_portfolio = document.querySelector('#edit-portfolio-tab');
     new bootstrap.Tab(show_portfolio).show();
-
-    show_portfolio.textContent= 'Update Resume';
-    show_portfolio.classList.add("nav-link", "navlink-tab-menu");
 }
 
 // function to trigger LEVEL tab

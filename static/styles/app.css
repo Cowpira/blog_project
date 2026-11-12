@@ -298,7 +298,9 @@ main{  min-height: calc(100vh - 360px); }
     color: var(--fp-orange-color);
 }
 
-/* PORTFOLIO TAB MENU STYLE */
+/* STYLE FOR DEVELOPER MY ACCOUNT PAGE */
+/* styling the edit data & resume  */
+.form_title{ margin-top: 25px; }
 .navlink-tab-menu{
     font-family: var(--fp-font);
     font-size: 14px !important;
@@ -318,14 +320,33 @@ main{  min-height: calc(100vh - 360px); }
     border: .5px solid var(--fp-orange-color);
 }
 
+.resume_personal_layout{
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 24px;
+}
+.resume_personal_menu { 
+    position: sticky; 
+    top: 120px;
+    flex-direction: column;
+}
 
-.portfolio_menu { position: sticky; top: 120px; }
-
-.link-portfolio{
-    font-family: var(--fp-font);
-    font-size: 15px;
-    margin-top: 12px;
-    color: rgb(168, 168, 168);
+.nav-link-edit-account{ 
+    text-decoration: none;
+    text-align: center;
+    padding: 8px 5px;
+    background-color: #e9ecef; 
+    color: #0077b6; 
+    font-weight: lighter;
+    border-radius: 6px;
+    font-size: 13px;
+    margin: 5px 9px;
+}
+.nav-link-edit-account.active{ 
+    background-color: #212529; 
+    color: #00b4d8; 
+    font-weight: 500;
 }
 
 /* BANNER STYLES */
@@ -643,7 +664,10 @@ textPath {
     color: var(--fp-orange-color);
 }
 
-.answer-box{ border: 1px solid rgba(225, 225, 225, 0.604); margin-top: -17px; }
+.answer-box{ 
+    border: 2px dashed rgb(164, 164, 164); 
+    margin-top: -17px; 
+}
 
 .accordion-body-modals{
     height: 300px; 
@@ -654,6 +678,16 @@ textPath {
     box-shadow: rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, 
     rgba(0, 0, 0, 0.04) 0px 10px 10px -5px;
 }
+
+.accordion-button {
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 0.75rem; /* Adjust bottom spacing as needed */
+}
+
+/* 2. Center the chevron and give it a little top margin */
+.accordion-button::after { margin-left: 0; margin-top: 0.1rem; }
+.accordion-button:hover{ background-color: rgb(243, 243, 243);}
 
 .post-banner-display{
     position: relative;  /* Critical: anchors the pseudo-element */
@@ -1476,9 +1510,6 @@ a[data-bs-toggle="collapse"] .bi-chevron-double-down {
 
 
 
-
-
-
 /* style for mobile devices */
 @media screen and (max-width: 665px) {
     .banner-title {
@@ -1504,10 +1535,7 @@ a[data-bs-toggle="collapse"] .bi-chevron-double-down {
         background-color: transparent;
     }
 
-    .create_account_title{ 
-        font-size: 4.3rem; 
-        margin-top: -75px !important; 
-    }
+    .create_account_title{ font-size: 4.3rem; margin-top: -75px !important; }
 
     .new_dev_text{
         background-color: rgba(13, 13, 13, 0.908); 
@@ -1522,5 +1550,21 @@ a[data-bs-toggle="collapse"] .bi-chevron-double-down {
         width: 10rem;
         padding: 10px;
         font-size: 17px;
+    }
+
+    .form_title{ margin-top: 5px; }
+    .resume_personal_layout{ flex-direction: column;}
+    .resume_personal_menu{ 
+        background-color: #f8f9fa;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        width: 100%;
+        top: 5.8rem;
+    }
+    .nav-link-edit-account { 
+        white-space: nowrap;
+        padding: 5px 6px;
+        margin: 5px 4px; 
     }
 }   
