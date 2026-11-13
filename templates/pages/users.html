@@ -90,8 +90,8 @@
 
                     {% if not user_in %}
                         <a href="#" data-bs-toggle="modal" data-bs-target="#modalNewUser" 
-                        class="fp-links d-flex align-items-center py-2">
-                            <i class="bi bi-person-add" style="font-size: 15px;"></i> <br> New here?
+                            class="fp-links d-flex align-items-center py-2">
+                            <i class="bi bi-person-add" style="font-size: 15px;"></i> <br> New here? njnj
                         </a>
                     {% endif %}
                 </div>
@@ -136,7 +136,7 @@
 
             <div class="row d-flex justify-content-evenly mb-5">
                 {% if not user_in %}
-                    <div class="col text-center">
+                    <div class="col-12 d-sm-none text-center">
                         <a href="#" data-bs-toggle="modal" data-bs-target="#modalNewUser" 
                             class="fs-5 text-marine text-decoration-none animate__animated animate__fadeInDown animate__slow">
                             <i class="bi bi-person-fill-add" style="font-size: 1.5rem;"></i> New here?
@@ -263,7 +263,7 @@
                         </div>
 
                         <div class="row d-flex justify-content-center">
-                            <div class="col-12 col-sm-10 col-lg-8 mb-3" style="margin-top: 10rem;">
+                            <div class="col-12 col-sm-10 col-lg-8 mb-3" style="margin-top: 7rem;">
                                 <div class="animate__animated animate__fadeInDown animate__slower">
                                     <span class="create_account_title">Benefits</span>
                                 </div>
@@ -279,9 +279,11 @@
                                 </p>
                             </div>
 
-                            <span class="col-12 text-center fs-1 fw-bolder text-light animate__animated animate__fadeInUp animate__slower animate__delay-2s">I'm</span>
+                            <div class="row d-flex justify-content-center mt-2 animate__animated animate__fadeInUp animate__slower animate__delay-2s">
+                                <label class="col-12 text-center fs-1 fw-bolder text-light animate__animated animate__fadeInUp animate__slower animate__delay-2s">
+                                    I'm
+                                </label>
 
-                            <div class="row d-flex justify-content-center mt-4 animate__animated animate__fadeInUp animate__slower animate__delay-2s">
                                 <a href="{{ url_for("add_employeer") }}" class="fp-buttons btn-create-account">
                                     &nbsp; Employeer &nbsp;
                                 </a>
