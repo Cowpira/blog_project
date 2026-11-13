@@ -88,13 +88,13 @@
                             <textarea id="text-{{msg.Id}}" class="form-control answer_{{msg.Id}}" tabindex="1" 
                                 style="height: 120px; white-space: pre-wrap;" name="reply_msg" required
                                 oninput="updateCount(this, 'rep-{{msg.Id}}-counter', 'rep-{{msg.Id}}-bars')" 
-                                maxlength="500" placeholder="Type your reply here..."></textarea>
+                                maxlength="1000" placeholder="Type your reply here..."></textarea>
                         </div>
 
                         <progress class="w-100" id="rep-{{msg.Id}}-bars" value="0" max="500"></progress>
                         <div class="row d-flex justify-content-around smaller-texts fw-light">
                             <span class="col-6 text-danger">* required fields</span>
-                            <span id="rep-{{msg.Id}}-counter" class="col-6 text-muted text-end">0 / 500</span>
+                            <span id="rep-{{msg.Id}}-counter" class="col-6 text-muted text-end">0 / 1000</span>
                         </div>
 
                         <div id="msg_valid-{{msg.Id}}" class="invalid-feedback animate__animated animate__fadeInUp">

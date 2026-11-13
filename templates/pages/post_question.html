@@ -78,12 +78,12 @@
                         </div>
 
                         <textarea type="text" tabindex="3" class="form-control question-textarea rounded-0 rounded-bottom" 
-                            style="height: 520px; border-top: none; white-space: pre-wrap;" name="edit-question" maxlength="1500"
+                            style="height: 520px; border-top: none; white-space: pre-wrap;" name="edit-question" maxlength="3500"
                             id="edit_question" oninput="updateCount(this, 'edit-counter', 'edit-bars')"
                             required placeholder="Describe your question or use the dropdown to inject syntax blocks...">{{- edit_post.Question if edit_post -}}</textarea>
 
                         <progress class="col-12" id="edit-bars" value="0"></progress>
-                        <span id="edit-counter" class="col-12 d-flex text-muted smaller-texts justify-content-end">0 / 1500</span>
+                        <span id="edit-counter" class="col-12 d-flex text-muted smaller-texts justify-content-end">0 / 3500</span>
                        
                         <!-- HIDDEN TRUE DROPDOWN LIST FOR FORMS (Replaced with clean inline checkboxes if you want visual indicator states) -->
                         <div class="tag-checkbox-container d-none mb-3">
@@ -181,11 +181,11 @@
 
                         <textarea type="text" tabindex="3" class="form-control question-textarea rounded-0 rounded-bottom" 
                             style="height: 520px; border-top: none; white-space: pre-wrap;" name="question" id="question"
-                            maxlength="1500" oninput="updateCount(this, 'new-counter', 'new-bars')"
+                            maxlength="3500" oninput="updateCount(this, 'new-counter', 'new-bars')"
                             required placeholder="Describe your question or use the dropdown to inject syntax blocks..."></textarea>
 
                         <progress class="col-12" id="new-bars" value="0"></progress>
-                        <span id="new-counter" class="col-12 d-flex text-muted smaller-texts justify-content-end">0 / 1500</span>
+                        <span id="new-counter" class="col-12 d-flex text-muted smaller-texts justify-content-end">0 / 3500</span>
 
                         <!-- HIDDEN TRUE DROPDOWN LIST FOR FORMS (Replaced with clean inline checkboxes if you want visual indicator states) -->
                         <div class="tag-checkbox-container d-none mb-3">
