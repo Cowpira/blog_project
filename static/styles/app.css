@@ -602,6 +602,12 @@ textPath {
     color: var(--fp-orange-color);
 }
 
+.card-text{
+    text-align: justify; 
+    font-family: var(--fp-font); 
+    font-size: 10px !important;
+}
+
 .card:hover{
     border: 1px solid rgba(158, 158, 158, 0.796);
     transition: ease-in-out .55s;
@@ -643,7 +649,6 @@ textPath {
 }
         
 .dev_card:hover .dev_card_body { box-shadow: inset 0px 10px 20px rgba(0, 0, 0, 0.1); }
-
 .resume-bg-gray{ background-color: #cfd8dcba; color: #546E7A; }
 
 /* resume modal badges label */

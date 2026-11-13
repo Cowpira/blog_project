@@ -17,7 +17,7 @@
             <form class="row justify-content-around py-3 needs-validation" novalidate action="{{ url_for("search_posts") }}" method="GET"
                 style="background-color: rgba(36, 36, 36, 0.895);">
                 
-                <div class="col-3 col-md-2 mt-1">
+                <div class="col-3 mt-1">
                     <a href="#" class="fp-buttons fp-orange-btn dropdown-toggle" type="button" id="dropdownMenuCheck" 
                         data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">View
                     </a>
@@ -37,7 +37,7 @@
                 </div>
 
                 <!-- link for new users to sign up -->
-                <div class="col-3 col-md-3 col-lg-3 text-center mt-1">
+                <div class="d-none d-sm-block col-sm-3 text-center mt-1">
                     {% if user_in and user_in.Type == 'developer' %}
                         <a href="{{url_for("post_question", post_id=0)}}" 
                             class="fp-links create_new_account animate__animated animate__fadeInDown animate__slow">
@@ -47,7 +47,7 @@
                 </div>
 
                 <!-- seach field -->
-                <div class="col-6 col-lg-4">
+                <div class="col-8 col-sm-5 col-md-4">
                     <div class="input-group input-group-sm">
                         <input type="text" class="form-control search-input search_obj" name="search_post" maxlength="50" id="search"
                             placeholder="Search by title, tag or developer..." required>
@@ -57,7 +57,7 @@
                         <input type="hidden" name="page" value="1">
                         <input type="hidden" name="list" value="{{ posts.get('items_per_page') }}">
 
-                        <button class="col-2 fp-buttons fp-orange-btn p-0 text-center" type="submit" id="search_btn">
+                        <button class="col-3 fp-buttons fp-orange-btn p-0 text-center" type="submit" id="search_btn">
                             <i class="bi bi-search fw-bolder" style="font-size: 1.1rem;"></i>
                         </button>
                     </div>

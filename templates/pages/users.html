@@ -24,11 +24,11 @@
                 </div>
             </div>
         {% elif search != 'None' %}
-            <form class="row py-3 justify-content-evenly needs-validation" style="background-color: rgba(36, 36, 36, 0.895);" 
+            <form class="row py-3 justify-content-around needs-validation" style="background-color: rgba(36, 36, 36, 0.895);" 
                 novalidate action="{{ url_for('search_developer') }}" method="GET">
         
                 <!-- dropdown to select developers per page -->
-                <div class="col-2 col-lg-2 mt-2">
+                <div class="col-3 mt-2">
                     <a href="#" class="fp-buttons fp-orange-btn dropdown-toggle" type="button" id="dropdownMenuCheck" 
                         data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">View
                     </a>
@@ -48,17 +48,17 @@
                 </div>
 
                 <!-- link for new users to sign up -->
-                <div class="col-4 col-md-3 col-lg-3 text-center">
-                    {% if not user_in %}
+                {% if not user_in %}
+                    <div class="d-none d-sm-block col-sm-3 text-center">
                         <a href="#" data-bs-toggle="modal" data-bs-target="#modalNewUser" 
                             class="ms-1 fp-links animate__animated animate__fadeInDown animate__slow">
                             <i class="bi bi-person-fill-add"></i> <br> New here?
                         </a>
-                    {% endif %}
-                </div>
+                    </div>
+                {% endif %}
                
                 <!-- seach field -->
-                <div class="col-6 col-lg-4 mt-1">
+                <div class="col-8 col-sm-5 col-md-4 mt-1">
                     <div class="input-group input-group-sm">
                         <input type="text" class="form-control search-input search_obj" name="search_dev" maxlength="50"
                             value="{{ request.query_params.get('search_dev', '') if request else '' }}" id="search_dev_input"
@@ -134,7 +134,16 @@
                 {% endif %}
             </div>
 
-            <div class="row d-flex justify-content-evenly py-4 mb-3">
+            <div class="row d-flex justify-content-evenly mb-5">
+                {% if not user_in %}
+                    <div class="col text-center">
+                        <a href="#" data-bs-toggle="modal" data-bs-target="#modalNewUser" 
+                            class="fs-5 text-marine text-decoration-none animate__animated animate__fadeInDown animate__slow">
+                            <i class="bi bi-person-fill-add" style="font-size: 1.5rem;"></i> New here?
+                        </a>
+                    </div>
+                {% endif %}
+
                 {% for user in users.get('user', []) %}
                     {% include "user_layout.html" with context %}
                 {% endfor %}
@@ -254,7 +263,7 @@
                         </div>
 
                         <div class="row d-flex justify-content-center">
-                            <div class="col-12 col-sm-10 col-lg-8 mb-3">
+                            <div class="col-12 col-sm-10 col-lg-8 mb-3" style="margin-top: 10rem;">
                                 <div class="animate__animated animate__fadeInDown animate__slower">
                                     <span class="create_account_title">Benefits</span>
                                 </div>
