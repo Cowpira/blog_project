@@ -29,7 +29,13 @@
                                     <b>{{ post.author.First_Name }}</b>
                                 </a>
                             </span><br>
-                            <small class="text-dark smaller-texts mt-1">{{ post.Posted.strftime('%B, %d %Y @ %H:%M') }}</small>
+
+                            <small class="d-sm-none text-dark smaller-texts mt-1">
+                                {{ post.Posted.strftime('%B, %d %Y') }}
+                            </small>
+                            <small class="d-none d-sm-block text-dark smaller-texts mt-1">
+                                {{ post.Posted.strftime('%B, %d %Y @ %H:%M') }}
+                            </small>
                         </span>
                     </div>
                    
