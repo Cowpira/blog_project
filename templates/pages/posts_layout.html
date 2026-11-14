@@ -1,5 +1,5 @@
 {% block content %}
-    <div class="col-12 col-sm-10 col-lg-8 col-xxl-6 py-3 mx-auto">
+    <div class="col-12 col-sm-10 col-lg-8 col-xxl-7 py-3 mx-auto">
         {% for post in posts.get('post', []) %}
             <div class="post-banner-display {% if not post.Opened %} closed-post {% endif %} py-3 mb-3">
                 <div class="container-fluid">
@@ -30,11 +30,8 @@
                                 </a>
                             </span><br>
 
-                            <small class="d-sm-none text-dark smaller-texts mt-1">
+                            <small class="text-dark smaller-texts mt-1">
                                 {{ post.Posted.strftime('%B, %d %Y') }}
-                            </small>
-                            <small class="d-none d-sm-block text-dark smaller-texts mt-1">
-                                {{ post.Posted.strftime('%B, %d %Y @ %H:%M') }}
                             </small>
                         </span>
                     </div>

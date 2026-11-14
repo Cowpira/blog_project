@@ -605,7 +605,7 @@ textPath {
 .card-text{
     text-align: justify; 
     font-family: var(--fp-font); 
-    font-size: 10px !important;
+    font-size: 15.3px !important;
 }
 
 .card:hover{
