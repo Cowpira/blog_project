@@ -31,7 +31,7 @@
                     <!-- div to display post content -->
                     <div class="card mb-5 mt-2 col-12 col-md-10 col-lg-8 offset-lg-2
                         {% if answers | length < 1 %} offset-md-1 offset-lg-2 {% endif %}">
-                        <div class="row card-header header-bg">
+                        <div class="row card-header header-bg p-0">
                             {% if not post.Opened %}
                                 <span class="post-closed text-center animate__animated animate__fadeInDown animate__slower">
                                     Closed post
@@ -45,7 +45,7 @@
                                     src="{{url_for('uploaded_dev_images', path=post.author.Image)}}">
                             </div>
                             
-                            <div class="col d-flex justify-content-between">
+                            <div class="col d-flex justify-content-between mb-2">
                                 <div>
                                     {% for tag in post.Tag.split(' ')|unique %}
                                         <span class="language-badges badge bg-{{tag | lower}}">{{tag}}</span>
@@ -54,7 +54,7 @@
 
                                 <span class="text-light small-texts fw-lighter">
                                     By: <a href="{{url_for("search_posts")}}?tag=Null&author_id={{post.author.Id}}&page=1&list={{total_items}}" 
-                                        class="fs-5 text-light">
+                                        class="fs-6 text-light">
                                         {{post.author.First_Name}}
                                     </a>
                                 </span>

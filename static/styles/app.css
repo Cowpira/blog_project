@@ -1541,7 +1541,11 @@ a[data-bs-toggle="collapse"] .bi-chevron-double-down {
     }
 
     .create_account_title{ font-size: 4.3rem; margin-top: -75px !important; }
-
+    .fs-2{
+        font-size: 15px !important;
+        font-weight: 600;
+    }
+    
     .new_dev_text{
         background-color: rgba(13, 13, 13, 0.908); 
         padding: 35px; 
