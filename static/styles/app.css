@@ -384,7 +384,6 @@ main{  min-height: calc(100vh - 360px); }
 }
 
 .action_bar_menu{
-    width: 100%;
     top: 6rem;
     height: 3.4rem;
     display: flex;
@@ -688,7 +687,7 @@ textPath {
 .accordion-button {
     flex-direction: column;
     align-items: center;
-    padding-bottom: 0.75rem;
+    padding-bottom: 0.75rem; /* Adjust bottom spacing as needed */
 }
 
 /* 2. Center the chevron and give it a little top margin */
@@ -850,15 +849,6 @@ textPath {
     transition: all .5s ease-out;
 }
 
-.fp-teal-btn{
-    color: rgb(31, 158, 149);
-    border: 1px solid rgb(31, 158, 149);
-    background: linear-gradient(to right, rgb(31, 158, 149) 50%, transparent 50%);
-    background-size: 200% 100%;
-    background-position: right bottom;
-    transition: all .5s ease-out;
-}
-
 .fp-blue-btn{
     color: var(--fp-marine-color);
     border: 1px solid var(--fp-marine-color);
@@ -868,8 +858,7 @@ textPath {
     transition: all .5s ease-out;
 }
 
-.fp-red-btn:hover, .fp-gray-btn:hover, .fp-orange-btn:hover, 
-.fp-teal-btn:hover, .fp-blue-btn:hover{
+.fp-red-btn:hover, .fp-gray-btn:hover, .fp-blue-btn:hover, .fp-orange-btn:hover{
     color: var(--fp-white-color);
     background-position: left bottom;
 }
@@ -1096,7 +1085,7 @@ input[type="file"]::file-selector-button {
 /* ADDING COLORS TO THE TAG BADGES  */
 .language-badges{
     font-family: var(--fp-font);
-    font-size: 12px;
+    font-size: 9px;
     font-weight: var(--fp-font-weight_500);
     --bs-bg-opacity: 1;
     color: rgba(24, 24, 24, 0.78);
@@ -1477,6 +1466,16 @@ input[type="file"]::file-selector-button {
     background-color: #000;
     color: #FF2400;
     transition: .4s ease-in-out;
+}
+
+a[data-bs-toggle="collapse"]:not(.collapsed) .bi-chevron-double-down {
+    transform: rotate(180deg);
+}
+
+/* adding transition to rotate the icon */
+a[data-bs-toggle="collapse"] .bi-chevron-double-down {
+    transition: transform .6s ease;
+    display: inline-block; 
 }
 
 .review-job-format{
