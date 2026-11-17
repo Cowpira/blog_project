@@ -45,7 +45,8 @@ async def load_jobs(jobs, page, list, job_param, request, result, cur_user, db):
     return helper.templates.TemplateResponse("jobs.html", {'request': request, 'result': result, 'user_in': cur_user, 'job_param': job_param, 
                                                         'contracts': contracts, 'durations': durations, 'locations': locations, 
                                                         'jobs': paginated_jobs, 'states': states, 'limit_items': helper.limit_items, 
-                                                        'total_items': helper.total_items, 'jobs_applied': jobs_applied, 'website_url': os.environ.get("website_url")})
+                                                        'total_items': helper.total_items, 'jobs_applied': jobs_applied, 
+                                                        'website_url': os.environ.get("website_url")})
 
 ##############################################################################################################################
 ############################################### PUBLIC FUNCTIONS FOR ALL USERS  ##############################################
@@ -131,7 +132,7 @@ async def seach_jobs(request: Request, job_param: str= None, page: int=1, list: 
                     cur_user: Person= Depends(get_current_user), db: Session= Depends(get_db)):
 
     # list all jobs found by parameter 
-    jobs_found= jobs_dao.search_jobs(job_param, contracts, durations, states, locations, db)
+    jobs_found= await jobs_dao.search_jobs(job_param, contracts, durations, states, locations, db)
     result= None
     
     if not jobs_found:

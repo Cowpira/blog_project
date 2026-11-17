@@ -120,29 +120,29 @@
                         </div>
 
                         <div class="row d-flex justify-content-around">
-                            <label class="col-12 py-1 text-muted">Name
+                            <span class="col-12 py-1 text-muted">Name
                                 <p class="fw-light text-marine">{{user_in.First_Name}} {{user_in.Last_Name}}</p>
-                            </label>
+                            </span>
                             
-                            <label class="col-12 py-1 text-muted">Address
+                            <span class="col-12 py-1 text-muted">Address
                                 <p class="fw-light text-marine">{{user_in.Address}}</p>
-                            </label>
+                            </span>
                     
-                            <label class="col-6 py-1 text-muted">Phone
+                            <span class="col-6 py-1 text-muted">Phone
                                 <p class="fw-light text-marine">{{user_in.Phone}}</p>
-                            </label>
+                            </span>
 
-                            <label class="col-6 py-1 text-muted text-end">Email
+                            <span class="col-6 py-1 text-muted text-end">Email
                                 <p class="fw-light text-marine">{{user_in.Email}}</p>
-                            </label>
+                            </span>
                         
-                            <label class="col-6 py-1 text-muted">Created
+                            <soan class="col-6 py-1 text-muted">Created
                                 <p class="fw-light text-marine">{{user_in.Created.strftime('%B, %d %Y @ %H:%M')}}</p>
-                            </label>
+                            </soan>
 
-                            <label class="col-6 py-1 text-muted text-end">Activated
+                            <span class="col-6 py-1 text-muted text-end">Activated
                                 <p class="fw-light text-marine">{{user_in.Activated_Date.strftime('%B, %d %Y @ %H:%M')}}</p>
-                            </label>
+                            </span>
                             
 
                             <!-- tab navigation buttons -->
@@ -193,35 +193,46 @@
                                         <h1 class="page_title text-center form_title">Update Data</h1>
 
                                         <div class="col-12 col-sm-6 p-2">
-                                            <label for="first_name" class="form-label fw-light text-dark">
+                                            <label for="first_name" class="col-12 form-label fw-light text-dark">
                                                 First Name <span class="fw-bolder text-danger">*</span>
+                                            
+                                                <input type="text" tabindex="1" class="form-control" id="first_name" required
+                                                    name="first_name" maxlength="25" value="{{user_in.First_Name}}" autocomplete="first_name">
                                             </label>
-                                            <input type="text" tabindex="1" class="form-control" id="first_name" name="first_name" maxlength="25" 
-                                            value="{{user_in.First_Name}}" required>
                                         </div>
                         
                                         <div class="col-12 col-sm-6 p-2">
-                                            <label for="last_name" class="form-label fw-light text-dark">Last Name <span class="fw-bolder text-danger">*</span></label>
-                                            <input type="text" tabindex="2" class="form-control" id="last_name" name="last_name" maxlength="25" value="{{user_in.Last_Name}}" required>
+                                            <label for="last_name" class="col-12 form-label fw-light text-dark">Last Name 
+                                                <span class="fw-bolder text-danger">*</span>
+                                                <input type="text" tabindex="2" class="form-control" id="last_name" name="last_name" 
+                                                    maxlength="25" value="{{user_in.Last_Name}}" required>
+                                            </label>
                                         </div>
             
                                         <div class="col-12 p-2">
-                                            <label for="address" class="form-label fw-light text-dark">Address</label>
-                                            <input type="text" tabindex="3" class="form-control" id="address" name="address" maxlength="50" value="{{user_in.Address}}">
+                                            <label for="address" class="col-12 form-label fw-light text-dark">Address
+                                                <input type="text" tabindex="3" class="form-control" id="address" name="address" 
+                                                    maxlength="50" value="{{user_in.Address}}" autocomplete="address">
+                                            </label>
                                         </div>
                         
                                         <div class="col-12 col-sm-6 p-2">
-                                            <label for="phone" class="form-label fw-light text-dark">Phone</label>
-                                            <input type="text" tabindex="4" class="form-control" id="phone" name="phone" maxlength="15" value="{{user_in.Phone}}">
+                                            <label for="phone" class="col-12 form-label fw-light text-dark">Phone
+                                                <input type="text" tabindex="4" class="form-control" id="phone" name="phone" 
+                                                    maxlength="15" value="{{user_in.Phone}}" autocomplete="phone">
+                                            </label>
                                         </div>
 
                                         <div class="col-12 col-sm-6 p-2">
-                                            <label for="email" class="form-label fw-light text-dark">E-mail <span class="fw-bolder text-danger">*</span></label>
-                                            <input type="email" tabindex="5" class="form-control" id="email" name="email" maxlength="40" value="{{user_in.Email}}" required>
+                                            <label for="email" class="col-12 form-label fw-light text-dark">E-mail 
+                                                <span class="fw-bolder text-danger">*</span>
+                                                <input type="email" tabindex="5" class="form-control" id="email" name="email" 
+                                                maxlength="40" value="{{user_in.Email}}" required autocomplete="email">
+                                            </label>
                                         </div>
 
                                         <div class="col-10 offset-1 col-sm-6 p-2">
-                                            <label class="col-12 form-label fw-light text-dark">
+                                            <span class="col-12 form-label fw-light text-dark">
                                                 Gender <span class="fw-bolder text-danger">*
                                             </label>
 
@@ -329,34 +340,39 @@
                                         <!-- getting work experience for the user loged in -->
                                         {% set work = resume.get("works") %}
                                         <div class="col-12 col-sm-6 mb-4">
-                                            <label class="form-label fw-light text-dark">Company <span class="fw-bolder text-danger">*</span></label>
-                                            <input type="text" tabindex="1" class="form-control" id="company" name="company" maxlength="100" required
-                                            {% if work %} value="{{work.Company1}}" {% endif %} placeholder="Company name">
+                                            <label for="company" class="col-12 form-label fw-light text-dark">Company 
+                                                <span class="fw-bolder text-danger">*</span>
+                                                <input type="text" tabindex="1" class="form-control" id="company" name="company" maxlength="100" 
+                                                    required {% if work %} value="{{work.Company1}}" {% endif %} placeholder="Company name" autocomplete="company">
+                                            </label>
 
                                             <p class="fw-light smaller-texts text-primary">Enter unemployed if not working</p>
                                         </div>
                         
                                         <div class="col-12 col-sm-6 mb-4">
-                                            <label class="form-label fw-light text-dark">Position <span class="fw-bolder text-danger">*</span></label>
-                                            <input type="text" tabindex="2" class="form-control" id="position" name="position" maxlength="100" required
-                                            {% if work %} value="{{work.Position1}}" {% endif %} placeholder="Position title">
+                                            <label for="position" class="col-12 form-label fw-light text-dark">Position 
+                                                <span class="fw-bolder text-danger">*</span>
+                                                <input type="text" tabindex="2" class="form-control" id="position" name="position" maxlength="100" 
+                                                required {% if work %} value="{{work.Position1}}" {% endif %} placeholder="Position title">
+                                            </label>
 
                                             <p class="fw-light smaller-texts text-primary">Enter unemployed if not working</p>
                                         </div>
               
                                         <div class="row justify-content-evenly mb-4">
                                             <div class="col-6">
-                                                <label class="form-label fw-light text-dark">Started</label>
+                                                <label for="started" class="col-12 form-label fw-light text-dark">Started
                                                 <input type="text" tabindex="3" class="form-control" name="started" maxlength="10" id="started" 
-                                                {% if work %} value="{{work.Started1}}" {% endif %} placeholder="01/01/2020">
+                                                    {% if work %} value="{{work.Started1}}" {% endif %} placeholder="01/01/2020">
+                                                </label>
                                             </div>
 
                                             
                                             <div class="col-6">
-                                                <label class="form-label fw-light text-dark">End</label>
-                                                <input type="text" tabindex="4" class="form-control" name="ended" maxlength="10" id="ended" 
-                                                {% if work and work.Ended1 %} value="{{work.Ended1}}" {% endif %} placeholder="01/01/2020">
-
+                                                <label for="ended" class="col-12 form-label fw-light text-dark">End
+                                                    <input type="text" tabindex="4" class="form-control" name="ended" maxlength="10" id="ended" 
+                                                        {% if work and work.Ended1 %} value="{{work.Ended1}}" {% endif %} placeholder="01/01/2020">
+                                                </label>
                                                 <p class="fw-light smaller-texts text-primary ms-2">Enter today date if current</p>
                                             </div>
                                         </div>
@@ -366,10 +382,11 @@
                                         </div>
 
                                         <div class="col-12 mb-2">
-                                            <label class="form-label fw-normal text-dark">Growth & Achievments</label>
-                                            <textarea id="text-1" type="text" tabindex="5" class="form-control" style="height: 220px; white-space: pre-wrap;" 
-                                                oninput="updateCount(this, 'ga-counter', 'ga-bars')" name="contribution" maxlength="1000" 
-                                                placeholder="Describe your growth and achievements...">{%- if work -%} {{work.Contribution1}} {%- endif -%}</textarea>
+                                            <label for="text-1" class="form-label fw-normal text-dark">Growth & Achievments
+                                                <textarea id="text-1" type="text" tabindex="5" class="form-control" style="height: 220px; white-space: pre-wrap;" 
+                                                    oninput="updateCount(this, 'ga-counter', 'ga-bars')" name="contribution" maxlength="1000" 
+                                                    placeholder="Describe your growth and achievements...">{%- if work -%} {{work.Contribution1}} {%- endif -%}</textarea>
+                                            </label>
 
                                             <progress class="col-12" id="ga-bars" value="0"></progress>
                                             <div class="row d-flex justify-content-around smaller-texts fw-light">
@@ -398,9 +415,10 @@
                                         <h1 class="page_title text-center form_title">Update Level</h1>
 
                                         <div class="col-12 col-md-10 mb-4">
-                                            <label class="form-label fw-light text-dark">
-                                                Title <span class="fw-bolder text-danger">*</span>
-                                            </label> 
+                                            <span class="form-label fw-light text-dark">
+                                                Title <p class="fw-bolder text-danger">*</p>
+                                            </span> 
+
                                             <select class="form-select form-control" tabindex="1" name="cod_title" aria-label="Select a developer title">
                                                 {% if user_in.Cod_Title %}
                                                     <option value="{{ user_in.Cod_Title }}" selected>
@@ -426,9 +444,10 @@
                                         </div>
 
                                         <div class="col-12 col-md-10 mb-3">
-                                            <label class="form-label fw-light text-dark">
-                                                Programming Language <span class="fw-bolder text-danger">*</span>
-                                            </label>
+                                            <span class="form-label fw-light text-dark">
+                                                Programming Language <p class="fw-bolder text-danger">*</p>
+                                            </span>
+
                                             <select class="form-select form-control" tabindex="2" name="cod_lang" aria-label="Select a developer title">
                                                 {% if user_in.Cod_Lang %}
                                                     <option value="{{ user_in.Cod_Lang }}" selected>
@@ -457,13 +476,15 @@
                                         </div>
 
                                         <div class="col-5 col-md-3">
-                                            <label class="form-label fw-light text-dark">Experience</label>
-                                            <div class="input-group input-group-sm">
-                                                <input type="text" tabindex="3" class="form-control" min="1" max="50" maxlength="2" name="years_exp" id="experience" 
-                                                {% if user_in.Years_Exp %} value="{{user_in.Years_Exp}}" {% endif %} placeholder="9">
+                                            <label for="experience" class="col-12form-label fw-light text-dark">Experience
+                                                <div class="input-group input-group-sm">
+                                                    <input type="text" tabindex="3" class="form-control" min="1" max="50" maxlength="2" 
+                                                        name="years_exp" id="experience" {% if user_in.Years_Exp %} value="{{user_in.Years_Exp}}" 
+                                                        {% endif %} placeholder="9">
 
-                                                <span class="input-group-text">years</span>
-                                            </div>
+                                                    <span class="input-group-text">years</span>
+                                                </div>
+                                            </label>
                                         </div>
                                         <span class="fw-light text-center smaller-texts text-danger">* required fields</span>
 
@@ -537,15 +558,18 @@
 
                                     <div class="row d-flex">
                                         <div class="col-12 py-2">
-                                            <label class="form-label fw-light text-dark">School <span class="fw-bolder text-danger">*</span></label>
-                                            <input type="text" tabindex="1" class="form-control" name="school" maxlength="50" id="school" 
-                                            {% if education %} value="{{education.School}}" {% endif %} placeholder="School name" required>
-                                            
+                                            <label for="school" class="col-12 form-label fw-light text-dark">School 
+                                                <span class="fw-bolder text-danger">*</span>
+                                                <input type="text" tabindex="1" class="form-control" name="school" maxlength="50" id="school" 
+                                                    {% if education %} value="{{education.School}}" {% endif %} placeholder="School name" required>
+                                            </label>
                                             <p class="fw-light smaller-texts text-primary">Most recent graduation or course in progress</p>
                                         </div>
 
                                         <div class="col-12 col-md-6 mb-4">
-                                            <label class="form-label fw-light text-dark">Type <span class="fw-bolder text-danger">*</span></label>
+                                            <span class="form-label fw-light text-dark">Type 
+                                                <p class="fw-bolder text-danger">*</p>
+                                            </span>
                                             
                                             <select id="education_type" class="form-select" tabindex="2" name="education_type" required>
                                                 {% if education %} 
@@ -569,7 +593,9 @@
                                         </div>
 
                                         <div class="col-12 col-md-6 mb-4">
-                                            <label class="form-label fw-light text-dark">Area of Study <span class="fw-bolder text-danger">*</span></label>
+                                            <span class="form-label fw-light text-dark">Area of Study 
+                                                <p class="fw-bolder text-danger">*</p>
+                                            </span>
                                             
                                             <select id="graduated_at" class="form-select" tabindex="3" name="graduated_at" required>
                                                 {% if education %} 
@@ -597,9 +623,9 @@
 
                                         <div class="col-12 d-flex justify-content-center mb-4">
                                             <div>
-                                                <label class="form-label fw-light text-dark">Status 
-                                                    <span class="fw-bolder text-danger">*</span>
-                                                </label><br>
+                                                <span class="form-label fw-light text-dark">Status 
+                                                    <p class="fw-bolder text-danger">*</p>
+                                                </span><br>
 
                                                 <input type="radio" class="btn-check" {'checked' if education.Grad_Status == 'In Progress'}
                                                     name="grad_status" id="in_progress" value="In Progress" autocomplete="off" required>
@@ -625,7 +651,7 @@
 
                                                 <div class="col-2 d-flex justify-content-end">
                                                     <a href="#" data-bs-toggle="tooltip" data-bs-animation="false" data-bs-placement="top" 
-                                                    title="Only chage the text inside single quote 'here' to your data">
+                                                        title="Only chage the text inside single quote 'here' to your data">
                                                         <b><i class="bi bi-question-circle" style="font-size: 1.5rem;"></i></b>
                                                     </a>
                                                 </div>
@@ -666,41 +692,50 @@
                                     <div class="row offset-md-1">
                                         <div class="card-title fs-5 mt-2">1º Certification _________________</div>
                                         <div class="col-8 mb-3">
-                                            <label class="form-label fw-light text-dark">Title</label>
-                                            <input type="text" tabindex="1" class="form-control" name="certification1" maxlength="50" id="certification1" 
-                                            {% if certification %} value="{{certification.Certification1}}" {% endif %} placeholder="Certification title">
+                                            <label for="certification1" class="col-12 form-label fw-light text-dark">Title
+                                                <input type="text" tabindex="1" class="form-control" name="certification1" maxlength="50" 
+                                                    id="certification1" {% if certification %} value="{{certification.Certification1}}" 
+                                                    {% endif %} placeholder="Certification title">
+                                            </label>
                                         </div>
 
                                         <div class="col-4 mb-3">
-                                            <label class="form-label fw-light text-dark">Issued</label>
-                                            <input type="text" tabindex="2" class="form-control" name="cert1_date" id="cert1_date" 
-                                            {% if certification %} value="{{certification.Cert1_Date}}" {% endif %} placeholder="01/01/2020">
+                                            <label for="cert1_date" class="col-12 form-label fw-light text-dark">Issued
+                                                <input type="text" tabindex="2" class="form-control" name="cert1_date" id="cert1_date" 
+                                                    {% if certification %} value="{{certification.Cert1_Date}}" {% endif %} placeholder="01/01/2020">
+                                            </label>
                                         </div>
                                         
                                         <div class="card-title fs-5">2º Certification _________________</div>
                                         <div class="col-8 mb-3">
-                                            <label class="form-label fw-light text-dark">Title</label>
-                                            <input type="text" tabindex="3" class="form-control" name="certification2" maxlength="50" id="certification2" 
-                                            {% if certification %} value="{{certification.Certification2}}" {% endif %} placeholder="Certification title">
+                                            <label for="certification2" class="col-12 form-label fw-light text-dark">Title
+                                                <input type="text" tabindex="3" class="form-control" name="certification2" maxlength="50" 
+                                                    id="certification2" {% if certification %} value="{{certification.Certification2}}" 
+                                                    {% endif %} placeholder="Certification title">
+                                            </label>
                                         </div>
 
                                         <div class="col-4 mb-3">
-                                            <label class="form-label fw-light text-dark">Issued</label>
-                                            <input type="text" tabindex="4" class="form-control" name="cert2_date" id="cert2_date"
-                                            {% if certification %} value="{{certification.Cert2_Date}}" {% endif %} placeholder="01/01/2020">
+                                            <label for="cert2_date" class="col-12 form-label fw-light text-dark">Issued
+                                                <input type="text" tabindex="4" class="form-control" name="cert2_date" id="cert2_date"
+                                                    {% if certification %} value="{{certification.Cert2_Date}}" {% endif %} placeholder="01/01/2020">
+                                            </label>
                                         </div>
                                     
                                         <div class="card-title fs-5">3º Certification _________________</div>
                                         <div class="col-8 mb-3">
-                                            <label class="form-label fw-light text-dark">Title</label>
-                                            <input type="text" tabindex="5" class="form-control" name="certification3" maxlength="50" id="certification3" 
-                                            {% if certification %} value="{{certification.Certification3}}" {% endif %} placeholder="Certification title">
+                                            <label for="certification3" class="col-12 form-label fw-light text-dark">Title
+                                                <input type="text" tabindex="5" class="form-control" name="certification3" maxlength="50" 
+                                                    id="certification3" {% if certification %} value="{{certification.Certification3}}" {% endif %} 
+                                                    placeholder="Certification title">
+                                            </label>
                                         </div>
 
                                         <div class="col-4 mb-3">
-                                            <label class="form-label fw-light text-dark">Issued</label>
-                                            <input type="text" tabindex="6" class="form-control" name="cert3_date" id="cert3_date"
-                                            {% if certification %} value="{{certification.Cert3_Date}}" {% endif %} placeholder="01/01/2020">
+                                            <label for="cert3_date" class="col-12 form-label fw-light text-dark">Issued
+                                                <input type="text" tabindex="6" class="form-control" name="cert3_date" id="cert3_date"
+                                                    {% if certification %} value="{{certification.Cert3_Date}}" {% endif %} placeholder="01/01/2020">
+                                            </label>
                                         </div>
                                        
                                         <!-- tab navigation buttons -->
@@ -741,55 +776,66 @@
                                                 <div class="accordion-body p-0">
                                                     <div class="row mt-2">
                                                         <div class="col-8 mb-3">
-                                                            <label class="form-label fw-light text-dark">1º Language</label>
-                                                            <input type="text" tabindex="1" class="form-control" name="frontend-lang1" maxlength="50" id="frontend-lang1" 
-                                                            {% if front_end %} value="{{front_end.Frontend_Lang1}}" {% endif %} placeholder="Language name">
+                                                            <label for="frontend-lang1" class="col-12 form-label fw-light text-dark">1º Language
+                                                                <input type="text" tabindex="1" class="form-control" name="frontend-lang1" maxlength="50" 
+                                                                    id="frontend-lang1" {% if front_end %} value="{{front_end.Frontend_Lang1}}" {% endif %} 
+                                                                    placeholder="Language name">
+                                                            </label>
                                                         </div>
 
                                                         <div class="col-4 mb-3">
-                                                            <label class="form-label fw-light text-dark">Experience</label>
-                                                            <div class="input-group input-group-sm">
-                                                                <input type="number" tabindex="2" class="form-control" min="1" max="99" name="exp_frontend1" id="exp_frontend1" 
-                                                                {% if front_end %} value="{{front_end.Exp_Frontend1}}" {% endif %} placeholder="99">
-
-                                                                <span class="input-group-text">years</span>
-                                                            </div>
+                                                            <label for="exp_frontend1" class="col-12 form-label fw-light text-dark">Experience
+                                                                <div class="input-group input-group-sm">
+                                                                    <input type="number" tabindex="2" class="form-control" min="1" max="99" name="exp_frontend1" 
+                                                                        id="exp_frontend1" {% if front_end %} value="{{front_end.Exp_Frontend1}}" 
+                                                                        {% endif %} placeholder="99">
+                                                                    <span class="input-group-text">years</span>
+                                                                </div>
+                                                            </label>
                                                         </div>
                                                     </div>
 
                                                     <div class="row mt-2">
                                                         <div class="col-8 mb-3">
-                                                            <label class="form-label fw-light text-dark">2º Language</label>
-                                                            <input type="text" tabindex="3" class="form-control" name="frontend-lang2" maxlength="50" id="frontend-lang2" 
-                                                            {% if front_end %} value="{{front_end.Frontend_Lang2}}" {% endif %} placeholder="Language name">
+                                                            <label for="frontend-lang2" class="col-12 form-label fw-light text-dark">2º Language
+                                                                <input type="text" tabindex="3" class="form-control" name="frontend-lang2" maxlength="50" 
+                                                                    id="frontend-lang2" {% if front_end %} value="{{front_end.Frontend_Lang2}}" {% endif %} 
+                                                                    placeholder="Language name">
+                                                            </label>
                                                         </div>
 
                                                         <div class="col-4 mb-3">
-                                                            <label class="form-label fw-light text-dark">Experience</label>
-                                                            <div class="input-group input-group-sm">
-                                                                <input type="number" tabindex="4" class="form-control" min="1" max="99" name="exp_frontend2" id="exp_frontend2"
-                                                                {% if front_end %} value="{{front_end.Exp_Frontend2}}" {% endif %} placeholder="99">
+                                                            <label for="exp_frontend2" class="col-12 form-label fw-light text-dark">Experience
+                                                                <div class="input-group input-group-sm">
+                                                                    <input type="number" tabindex="4" class="form-control" min="1" max="99" name="exp_frontend2" 
+                                                                        id="exp_frontend2" {% if front_end %} value="{{front_end.Exp_Frontend2}}" 
+                                                                        {% endif %} placeholder="99">
 
-                                                                <span class="input-group-text">years</span>
-                                                            </div>
+                                                                    <span class="input-group-text">years</span>
+                                                                </div>
+                                                            </label>
                                                         </div>
                                                     </div>
 
                                                     <div class="row mt-2">
                                                         <div class="col-8 mb-3">
-                                                            <label class="form-label fw-light text-dark">3º Language</label>
-                                                            <input type="text" tabindex="5" class="form-control" name="frontend-lang3" maxlength="50" id="frontend-lang3"
-                                                            {% if front_end %} value="{{front_end.Frontend_Lang3}}" {% endif %} placeholder="Language name">
+                                                            <label for="frontend-lang3" class="col-12 form-label fw-light text-dark">3º Language
+                                                                <input type="text" tabindex="5" class="form-control" name="frontend-lang3" maxlength="50" 
+                                                                    id="frontend-lang3" {% if front_end %} value="{{front_end.Frontend_Lang3}}" {% endif %} 
+                                                                    placeholder="Language name">
+                                                            </label>
                                                         </div>
 
                                                         <div class="col-4 mb-3">
-                                                            <label class="form-label fw-light text-dark">Experience</label>
-                                                            <div class="input-group input-group-sm">
-                                                                <input type="number" tabindex="6" class="form-control" min="1" max="99" name="exp_frontend3" id="exp_frontend3"
-                                                                {% if front_end %} value="{{front_end.Exp_Frontend3}}" {% endif %} placeholder="99">
+                                                            <label for="exp_frontend3" class="col-12 form-label fw-light text-dark">Experience
+                                                                <div class="input-group input-group-sm">
+                                                                    <input type="number" tabindex="6" class="form-control" min="1" max="99" name="exp_frontend3" 
+                                                                        id="exp_frontend3" {% if front_end %} value="{{front_end.Exp_Frontend3}}" 
+                                                                        {% endif %} placeholder="99">
 
-                                                                <span class="input-group-text">years</span>
-                                                            </div>
+                                                                    <span class="input-group-text">years</span>
+                                                                </div>
+                                                            </label>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -815,55 +861,67 @@
                                                 <div class="accordion-body p-0">
                                                     <div class="row mt-2">
                                                         <div class="col-8 mb-3">
-                                                            <label class="form-label fw-light text-dark">1º Language</label>
-                                                            <input type="text" tabindex="1" class="form-control" name="backend-lang1" maxlength="50" id="backend-lang1"
-                                                            {% if back_end %} value="{{back_end.Backend_Lang1}}" {% endif %} placeholder="Language name">
+                                                            <label for="backend-lang1" class="col-12 form-label fw-light text-dark">1º Language
+                                                                <input type="text" tabindex="1" class="form-control" name="backend-lang1" maxlength="50" 
+                                                                    id="backend-lang1" {% if back_end %} value="{{back_end.Backend_Lang1}}" {% endif %} 
+                                                                    placeholder="Language name">
+                                                            </label>
                                                         </div>
 
                                                         <div class="col-4 mb-3">
-                                                            <label class="form-label fw-light text-dark">Experience</label>
-                                                            <div class="input-group input-group-sm">
-                                                                <input type="number" tabindex="2" class="form-control" min="1" max="99" name="exp_backend1" id="exp_backend1" 
-                                                                {% if back_end %} value="{{back_end.Exp_Backend1}}" {% endif %} placeholder="99">
+                                                            <label for="exp_backend1" class="form-label fw-light text-dark">Experience
+                                                                <div class="input-group input-group-sm">
+                                                                    <input type="number" tabindex="2" class="form-control" min="1" max="99" name="exp_backend1" 
+                                                                        id="exp_backend1" {% if back_end %} value="{{back_end.Exp_Backend1}}" 
+                                                                        {% endif %} placeholder="99">
 
-                                                                <span class="input-group-text">years</span>
-                                                            </div>
+                                                                    <span class="input-group-text">years</span>
+                                                                </div>
+                                                            </label>
                                                         </div>
                                                     </div>
 
                                                     <div class="row mt-2">
                                                         <div class="col-8 mb-3">
-                                                            <label class="form-label fw-light text-dark">2º Language</label>
-                                                            <input type="text" tabindex="3" class="form-control" name="backend-lang2" maxlength="50" id="backend-lang2" 
-                                                            {% if back_end %} value="{{back_end.Backend_Lang2}}" {% endif %} placeholder="Language name">
+                                                            <label for="backend-lang2" class="col-12 form-label fw-light text-dark">2º Language
+                                                                <input type="text" tabindex="3" class="form-control" name="backend-lang2" maxlength="50" 
+                                                                    id="backend-lang2" {% if back_end %} value="{{back_end.Backend_Lang2}}" {% endif %} 
+                                                                    placeholder="Language name">
+                                                            </label>
                                                         </div>
 
                                                         <div class="col-4 mb-3">
-                                                            <label class="form-label fw-light text-dark">Experience</label>
-                                                            <div class="input-group input-group-sm">
-                                                                <input type="number" tabindex="4" class="form-control" min="1" max="99" name="exp_backend2" id="exp_backend2" 
-                                                                {% if back_end %} value="{{back_end.Exp_Backend2}}" {% endif %} placeholder="99">
+                                                            <label for="exp_backend2" class="col-12 form-label fw-light text-dark">Experience
+                                                                <div class="input-group input-group-sm">
+                                                                    <input type="number" tabindex="4" class="form-control" min="1" max="99" name="exp_backend2" 
+                                                                        id="exp_backend2" {% if back_end %} value="{{back_end.Exp_Backend2}}" 
+                                                                        {% endif %} placeholder="99">
 
-                                                                <span class="input-group-text">years</span>
-                                                            </div>
+                                                                    <span class="input-group-text">years</span>
+                                                                </div>
+                                                            </label>
                                                         </div>
                                                     </div>
 
                                                     <div class="row mt-2">
                                                         <div class="col-8 mb-3">
-                                                            <label class="form-label fw-light text-dark">3º Language</label>
-                                                            <input type="text" tabindex="5" class="form-control" name="backend-lang3" maxlength="50" id="backend-lang3" 
-                                                            {% if back_end %} value="{{back_end.Backend_Lang3}}" {% endif %} placeholder="Language name">
+                                                            <label for="backend-lang3" class="col-12 form-label fw-light text-dark">3º Language
+                                                                <input type="text" tabindex="5" class="form-control" name="backend-lang3" maxlength="50" 
+                                                                    id="backend-lang3" {% if back_end %} value="{{back_end.Backend_Lang3}}" 
+                                                                    {% endif %} placeholder="Language name">
+                                                            </label>
                                                         </div>
 
                                                         <div class="col-4 mb-3">
-                                                            <label class="form-label fw-light text-dark">Experience</label>
-                                                            <div class="input-group input-group-sm">
-                                                                <input type="number" tabindex="6" class="form-control" min="1" max="99" name="exp_backend3" id="exp_backend3" 
-                                                                {% if back_end %} value="{{back_end.Exp_Backend3}}" {% endif %} placeholder="99">
+                                                            <label for="exp_backend3" class="col-12 form-label fw-light text-dark">Experience
+                                                                <div class="input-group input-group-sm">
+                                                                    <input type="number" tabindex="6" class="form-control" min="1" max="99" name="exp_backend3" 
+                                                                        id="exp_backend3" {% if back_end %} value="{{back_end.Exp_Backend3}}" 
+                                                                        {% endif %} placeholder="99">
 
-                                                                <span class="input-group-text">years</span>
-                                                            </div>
+                                                                    <span class="input-group-text">years</span>
+                                                                </div>
+                                                            </label>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -889,55 +947,61 @@
                                                 <div class="accordion-body p-0">
                                                     <div class="row mt-2">
                                                         <div class="col-8 mb-3">
-                                                            <label class="form-label fw-light text-dark">1º Database</label>
-                                                            <input type="text" tabindex="1" class="form-control" name="database1" maxlength="50" id="database1" 
-                                                            {% if database %} value="{{database.Database1}}" {% endif %} placeholder="Database name">
+                                                            <label for="database1" class="col-12 form-label fw-light text-dark">1º Database
+                                                                <input type="text" tabindex="1" class="form-control" name="database1" maxlength="50" id="database1" 
+                                                                    {% if database %} value="{{database.Database1}}" {% endif %} placeholder="Database name">
+                                                            </label>
                                                         </div>
 
                                                         <div class="col-4 mb-3">
-                                                            <label class="form-label fw-light text-dark">Experience</label>
-                                                            <div class="input-group input-group-sm">
-                                                                <input type="number" tabindex="2" class="form-control" min="1" max="99" name="exp_database1" id="exp_database1" 
-                                                                {% if database %} value="{{database.Exp_Database1}}" {% endif %} placeholder="99">
+                                                            <label for="exp_database1" class="col-12 form-label fw-light text-dark">Experience
+                                                                <div class="input-group input-group-sm">
+                                                                    <input type="number" tabindex="2" class="form-control" min="1" max="99" name="exp_database1" 
+                                                                        id="exp_database1" {% if database %} value="{{database.Exp_Database1}}" {% endif %} placeholder="99">
 
-                                                                <span class="input-group-text">years</span>
-                                                            </div>
+                                                                    <span class="input-group-text">years</span>
+                                                                </div>
+                                                            </label>
                                                         </div>
                                                     </div>
 
                                                     <div class="row mt-2">
                                                         <div class="col-8 mb-3">
-                                                            <label class="form-label fw-light text-dark">2º Database</label>
-                                                            <input type="text" tabindex="3" class="form-control" name="database2" maxlength="50" id="database2" 
-                                                            {% if database %} value="{{database.Database2}}" {% endif %} placeholder="Database name">
+                                                            <label for="database2" class="col-12 form-label fw-light text-dark">2º Database
+                                                                <input type="text" tabindex="3" class="form-control" name="database2" maxlength="50" id="database2" 
+                                                                    {% if database %} value="{{database.Database2}}" {% endif %} placeholder="Database name">
+                                                            </label>
                                                         </div>
 
                                                         <div class="col-4 mb-3">
-                                                            <label class="form-label fw-light text-dark">Experience</label>
-                                                            <div class="input-group input-group-sm">
-                                                                <input type="number" tabindex="4" class="form-control" min="1" max="99" name="exp_database2" id="exp_database2" 
-                                                                {% if database %} value="{{database.Exp_Database2}}" {% endif %} placeholder="99">
+                                                            <label for="exp_database2" class="col-12 form-label fw-light text-dark">Experience
+                                                                <div class="input-group input-group-sm">
+                                                                    <input type="number" tabindex="4" class="form-control" min="1" max="99" name="exp_database2" 
+                                                                        id="exp_database2" {% if database %} value="{{database.Exp_Database2}}" {% endif %} placeholder="99">
 
-                                                                <span class="input-group-text">years</span>
-                                                            </div>
+                                                                    <span class="input-group-text">years</span>
+                                                                </div>
+                                                            </label>
                                                         </div>
                                                     </div>
 
                                                     <div class="row mt-2">
                                                         <div class="col-8 mb-3">
-                                                            <label class="form-label fw-light text-dark">3º Database</label>
-                                                            <input type="text" tabindex="5" class="form-control" name="database3" maxlength="50" id="database3" 
-                                                            {% if database %} value="{{database.Database3}}" {% endif %} placeholder="Database name">
+                                                            <label for="database3" class="col-12 form-label fw-light text-dark">3º Database
+                                                                <input type="text" tabindex="5" class="form-control" name="database3" maxlength="50" id="database3" 
+                                                                    {% if database %} value="{{database.Database3}}" {% endif %} placeholder="Database name">
+                                                            </label>
                                                         </div>
 
                                                         <div class="col-4 mb-3">
-                                                            <label class="form-label fw-light text-dark">Experience</label>
-                                                            <div class="input-group input-group-sm">
-                                                                <input type="number" tabindex="6" class="form-control" min="1" max="99" name="exp_database3" id="exp_database3" 
-                                                                {% if database %} value="{{database.Exp_Database3}}" {% endif %} placeholder="99">
+                                                            <label for="exp_database3" class="col-12 form-label fw-light text-dark">Experience
+                                                                <div class="input-group input-group-sm">
+                                                                    <input type="number" tabindex="6" class="form-control" min="1" max="99" name="exp_database3" 
+                                                                        id="exp_database3" {% if database %} value="{{database.Exp_Database3}}" {% endif %} placeholder="99">
 
-                                                                <span class="input-group-text">years</span>
-                                                            </div>
+                                                                    <span class="input-group-text">years</span>
+                                                                </div>
+                                                            </label>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -963,55 +1027,61 @@
                                                 <div class="accordion-body p-0">
                                                     <div class="row mt-2">
                                                         <div class="col-8 mb-3">
-                                                            <label class="form-label fw-light text-dark">1º Cloud Service</label>
-                                                            <input type="text" tabindex="1" class="form-control" name="cloud1" maxlength="50" id="cloud1" 
-                                                            {% if cloud %} value="{{cloud.Cloud1}}" {% endif %} placeholder="Cloud name">
+                                                            <label for="cloud1" class="col-12 form-label fw-light text-dark">1º Cloud Service
+                                                                <input type="text" tabindex="1" class="form-control" name="cloud1" maxlength="50" 
+                                                                    id="cloud1" {% if cloud %} value="{{cloud.Cloud1}}" {% endif %} placeholder="Cloud name">
+                                                            </label>
                                                         </div>
 
                                                         <div class="col-4 mb-3">
-                                                            <label class="form-label fw-light text-dark">Experience</label>
-                                                            <div class="input-group input-group-sm">
-                                                                <input type="number" tabindex="2" class="form-control" min="1" max="99" name="exp_cloud1" id="exp_cloud1" 
-                                                                {% if cloud %} value="{{cloud.Exp_Cloud1}}" {% endif %} placeholder="99">
+                                                            <label for="exp_cloud1" class="col-12 form-label fw-light text-dark">Experience
+                                                                <div class="input-group input-group-sm">
+                                                                    <input type="number" tabindex="2" class="form-control" min="1" max="99" name="exp_cloud1" 
+                                                                        id="exp_cloud1" {% if cloud %} value="{{cloud.Exp_Cloud1}}" {% endif %} placeholder="99">
 
-                                                                <span class="input-group-text">years</span>
-                                                            </div>
+                                                                    <span class="input-group-text">years</span>
+                                                                </div>
+                                                            </label>
                                                         </div>
                                                     </div>
 
                                                     <div class="row mt-2">
                                                         <div class="col-8 mb-3">
-                                                            <label class="form-label fw-light text-dark">2º Cloud Service</label>
-                                                            <input type="text" tabindex="3" class="form-control" name="cloud2" maxlength="50" id="cloud2" 
-                                                            {% if cloud %} value="{{cloud.Cloud2}}" {% endif %} placeholder="Cloud name">
+                                                            <label for="cloud2" class="col-12 form-label fw-light text-dark">2º Cloud Service
+                                                                <input type="text" tabindex="3" class="form-control" name="cloud2" maxlength="50" id="cloud2" 
+                                                                    {% if cloud %} value="{{cloud.Cloud2}}" {% endif %} placeholder="Cloud name">
+                                                            </label>
                                                         </div>
 
                                                         <div class="col-4 mb-3">
-                                                            <label class="form-label fw-light text-dark">Experience</label>
-                                                            <div class="input-group input-group-sm">
-                                                                <input type="number" tabindex="4" class="form-control" min="1" max="99" name="exp_cloud2" id="exp_cloud2" 
-                                                                {% if cloud %} value="{{cloud.Exp_Cloud2}}" {% endif %} placeholder="99">
+                                                            <label for="exp_cloud2" class="col-12 form-label fw-light text-dark">Experience
+                                                                <div class="input-group input-group-sm">
+                                                                    <input type="number" tabindex="4" class="form-control" min="1" max="99" name="exp_cloud2" 
+                                                                        id="exp_cloud2" {% if cloud %} value="{{cloud.Exp_Cloud2}}" {% endif %} placeholder="99">
 
-                                                                <span class="input-group-text">years</span>
-                                                            </div>
+                                                                    <span class="input-group-text">years</span>
+                                                                </div>
+                                                            </label>
                                                         </div>
                                                     </div>
 
                                                     <div class="row mt-2">
                                                         <div class="col-8 mb-3">
-                                                            <label class="form-label fw-light text-dark">3º Cloud Service</label>
-                                                            <input type="text" tabindex="5" class="form-control" name="cloud3" maxlength="50" id="cloud3"
-                                                            {% if cloud %} value="{{cloud.Cloud3}}" {% endif %} placeholder="Cloud name">
+                                                            <label for="cloud3" class="col-12 form-label fw-light text-dark">3º Cloud Service
+                                                                <input type="text" tabindex="5" class="form-control" name="cloud3" maxlength="50" id="cloud3"
+                                                                    {% if cloud %} value="{{cloud.Cloud3}}" {% endif %} placeholder="Cloud name">
+                                                            </label>
                                                         </div>
 
                                                         <div class="col-4 mb-3">
-                                                            <label class="form-label fw-light text-dark">Experience</label>
-                                                            <div class="input-group input-group-sm">
-                                                                <input type="number" tabindex="6" class="form-control" min="1" max="99" name="exp_cloud3" id="exp_cloud3"
-                                                                {% if cloud %} value="{{cloud.Exp_Cloud3}}" {% endif %}  placeholder="99">
+                                                            <label for="exp_cloud3" class="col-12 form-label fw-light text-dark">Experience
+                                                                <div class="input-group input-group-sm">
+                                                                    <input type="number" tabindex="6" class="form-control" min="1" max="99" name="exp_cloud3" 
+                                                                        id="exp_cloud3" {% if cloud %} value="{{cloud.Exp_Cloud3}}" {% endif %}  placeholder="99">
 
-                                                                <span class="input-group-text">years</span>
-                                                            </div>
+                                                                    <span class="input-group-text">years</span>
+                                                                </div>
+                                                            </label>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -1035,11 +1105,12 @@
                                                         the input below. Format as you wish to make stand out.
                                                     </div>
 
-                                                    <label for="other_skills" class="form-label fw-normal text-dark">Other Skills</label>
-                                                    <textarea type="text" class="form-control" style="height: 205px; white-space: pre-wrap;" 
-                                                        oninput="updateCount(this, 'skill-counter', 'skill-bars')" maxlength="800"
-                                                        name="other_skills">{%- if cloud -%} {{cloud.Other_Skills}} {%- endif -%}</textarea>
-                                                    
+                                                    <label for="other_skills" class="col-12 form-label fw-normal text-dark">Other Skills
+                                                        <textarea type="text" class="form-control" style="height: 205px; white-space: pre-wrap;" 
+                                                            oninput="updateCount(this, 'skill-counter', 'skill-bars')" maxlength="800" id="other_skills"
+                                                            name="other_skills">{%- if cloud -%} {{cloud.Other_Skills}} {%- endif -%}</textarea>
+                                                    </label>
+
                                                     <progress class="col-12" id="skill-bars" value="0"></progress>
                                                     <p id="skill-counter" class="col-12 smaller-texts fw-light text-muted text-end">0 / 800</p>
                                                 </div>
@@ -1082,35 +1153,40 @@
                                         </div>
 
                                         <div class="col-12 col-sm-6 mb-4">
-                                            <label class="form-label fw-light text-dark">Company</label>
-                                            <input type="text" tabindex="1" class="form-control" name="company2" id="company2" maxlength="50" 
-                                            {% if experience %} value="{{experience.Company2}}" {% endif %} placeholder="Company name">
+                                            <label for="company2" class="col-12 form-label fw-light text-dark">Company
+                                                <input type="text" tabindex="1" class="form-control" name="company2" id="company2" maxlength="50" 
+                                                    {% if experience %} value="{{experience.Company2}}" {% endif %} placeholder="Company name">
+                                            </label>
                                         </div>
 
                                         <div class="col-12 col-sm-6 mb-4">
-                                            <label class="form-label fw-light text-dark">Position</label>
-                                            <input type="text" tabindex="2" class="form-control" name="position2" id="position2" maxlength="50" 
-                                            {% if experience %} value="{{experience.Position2}}" {% endif %} placeholder="Position">
+                                            <label for="position2" class="col-12 form-label fw-light text-dark">Position
+                                                <input type="text" tabindex="2" class="form-control" name="position2" id="position2" maxlength="50" 
+                                                    {% if experience %} value="{{experience.Position2}}" {% endif %} placeholder="Position">
+                                            </label>
                                         </div>
 
                                         <div class="col-6 mb-4">
-                                            <label class="form-label fw-light text-dark">Started</label>
-                                            <input type="text" tabindex="3" class="form-control" name="started2" id="started2" 
-                                            {% if experience %} value="{{experience.Started2}}" {% endif %} placeholder="01/01/2020">
+                                            <label for="started2" class="col-12 form-label fw-light text-dark">Started
+                                                <input type="text" tabindex="3" class="form-control" name="started2" id="started2" 
+                                                    {% if experience %} value="{{experience.Started2}}" {% endif %} placeholder="01/01/2020">
+                                            </label>
                                         </div>
                                                         
                                         <div class="col-6 mb-4">
-                                            <label class="form-label fw-light text-dark">Ended</label>
-                                            <input type="text" tabindex="4" class="form-control" name="ended2" id="ended2" 
-                                            {% if experience %} value="{{experience.Ended2}}" {% endif %} placeholder="01/01/2020">
+                                            <label for="ended2" class="col-12 form-label fw-light text-dark">Ended
+                                                <input type="text" tabindex="4" class="form-control" name="ended2" id="ended2" 
+                                                    {% if experience %} value="{{experience.Ended2}}" {% endif %} placeholder="01/01/2020">
+                                            </label>
                                         </div>
 
                                         <div class="col-12 mb-4">
-                                            <label class="form-label fw-normal text-dark">Contribution</label>
-                                            <textarea id="text-4" type="text" tabindex="5" class="form-control" style="height: 190px; white-space: pre-wrap;"
-                                                oninput="updateCount(this, 'cont-1-counter', 'cont-1-bars')" name="contribution2" maxlength="1000"
-                                                placeholder="Describe your contribution, languages, and tools used...">
-                                            {%- if experience -%} {{experience.Contribution2}} {%- endif -%}</textarea>
+                                            <label for="text-4" class="col-12 form-label fw-normal text-dark">Contribution
+                                                <textarea id="text-4" type="text" tabindex="5" class="form-control" style="height: 190px; white-space: pre-wrap;"
+                                                    oninput="updateCount(this, 'cont-1-counter', 'cont-1-bars')" name="contribution2"
+                                                    maxlength="1000" placeholder="Describe your contribution, languages, and tools used...">
+                                                    {%- if experience -%} {{experience.Contribution2}} {%- endif -%}</textarea>
+                                            </label>
                                            
                                             <progress class="col-12" id="cont-1-bars" value="0"></progress>
                                             <p id="cont-1-counter" class="col-12 smaller-texts fw-light text-muted text-end">0 / 1000</p>
@@ -1118,35 +1194,40 @@
 
                                         <div class="card-title fs-5">2º Job _________________</div>
                                         <div class="col-12 col-sm-6 mb-4">
-                                            <label class="form-label fw-light text-dark">Company</label>
-                                            <input type="text" tabindex="6" class="form-control" name="company3" id="company3" maxlength="50" 
-                                            {% if experience %} value="{{experience.Company3}}" {% endif %} placeholder="Company name">
+                                            <label for="company3" class="col-12 form-label fw-light text-dark">Company
+                                                <input type="text" tabindex="6" class="form-control" name="company3" id="company3" maxlength="50" 
+                                                    {% if experience %} value="{{experience.Company3}}" {% endif %} placeholder="Company name">
+                                            </label>
                                         </div>
 
                                         <div class="col-12 col-sm-6 mb-4">
-                                            <label class="form-label fw-light text-dark">Position</label>
-                                            <input type="text" tabindex="7" class="form-control" name="position3" id="position3" maxlength="50" 
-                                            {% if experience %} value="{{experience.Position3}}" {% endif %} placeholder="Position">
+                                            <label for="position3" class="col-12 form-label fw-light text-dark">Position
+                                                <input type="text" tabindex="7" class="form-control" name="position3" id="position3" maxlength="50" 
+                                                    {% if experience %} value="{{experience.Position3}}" {% endif %} placeholder="Position">
+                                            </label>
                                         </div>
 
                                         <div class="col-6 mb-4">
-                                            <label class="form-label fw-light text-dark">Started</label>
-                                            <input type="text" tabindex="8" class="form-control" name="started3" id="started3" 
-                                            {% if experience %} value="{{experience.Started3}}" {% endif %} placeholder="01/01/2020">
+                                            <label for="started3" class="col-12 form-label fw-light text-dark">Started
+                                                <input type="text" tabindex="8" class="form-control" name="started3" id="started3" 
+                                                    {% if experience %} value="{{experience.Started3}}" {% endif %} placeholder="01/01/2020">
+                                            </label>
                                         </div>
                                                         
                                         <div class="col-6 mb-4">
-                                            <label class="form-label fw-light text-dark">Ended</label>
-                                            <input type="text" tabindex="9" class="form-control" name="ended3" id="ended3" 
-                                            {% if experience %} value="{{experience.Ended3}}" {% endif %} placeholder="01/01/2020">
+                                            <label for="ended3" class="col-12 form-label fw-light text-dark">Ended
+                                                <input type="text" tabindex="9" class="form-control" name="ended3" id="ended3" 
+                                                    {% if experience %} value="{{experience.Ended3}}" {% endif %} placeholder="01/01/2020">
+                                            </label>
                                         </div>
 
                                         <div class="col-12 mb-4">
-                                            <label class="form-label fw-normal text-dark">Contribution</label>
-                                            <textarea id="text-5" type="text" tabindex="10" class="form-control" style="height: 190px; white-space: pre-wrap;"
-                                                oninput="updateCount(this, 'cont-2-counter', 'cont-2-bars')" name="contribution3" maxlength="1000"
-                                                placeholder="Describe your contribution, languages, and tools used...">
-                                            {%- if experience -%} {{experience.Contribution3}} {%- endif -%}</textarea>
+                                            <label for="text-5" class="col-12 form-label fw-normal text-dark">Contribution
+                                                <textarea id="text-5" type="text" tabindex="10" class="form-control" style="height: 190px; white-space: pre-wrap;"
+                                                    oninput="updateCount(this, 'cont-2-counter', 'cont-2-bars')" name="contribution3" maxlength="1000"
+                                                    placeholder="Describe your contribution, languages, and tools used...">
+                                                    {%- if experience -%} {{experience.Contribution3}} {%- endif -%}</textarea>
+                                            </label>
 
                                             <progress class="col-12" id="cont-2-bars" value="0"></progress>
                                             <p id="cont-2-counter" class="col-12 smaller-texts fw-light text-muted text-end">0 / 1000</p>
@@ -1186,31 +1267,32 @@
                                         </div>
 
                                         <div class="col-12 col-sm-6 mb-3">
-                                            <label class="form-label fw-light text-dark">Name</label>
-                                            <input type="text" tabindex="1" class="form-control" name="project1" id="project1" maxlength="50" 
-                                            {% if project %} value="{{project.Project1}}" {% endif %} placeholder="Project name">
-                                            
+                                            <label for="project1" class="col-12 form-label fw-light text-dark">Name
+                                                <input type="text" tabindex="1" class="form-control" name="project1" id="project1" maxlength="50" 
+                                                    {% if project %} value="{{project.Project1}}" {% endif %} placeholder="Project name">
+                                            </label>
                                             <p class="fw-light smaller-texts text-primary">
                                                 Type of project or language: Java, Pyton, C++ ...
                                             </p>
                                         </div>
 
                                         <div class="col-12 col-sm-6 mb-3">
-                                            <label class="form-label fw-light text-dark">Link access</label>
-                                            <input type="text" tabindex="2" class="form-control" name="link1" id="link1" maxlength="100" 
-                                            {% if project %} value="{{project.Link1}}" {% endif %} placeholder="Project link access">
-                                            
+                                            <label for="link1" class="col-12 form-label fw-light text-dark">Link access
+                                                <input type="text" tabindex="2" class="form-control" name="link1" id="link1" maxlength="100" 
+                                                    {% if project %} value="{{project.Link1}}" {% endif %} placeholder="Project link access">
+                                            </label>
                                             <p class="fw-light smaller-texts text-primary"> 
                                                 Access link: GitHub, AWS, Azure, Google Drive, or URL
                                             </p>
                                         </div>
 
                                         <div class="col-12 mb-3">
-                                            <label class="form-label fw-normal text-dark">Description</label>
-                                            <textarea id="text-6" type="text" tabindex="3" class="form-control" style="height: 190px; white-space: pre-wrap;"
-                                                oninput="updateCount(this, 'proj-1-counter', 'proj-1-bars')" name="prj_desc1" maxlength="1000"
-                                                placeholder="Describe the project challenges, language and tools used...">
-                                                {%- if project -%} {{project.Prj_Desc1}}  {%- endif -%}</textarea>
+                                            <label for="text-6" class="col-12 form-label fw-normal text-dark">Description
+                                                <textarea id="text-6" type="text" tabindex="3" class="form-control" style="height: 190px; white-space: pre-wrap;"
+                                                    oninput="updateCount(this, 'proj-1-counter', 'proj-1-bars')" name="prj_desc1" maxlength="1000"
+                                                    placeholder="Describe the project challenges, language and tools used...">
+                                                    {%- if project -%} {{project.Prj_Desc1}}  {%- endif -%}</textarea>
+                                            </label>
 
                                             <progress class="col-12" id="proj-1-bars" value="0"></progress>
                                             <p id="proj-1-counter" class="col-12 smaller-texts fw-light text-muted text-end">0 / 1000</p>
@@ -1218,23 +1300,26 @@
 
                                         <div class="col-10 card-title fs-5">2º Project ____________</div>
                                         <div class="col-12 col-sm-6 mb-3">
-                                            <label class="form-label fw-light text-dark">Name</label>
-                                            <input type="text" tabindex="4" class="form-control" name="project2" id="project2" maxlength="50" 
-                                            {% if project %} value="{{project.Project2}}" {% endif %} placeholder="Project name">
+                                            <label for="project2" class="col-12 form-label fw-light text-dark">Name
+                                                <input type="text" tabindex="4" class="form-control" name="project2" id="project2" maxlength="50" 
+                                                    {% if project %} value="{{project.Project2}}" {% endif %} placeholder="Project name">
+                                            </label>
                                         </div>
 
                                         <div class="col-12 col-sm-6 mb-3">
-                                            <label class="form-label fw-light text-dark">Link access:</label>
-                                            <input type="text" tabindex="5" class="form-control" name="link2" id="link2" maxlength="100" 
-                                            {% if project %} value="{{project.Link2}}" {% endif %} placeholder="Project link access">
+                                            <label for="link2" class="col-12 form-label fw-light text-dark">Link access:
+                                                <input type="text" tabindex="5" class="form-control" name="link2" id="link2" maxlength="100" 
+                                                    {% if project %} value="{{project.Link2}}" {% endif %} placeholder="Project link access">
+                                            </label>
                                         </div>
 
                                         <div class="col-12 mb-3">
-                                            <label class="form-label fw-normal text-dark">Description</label>
-                                            <textarea id="text-7" type="text" tabindex="6" class="form-control" style="height: 190px; white-space: pre-wrap;"
-                                                oninput="updateCount(this, 'proj-2-counter', 'proj-2-bars')" name="prj_desc2" maxlength="1000"
-                                                placeholder="Describe the project challenges, language and tools used...">
-                                                {%- if project -%} {{project.Prj_Desc2}}{%- endif -%}</textarea>
+                                            <label for="text-7" class="col-12 form-label fw-normal text-dark">Description
+                                                <textarea id="text-7" type="text" tabindex="6" class="form-control" style="height: 190px; white-space: pre-wrap;"
+                                                    oninput="updateCount(this, 'proj-2-counter', 'proj-2-bars')" name="prj_desc2" maxlength="1000"
+                                                    placeholder="Describe the project challenges, language and tools used...">
+                                                    {%- if project -%} {{project.Prj_Desc2}}{%- endif -%}</textarea>
+                                            </label>
 
                                             <progress class="col-12" id="proj-2-bars" value="0"></progress>
                                             <p id="proj-2-counter" class="col-12 smaller-texts fw-light text-muted text-end">0 / 1000</p>
@@ -1242,23 +1327,26 @@
                                        
                                         <div class="col-10 card-title fs-5 mt-2">3º Project ____________</div>
                                         <div class="col-12 col-sm-6 mb-3">
-                                            <label class="form-label fw-light text-dark">Name</label>
-                                            <input type="text" tabindex="7" class="form-control" name="project3" id="project3" maxlength="50" 
-                                            {% if project %} value="{{project.Project3}}" {% endif %} placeholder="Project name">
+                                            <label for="project3" class="col-12 form-label fw-light text-dark">Name
+                                                <input type="text" tabindex="7" class="form-control" name="project3" id="project3" maxlength="50" 
+                                                    {% if project %} value="{{project.Project3}}" {% endif %} placeholder="Project name">
+                                            </label>
                                         </div>
 
                                         <div class="col-12 col-sm-6 mb-3">
-                                            <label class="form-label fw-light text-dark">Link access</label>
-                                            <input type="text" tabindex="8" class="form-control" name="link3" id="link3" maxlength="100" 
-                                            {% if project %} value="{{project.Link3}}" {% endif %} placeholder="Project link access">
+                                            <label for="link3" class="col-12 form-label fw-light text-dark">Link access
+                                                <input type="text" tabindex="8" class="form-control" name="link3" id="link3" maxlength="100" 
+                                                    {% if project %} value="{{project.Link3}}" {% endif %} placeholder="Project link access">
+                                            </label>
                                         </div>
 
                                         <div class="col-12 mb-3">
-                                            <label class="form-label fw-normal text-dark">Description</label>
-                                            <textarea id="text-8" type="text" tabindex="9" class="form-control" style="height: 190px; white-space: pre-wrap;"
-                                                oninput="updateCount(this, 'proj-3-counter', 'proj-3-bars')" name="prj_desc3" maxlength="1000"
-                                                placeholder="Describe the project challenges, language and tools used...">
-                                                {%- if project -%} {{project.Prj_Desc3}}{%- endif -%}</textarea>
+                                            <label for="text-8" class="col-12 form-label fw-normal text-dark">Description
+                                                <textarea id="text-8" type="text" tabindex="9" class="form-control" style="height: 190px; white-space: pre-wrap;"
+                                                    oninput="updateCount(this, 'proj-3-counter', 'proj-3-bars')" name="prj_desc3" maxlength="1000"
+                                                    placeholder="Describe the project challenges, language and tools used...">
+                                                    {%- if project -%} {{project.Prj_Desc3}}{%- endif -%}</textarea>
+                                            </label>
 
                                             <progress class="col-12" id="proj-3-bars" value="0"></progress>
                                             <p id="proj-3-counter" class="col-12 smaller-texts fw-light text-muted text-end">0 / 1000</p>
@@ -1297,34 +1385,34 @@
                             action="{{url_for("update_developer_password")}}" method="POST">
                             
                             <div class="col-10 col-sm-7 col-md-6 py-3">
-                                <label class="form-label fw-light text-dark">Current Password 
+                                <label for="cur_password" class="col-12 form-label fw-light text-dark">Current Password 
                                     <span class="fw-bolder text-danger">*</span>
-                                </label>
 
-                                <input type="password" tabindex="1" class="form-control" name="cur_password" 
-                                maxlength="50" id="cur_password" placeholder="Current Password" required>
+                                    <input type="password" tabindex="1" class="form-control" name="cur_password" 
+                                        maxlength="50" id="cur_password" placeholder="Current Password" required>
+                                </label>
                             </div>
                             <span class="col-12"></span>
 
                             <div class="col-10 col-sm-7 col-md-6 py-3">
-                                <label class="form-label fw-light text-dark">New Password 
+                                <label for="user_reg_password" class="col-12 form-label fw-light text-dark">New Password 
                                     <span class="fw-bolder text-danger">*</span>
-                                </label>
 
-                                <input type="password" tabindex="2" class="form-control" name="new_password" 
-                                    maxlength="50" id="user_reg_password" placeholder="New Password" 
-                                    required onkeyup="checkPasswordMatch();">
+                                    <input type="password" tabindex="2" class="form-control" name="new_password" 
+                                        maxlength="50" id="user_reg_password" placeholder="New Password" 
+                                        required onkeyup="checkPasswordMatch();">
+                                </label>
                             </div>
                             <span class="col-12"></span>
             
                             <div class="col-10 col-sm-7 col-md-6 py-3">
-                                <label class="form-label fw-light text-dark">Confirm Password 
+                                <label for="user_reg_conf_password" class="col-12 form-label fw-light text-dark">Confirm Password 
                                     <span class="fw-bolder text-danger">*</span>
-                                </label>
 
-                                <input type="password" tabindex="3" class="form-control" name="conf_password" 
-                                    maxlength="25" id="user_reg_conf_password" 
-                                    placeholder="Confim Password" required onkeyup="checkPasswordMatch();">
+                                    <input type="password" tabindex="3" class="form-control" name="conf_password" 
+                                        maxlength="25" id="user_reg_conf_password" 
+                                        placeholder="Confim Password" required onkeyup="checkPasswordMatch();">
+                                </label>
                             </div>
 
                             <div class="col-12 text-center py-1">
@@ -1365,8 +1453,7 @@
             </div>
 
             <div class="col-12 text-center mb-2 fs-3 text-dark fw-light animate__animated 
-                animate__fadeInUp animate__delay-1s" style="margin-top: 10rem;">
-                You can
+                animate__fadeInUp animate__delay-1s" style="margin-top: 10rem;">You can
             </div>
 
             <div class="col-6 offset-3 mb-5 d-flex justify-content-evenly animate__animated 

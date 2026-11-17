@@ -37,7 +37,7 @@
                         Please reset your pessword.
                     </div>
 
-                    <label class="col-10 alert alert-light text-center fw-light small-texts mt-4">
+                    <div class="col-10 alert alert-light text-center fw-light small-texts mt-4">
                         You'll be able to recover your account in <br>
                         <b id="sec" class="fw-bolder text-dark "></b> seconds 
 
@@ -47,7 +47,7 @@
                                 <i class="bi bi-recycle" style="font-size: 1.5rem;"></i> Recover Account
                             </a>
                         </div>
-                    </label>
+                    </div>
                 </div>
 
                 <div id="login_form" class="row d-flex justify-content-center">
@@ -56,15 +56,19 @@
                         <input type="hidden" name="cur_url" value="{{request.url}}">
 
                         <div class="mb-2">
-                            <label class="form-label fw-light text-muted">Email <span class="fw-bolder text-danger">*</span></label>
-                            <input type="email" class="form-control" name="username" maxlength="50" id="username" 
-                                placeholder="user_email@email.com" required>
+                            <label for="username" class="col-12 form-label fw-light text-muted">Email 
+                                <span class="fw-bolder text-danger">*</span>
+                                <input type="email" class="form-control" name="username" maxlength="50" id="username" 
+                                    placeholder="user_email@email.com" required autocomplete="username">
+                            </label>
                         </div>
 
                         <div class="py-3">
-                            <label class="form-label fw-light text-muted">Password <span class="fw-bolder text-danger">*</span></label>
-                            <input type="password" class="form-control mb-2" name="password" maxlength="25" id="password" 
-                                placeholder="Password#123" required>
+                            <label for="password" class="col-12 form-label fw-light text-muted">Password 
+                                <span class="fw-bolder text-danger">*</span>
+                                <input type="password" class="form-control mb-2" name="password" maxlength="25" id="password" 
+                                    placeholder="Password#123" required>
+                            </label>
 
                             <span class="fw-light smaller-texts text-danger">* required fields</span>
                         </div>
@@ -132,13 +136,14 @@
             <form class="needs-validation" action="{{url_for("find_account")}}" method="POST" novalidate>
                 <div class="modal-body">
                     <div class="col-10 offset-1 p-2">
-                        <label for="email_address" class="form-label fw-light text-dark">E-mail Registered 
-                            <span class="fw-bolder text-danger">*</span></label>
-                        <input type="email" class="form-control mb-2" name="email_address" maxlength="50" tabindex="1" 
-                        id="email_address" placeholder="your_email@email.com" required>
+                        <label for="email_address" class="col-12 form-label fw-light text-dark">E-mail Registered 
+                            <span class="fw-bolder text-danger">*</span>
+                            <input type="email" class="form-control mb-2" name="email_address" maxlength="50" tabindex="1" 
+                                id="email_address" placeholder="your_email@email.com" required>
+                        </label>
 
                         <div class="alert-field invalid-feedback animate__animated animate__fadeInUp animate__duration-1s">
-                            <b>You must informe your e-mail!</b>
+                            <b>You must enter your e-mail!</b>
                         </div>
                     </div>
                 </div>

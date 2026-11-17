@@ -35,35 +35,45 @@
                 <div class="tab-pane show active" id="pills-personal" role="tabpanel" aria-labelledby="personal-tab">
                     <div class="row d-flex justify-content-center">
                         <div class="col-sm-6 col-md-5 col-xxl-4 mb-4">
-                            <label for="employee_id" class="form-label fw-light text-dark">Employee ID <span class="fw-bolder text-danger">*</span></label>
-                            <input type="text" class="form-control" tabindex="1" name="employee_id" maxlength="10" id="employee_id" 
-                                value="{{data.employee_id or ''}}" placeholder="Enter employee id" required>
+                            <label for="employee_id" class="col-12 form-label fw-light text-dark">Employee ID 
+                                <span class="fw-bolder text-danger">*</span>
+                                <input type="text" class="form-control" tabindex="1" name="employee_id" maxlength="10" id="employee_id" 
+                                    value="{{data.employee_id or ''}}" placeholder="Enter employee id" required autocomplete="employee_id">
+                            </label>
                         </div>
 
                         <div class="col-sm-6 col-md-5 col-xxl-4 mb-4">
-                            <label for="position" class="form-label fw-light text-dark">Position <span class="fw-bolder text-danger">*</span></label>
-                            <input type="text" class="form-control" tabindex="2" name="position" maxlength="70" id="position" 
-                                value="{{data.position or ''}}" placeholder="Enter companys' position" required>
+                            <label for="position" class="col-12 form-label fw-light text-dark">Position 
+                                <span class="fw-bolder text-danger">*</span>
+                                <input type="text" class="form-control" tabindex="2" name="position" maxlength="70" id="position" 
+                                    value="{{data.position or ''}}" placeholder="Enter companys' position" required autocomplete="position">
+                            </label>
                         </div>
                         <span class="d-none d-md-block"></span>
 
                         <div class="col-sm-6 col-md-5 col-xxl-4 mb-4">
-                            <label for="first_name" class="form-label fw-light text-dark">First Name <span class="fw-bolder text-danger">*</span></label>
-                            <input type="text" class="form-control" tabindex="3" name="first_name" maxlength="25" id="first_name" 
-                                value="{{data.first_name or ''}}" placeholder="Enter your first name" required>
+                            <label for="first_name" class="col-12 form-label fw-light text-dark">First Name 
+                                <span class="fw-bolder text-danger">*</span>
+                                <input type="text" class="form-control" tabindex="3" name="first_name" maxlength="25" id="first_name" 
+                                    value="{{data.first_name or ''}}" placeholder="Enter your first name" required autocomplete="first_name">
+                            </label>
                         </div>
 
                         <div class="col-sm-6 col-md-5 col-xxl-4 mb-4">
-                            <label for="last_name" class="form-label fw-light text-dark">Last Name <span class="fw-bolder text-danger">*</span></label>
-                            <input type="text" class="form-control" tabindex="4" name="last_name" maxlength="25" id="last_name" 
-                                value="{{data.last_name or ''}}" placeholder="Enter your last name" required>
+                            <label for="last_name" class="col-12 form-label fw-light text-dark">Last Name 
+                                <span class="fw-bolder text-danger">*</span>
+                                <input type="text" class="form-control" tabindex="4" name="last_name" maxlength="25" id="last_name" 
+                                    value="{{data.last_name or ''}}" placeholder="Enter your last name" required>
+                            </label>
                         </div>
                         <span class="d-none d-md-block"></span>
 
                         <div class="col-sm-6 col-md-4 mb-4">
-                            <label for="phone" class="form-label fw-light text-dark">Phone <span class="fw-bolder text-danger">*</span></label>
-                            <input type="text" class="form-control" tabindex="5" maxlength="15" name="phone" id="phone" 
-                                value="{{data.phone or ''}}" placeholder="Enter company's phone" required>
+                            <label for="phone" class="col-12 form-label fw-light text-dark">Phone 
+                                <span class="fw-bolder text-danger">*</span>
+                                <input type="text" class="form-control" tabindex="5" maxlength="15" name="phone" id="phone" 
+                                    value="{{data.phone or ''}}" placeholder="Enter company's phone" required autocomplete="phone">
+                            </label>
                         </div>
                     </div>
 
@@ -81,22 +91,28 @@
                 <div class="tab-pane" id="pills-access" role="tabpanel" aria-labelledby="access-tab">
                     <div class="row d-flex justify-content-center">
                         <div class="col-12 col-sm-10 col-md-8 mb-4">
-                            <label for="email" class="form-label fw-light text-dark">Email <span class="fw-bolder text-danger">*</span></label>
-                            <input type="text" class="form-control" tabindex="7" name="email" maxlength="100" id="email_address" 
-                                value="{{data.email or ''}}" placeholder="Enter your e-mail" required>
+                            <label for="email_address" class="col-12 form-label fw-light text-dark">Email 
+                                <span class="fw-bolder text-danger">*</span>
+                                <input type="text" class="form-control" tabindex="7" name="email_address" maxlength="100" id="email_address" 
+                                    value="{{data.email or ''}}" placeholder="Enter your e-mail" required>
+                            </label>
                         </div>
                         <span class="d-none d-md-block"></span>
 
                         <div class="col-12 col-sm-5 col-md-4 mb-4">
-                            <label for="password" class="form-label fw-light text-dark">Password <span class="fw-bolder text-danger">*</span></label>
-                            <input type="password" class="form-control" tabindex="8" name="password" maxlength="12" id="user_reg_password" 
-                                placeholder="Enter your password" required onkeyup="checkPasswordMatch();">
+                            <label for="user_reg_password" class="col-12 form-label fw-light text-dark">Password 
+                                <span class="fw-bolder text-danger">*</span>
+                                <input type="password" class="form-control" tabindex="8" name="password" maxlength="12" id="user_reg_password" 
+                                    placeholder="Enter your password" required onkeyup="checkPasswordMatch();">
+                            </label>
                         </div>
 
                         <div class="col-12 col-sm-5 col-md-4 mb-4">
-                            <label for="conf_password" class="form-label fw-light text-dark">Confirm Password <span class="fw-bolder text-danger">*</span></label>
-                            <input type="password" class="form-control" tabindex="9" name="conf_password" maxlength="12" id="user_reg_conf_password" 
-                                placeholder="Confirm your password" required onkeyup="checkPasswordMatch();">
+                            <label for="user_reg_conf_password" class="col-12 form-label fw-light text-dark">Confirm Password 
+                                <span class="fw-bolder text-danger">*</span>
+                                <input type="password" class="form-control" tabindex="9" name="conf_password" maxlength="12" 
+                                    id="user_reg_conf_password" placeholder="Confirm your password" required onkeyup="checkPasswordMatch();">
+                            </label>
                         </div>
                         
                         <div class="col-12 py-1">

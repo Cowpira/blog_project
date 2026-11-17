@@ -305,7 +305,7 @@
                                             
                                             <div class="text-muted">
                                                 Status: 
-                                                <label class="text-dark fw-bolder">{{job.Status}}</label>
+                                                <span class="text-dark fw-bolder">{{job.Status}}</span>
                                             </div>
                                         </div>
 
@@ -313,36 +313,36 @@
                                             <div class="col-12 py-2 d-flex justify-content-around">
                                                 <div class="mb-3 text-muted small-texts">
                                                     Country: 
-                                                    <label class="fs-6 text-dark fw-bolder fp-font">{{job.job_belongs_company.Country}}</label>
+                                                    <span class="fs-6 text-dark fw-bolder fp-font">{{job.job_belongs_company.Country}}</span>
                                                 </div>
 
                                                 <div class="mb-3 text-muted small-texts">
                                                     State: 
-                                                    <label class="fs-6 text-dark fw-bolder fp-font">{{job.job_belongs_company.State}}</label>
+                                                    <span class="fs-6 text-dark fw-bolder fp-font">{{job.job_belongs_company.State}}</span>
                                                 </div>
                                             </div>
 
                                             <div class="col-12 py-2 d-flex justify-content-around">
                                                 <div class="mb-3 text-muted small-texts">
                                                     Location: 
-                                                    <label class="fs-6 text-dark fw-bolder fp-font">{{job.Location}}</label>
+                                                    <span class="fs-6 text-dark fw-bolder fp-font">{{job.Location}}</span>
                                                 </div>
 
                                                 <div class="mb-3 text-muted small-texts">
                                                     Contract: 
-                                                    <label class="fs-6 text-dark fw-bolder fp-font">{{job.Contract}}</label>
+                                                    <span class="fs-6 text-dark fw-bolder fp-font">{{job.Contract}}</span>
                                                 </div>
                                             </div>
 
                                             <div class="col-12 py-2 d-flex justify-content-around">
                                                 <div class="mb-3 text-muted small-texts">
                                                     Duration: 
-                                                    <label class="fs-6 text-dark fw-bolder fp-font">{{job.Duration}}</label>
+                                                    <span class="fs-6 text-dark fw-bolder fp-font">{{job.Duration}}</span>
                                                 </div>
 
                                                 <div class="mb-3 text-muted small-texts">
                                                     Payment: 
-                                                    <label class="fs-6 text-dark fw-bolder fp-font">{{job.Payment_Type}}</label>
+                                                    <span class="fs-6 text-dark fw-bolder fp-font">{{job.Payment_Type}}</span>
                                                 </div>
                                             </div>
 
@@ -373,9 +373,9 @@
 
                                     <!-- tab to list job overview data -->
                                     <div class="tab-pane show" id="pills-description-{{ job.Id }}" role="tabpanel" aria-labelledby="description-tab-{{ job.Id }}">
-                                        <label class="col-12 fs-5 text-dark fw-bolder mb-1">
+                                        <span class="col-12 fs-5 text-dark fw-bolder mb-1">
                                             Skills Required
-                                        </label>
+                                        </span>
                                         <div class="mb-2">
                                             {% for tag in job.Lang_Requirements.split(' ') %}
                                                 <p class="language-badges badge bg-{{tag | lower}}">{{tag}}</p>
@@ -383,9 +383,9 @@
                                         </div>
 
                                         <div class="row mt-3">
-                                            <label class="mb-3 fs-5 text-dark fw-bolder">
+                                            <span class="mb-3 fs-5 text-dark fw-bolder">
                                                 Requirements good to have
-                                            </label>
+                                            </span>
 
                                             <pre class="fw-light fp-font" style="white-space: pre-line; text-align: justify;">
                                                 {{job.Other_Requirements}}
@@ -393,9 +393,9 @@
                                         </div>
 
                                         <div class="row mt-3">
-                                            <label class="mb-3 fs-5 text-dark fw-bolder">
+                                            <span class="mb-3 fs-5 text-dark fw-bolder">
                                                 Job Role & Description 
-                                            </label>
+                                            </span>
 
                                             <pre class="fw-light fp-font" style="white-space: pre-line; text-align: justify;">
                                                 {{job.Description}}
@@ -406,9 +406,9 @@
                                     <!-- tab to list job overview data -->
                                         <div class="tab-pane show" id="pills-benefits-{{ job.Id }}" role="tabpanel" aria-labelledby="benefits-tab-{{ job.Id }}">
                                             <div class="row mt-1">
-                                                <label class="mb-3 fs-5 text-dark fw-bolder">
+                                                <span class="mb-3 fs-5 text-dark fw-bolder">
                                                     Benefits offered by {{job.job_belongs_company.Company}}
-                                                </label>
+                                                </span>
 
                                                 <pre class="fw-light fp-font" style="white-space: pre-line; text-align: justify;">
                                                     {{job.Benefits}}
@@ -428,10 +428,10 @@
                                         {% if not job.Closed %}
                                             {% if user_in.Has_Resume %}
                                                 {% if job.Id | string in jobs_applied | map('string') | list %}
-                                                    <label class="fs-4 fw-bolder animate__animated animate__fadeInDown 
+                                                    <span class="fs-4 fw-bolder animate__animated animate__fadeInDown 
                                                         animate__delay-1s animate__slow" style="color: #FF2400;;">
                                                         You alredy applied
-                                                    </label>
+                                                    </span>
                                                 {% else %}
                                                     <button type="submit" name="action" class="fp-buttons fp-orange-btn">
                                                         <i class="bi bi-bullseye" style="font-size: 1.3rem;"></i> Apply
@@ -477,10 +477,10 @@
                                 <form class="needs-validation" novalidate method="POST">
                                     <div class="modal-body">
                                         <div class="col-10 offset-1 p-2 text-center">
-                                            <b><label class="fs-4 text-danger">
+                                            <b><span class="fs-4 text-danger">
                                                 Closing job <span class="text-dark">{{job.Title}}</span><br>
                                                 Will not allow developers to submit applications!
-                                            </label></b>
+                                            </span></b>
                                         </div>
                                     </div>
 

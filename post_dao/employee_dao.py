@@ -30,7 +30,7 @@ async def create_employeer(new_employee, url_for, db: Session, bg_task):
             First_Name= new_employee.get("first_name"),
             Last_Name= new_employee.get("last_name"),
             Phone= new_employee.get("phone"), 
-            Email= new_employee.get("email"),
+            Email= new_employee.get("email_address"),
             Password= auth_settings.encrypt(new_employee.get("password")),
             Created= datetime.now(timezone.utc),
             Total_Messages= 0,

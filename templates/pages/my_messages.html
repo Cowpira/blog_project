@@ -53,11 +53,10 @@
                 <thead class="text-center table-light">
                     <tr>
                         <th scope="col"><span class="fs-6 fp-font">Sender</span></th>
-                        <th scope="col" class="text-start"><span class="fs-6 fp-font">
-                            <span class="d-none d-sm-block">Message</span> Content</span>
+                        <th scope="col" class="text-start"><span class="fs-6 fp-font">Content</span>
                         </th>
-                        <th class="d-none d-sm-block" scope="col">
-                            <span class="fs-6 fp-font">Date</span>
+                        <th scope="col">
+                            <span class="d-none d-md-block fs-6 fp-font">Date</span>
                         </th>
                         <th scope="col"><span class="fs-6 fp-font">Viewed</span></th>
                         <th scope="col"><span class="fs-6 fp-font">Actions</span></th>
@@ -96,8 +95,8 @@
                                 </td>
 
                                 <!-- showing message date -->
-                                <td class="text-center d-none d-sm-block">
-                                    <span class="smaller-texts fw-light text-muted">
+                                <td class="text-center">
+                                    <span class="d-none d-md-block smaller-texts fw-light text-muted">
                                         {{ msg.Send_Date.strftime('%B, %d %Y') if msg.Send_Date else '' }}
                                     </span>
                                 </td>

@@ -20,6 +20,7 @@ public_api= APIRouter()
 # setting the slowAPI request limiter 
 limiter= Limiter(key_func= get_remote_address, storage_uri= os.environ.get('RATELIMIT_STORAGE_URI'))
 
+
 # function to create a session list and add the user loged-in into it
 def create_session(user_id: int):
     session_id = len(helper.sessions) + random.randint(0, 1000000)

@@ -7,44 +7,45 @@
         
         {% set education= resume.get("education") %}
         <div class="row">
-            <label class="col-8 text-muted">Scool:
+            <span class="col-8 text-muted">Scool:
                 <p class="fw-light text-marine">{{ education.School }}</p>
-            </label>
+            </span>
     
-            <label class="col-4 text-muted">Type:
+            <span class="col-4 text-muted">Type:
                 <p class="fw-light text-marine">{{ education.Education_Type }}</p>
-            </label>
+            </span>
         
-            <label class="col-8 text-muted">Area of Study:
+            <span class="col-8 text-muted">Area of Study:
                 <p class="fw-light text-marine">{{ education.Graduated_At }}</p>
-            </label>
+            </span>
 
-            <label class="col-4 text-muted">Status:
+            <span class="col-4 text-muted">Status:
                 <p class="fw-light text-marine">{{ education.Grad_Status }}</p>
-            </label>
+            </span>
         </div>
 
         {% if education.New_Education | lower != 'null' and education.New_Education | length >= 5 %}
-            <label class="col-12 text-muted">Others:
+            <span class="col-12 text-muted">Others:
                 <p class="fw-light text-marine">{{ education.New_Education }}</p>
-            </label>
+            </span>
         {% endif %}
             
 
         <!-- developer title -->
         <span class="card-title fs-4 text-success mt-3">Professional</span>
-        <label class="col-12 text-muted">Title:
-            <p class="fw-light text-marine">{{ user_in.Cod_Title }}</p>
-        </label>
 
         <div class="row">
-            <label class="col-8 text-muted">Primary Language:
-                <p class="fw-light text-marine">{{ user_in.Cod_Lang }}</p>
-            </label>
+            <span class="col-12 text-muted">Title:
+                <p class="fw-light text-marine">{{ user_in.Cod_Title }}</p>
+            </span>
 
-            <label class="col-4 text-muted">Experience:
+            <span class="col-8 text-muted">Primary Language:
+                <p class="fw-light text-marine">{{ user_in.Cod_Lang }}</p>
+            </span>
+
+            <span class="col-4 text-muted">Experience:
                 <p class="fw-light text-marine">{{ user_in.Years_Exp }} years</p>
-            </label>
+            </span>
         </div>
 
             
@@ -56,13 +57,13 @@
             {% for i in range(1, 4) %}
                 {% if certifications['Certification'~i] %}
                     <div class="row d-flex justify-content-around">
-                        <label class="col-8 text-muted">Title:
+                        <span class="col-8 text-muted">Title:
                             <p class="fw-light text-marine">{{ certifications['Certification'~i] }}</p>
-                        </label>
+                        </span>
 
-                        <label class="col-4 text-muted">Issued:
+                        <span class="col-4 text-muted">Issued:
                             <p class="fw-light text-marine">{{ certifications['Cert'~ i ~'_Date'] }}</p>
-                        </label>
+                        </span>
                     </div>
                 {% endif %}
             {% endfor %}
@@ -75,21 +76,23 @@
 
         <!-- front-end skills -->
         <div class="row d-flex justify-content-around">
-            <span class="col-6 col-md-3 badge rounded-pill bg-dark">
+            <div class="col-6 col-md-3 badge rounded-pill bg-dark">
                 <b>Front-End</b>
-            </span>
+            </div>
             {% set front_end= resume.get("front_end") %}
 
             {% if front_end %}
                 {% for i in range(1, 4) %}
                     {% if front_end['Frontend_Lang'~i] %}
-                        <label class="col-8 text-muted">Language:
-                            <p class="fw-light text-marine">{{ front_end['Frontend_Lang'~i] }}</p>
-                        </label>
+                        <div class="row">
+                            <span class="col-8 text-muted">Language:
+                                <p class="fw-light text-marine">{{ front_end['Frontend_Lang'~i] }}</p>
+                            </span>
 
-                        <label class="col-4 text-muted">Experience:
-                            <p class="fw-light text-marine">{{ front_end['Exp_Frontend'~i] }} years</p>
-                        </label>
+                            <span class="col-4 text-muted">Experience:
+                                <p class="fw-light text-marine">{{ front_end['Exp_Frontend'~i] }} years</p>
+                            </span>
+                        </div>
                     {% endif %}
                 {% endfor %}
             {% else %}
@@ -98,21 +101,23 @@
         
 
             <!-- back-end skills -->
-            <span class="col-6 col-md-3 mt-3 badge rounded-pill bg-dark">
+            <div class="col-6 col-md-3 mt-3 badge rounded-pill bg-dark">
                 <b>Back-End</b>
-            </span>
+            </div>
             {% set back_end= resume.get("back_end") %}
 
             {% if back_end %}
                 {% for i in range(1, 4) %}
                     {% if back_end['Backend_Lang'~i] %}
-                        <label class="col-8 text-muted">Language:
-                            <p class="fw-light text-marine">{{ back_end['Backend_Lang'~i] }}</p>
-                        </label>
+                        <div class="row">
+                            <span class="col-8 text-muted">Language:
+                                <p class="fw-light text-marine">{{ back_end['Backend_Lang'~i] }}</p>
+                            </span>
 
-                        <label class="col-4 text-muted">Experience:
-                            <p class="fw-light text-marine">{{ back_end['Exp_Backend'~i] }} years</p>
-                        </label>
+                            <span class="col-4 text-muted">Experience:
+                                <p class="fw-light text-marine">{{ back_end['Exp_Backend'~i] }} years</p>
+                            </span>
+                        </div>
                     {% endif %}
                 {% endfor %}
             {% else %}
@@ -121,21 +126,23 @@
 
 
             <!-- database skills -->
-            <span class="col-6 col-md-3 mt-3 badge rounded-pill bg-dark">
+            <div class="col-6 col-md-3 mt-3 badge rounded-pill bg-dark">
                 <b>Database</b>
-            </span>
+            </div>
             {% set database= resume.get("databases") %}
 
             {% if database %}
                 {% for i in range(1, 4) %}
                     {% if database['Database'~i] %}
-                        <label class="col-8 text-muted">Database:
-                            <p class="fw-light text-marine">{{ database['Database'~i] }}</p>
-                        </label>
+                        <div class="row">
+                            <span class="col-8 text-muted">Database:
+                                <p class="fw-light text-marine">{{ database['Database'~i] }}</p>
+                            </span>
 
-                        <label class="col-4 text-muted">Experience:
-                            <p class="fw-light text-marine">{{ database['Exp_Database'~i] }} years</p>
-                        </label>
+                            <span class="col-4 text-muted">Experience:
+                                <p class="fw-light text-marine">{{ database['Exp_Database'~i] }} years</p>
+                            </span>
+                        </div>
                     {% endif %}
                 {% endfor %}
             {% else %}
@@ -144,22 +151,22 @@
 
 
             <!-- cloud skills -->
-            <span class="col-6 col-md-3 mt-3 badge rounded-pill bg-dark">
+            <div class="col-6 col-md-3 mt-3 badge rounded-pill bg-dark">
                 <b>Cloud Computing</b>
-            </span>
+            </div>
             {% set cloud= resume.get("clouds") %}
 
             {% if cloud and cloud.Cloud1 and cloud.Cloud2 and cloud.Cloud3 %}
                 {% for i in range(1, 4) %}
                     {% if cloud['Cloud'~i] %}
                         <div class="row">
-                            <label class="col-6 text-muted">Cloud:
+                            <span class="col-6 text-muted">Cloud:
                                 <p class="fw-light text-marine">{{ cloud['Cloud'~i] }}</p>
-                            </label>
+                            </span>
 
-                            <label class="col-6 text-muted">Experience:
+                            <span class="col-6 text-muted">Experience:
                                 <p class="fw-light text-marine">{{ cloud['Exp_Cloud'~i] }} years</p>
-                            </label>
+                            </span>
                         </div>
                     {% endif %}
                 {% endfor %}
@@ -171,9 +178,9 @@
 
         <div class="col-12 mt-4">
             {% if cloud.Other_Skills %}
-            <label class="text-muted">Other Skills:
+            <span class="text-muted">Other Skills:
                 <p class="fw-light text-marine" style="text-align: justify;">{{cloud.Other_Skills}}</p>
-            </label>
+            </span>
             {% else %}
                 <p class="col-12 text-center py-2 fw-bold text-warning">No skills informed!</p>
             {% endif %}
@@ -187,26 +194,26 @@
         {% for i in range(1, 4) %}
             {% if work['Company'~i] and work['Position'~i] %}
                 <div class="row">
-                    <label class="col-6 text-muted">Company:
+                    <span class="col-6 text-muted">Company:
                         <p class="fw-light text-marine">{{work['Company'~i]}}</p>
-                    </label>
+                    </span>
 
-                    <label class="col-6 text-muted">Position:
+                    <span class="col-6 text-muted">Position:
                         <p class="fw-light text-marine">{{work['Position'~i]}}</p>
-                    </label>
+                    </span>
                 
-                    <label class="col-6 text-muted">Started:
+                    <span class="col-6 text-muted">Started:
                         <p class="fw-light text-marine">{{work['Started'~i] or 'No started date!'}}</p>
-                    </label>
+                    </span>
 
-                    <label class="col-6 text-muted">Ended:
+                    <span class="col-6 text-muted">Ended:
                         <p class="fw-light text-marine">{{work['Ended'~i] or 'No ended date!'}}</p>
-                    </label>
+                    </span>
                 </div>
 
-                <label class="col-12 text-muted">Contributions:
+                <span class="col-12 text-muted">Contributions:
                     <p class="fw-light text-marine">{{work['Contribution'~i] or 'No contribution informed!'}}</p>
-                </label>
+                </span>
                 <hr class="col-6 offset-3 text-muted">
             {% endif %}
         {% endfor %}
@@ -220,18 +227,18 @@
             {% for i in range(1, 4) %}
                 {% if projects['Project'~i] and projects['Prj_Desc'~i] %}
                     <div class="row d-flex justify-content-around">
-                        <label class="col-12 col-sm-6 text-muted">Name:
+                        <span class="col-12 col-sm-6 text-muted">Name:
                             <p class="fw-light text-marine">{{projects['Project'~i]}}</p>
-                        </label>
+                        </span>
 
-                        <label class="col-12 col-sm-6 text-muted">Access Link:
+                        <span class="col-12 col-sm-6 text-muted">Access Link:
                             <p class="fw-light text-marine">{{projects['Link'~i]}}</p>
-                        </label>
+                        </span>
                     </div>
 
-                    <label class="col-12 text-muted">Description:
+                    <span class="col-12 text-muted">Description:
                         <p class="fw-light text-marine" style="text-align: justify;">{{projects['Prj_Desc'~i]}}</p>
-                    </label>
+                    </span>
 
                     <hr class="col-6 offset-3 text-muted">
                 {% endif %}
@@ -248,9 +255,9 @@
         </div>
     {% else %}
         <div class="col-12 col-sm-10 text-center py-1" style="background-color: rgba(44, 44, 44, 0.758);">
-            <label class="fs-3 text-light animate__animated animate__fadeInDown animate__delay-1s animate__slow py-4">
+            <span class="fs-3 text-light animate__animated animate__fadeInDown animate__delay-1s animate__slow py-4">
                 Incomplete Resume
-            </label>
+            </span>
 
             <div class="mb-4 animate__animated animate__fadeInUp animate__delay-1s animate__slow">
                 <a href="#" onclick="edit_portfolio_tab();" class="fp-buttons fp-orange-btn" tabindex="1">
@@ -261,43 +268,43 @@
 
         <div class="row d-flex justify-content-around">
             <div class="card-title fs-4 text-success mt-3">Programmer</div>
-            <label class="col-12 text-muted">Title
+            <span class="col-12 text-muted">Title
                 <p class="fw-light text-marine">{{user_in.Cod_Title}}
                 </p>
-            </label>
+            </span>
 
-            <label class="col-8 col-sm-6 text-muted">Primary Language
+            <span class="col-8 col-sm-6 text-muted">Primary Language
                 <p class="fw-light text-marine">{{user_in.Cod_Lang}}</p>
-            </label>
+            </span>
 
-            <label class="col-4 col-sm-6 text-muted">Experience
+            <span class="col-4 col-sm-6 text-muted">Experience
                 <p class="fw-light text-marine">{{user_in.Years_Exp}} years</p>
-            </label>
+            </span>
 
             <div class="card-title fs-4 text-success mt-2">Current Job</div>
             {% set work = resume.get("works") %}
-            <label class="col-6 text-muted">Company
+            <span class="col-6 text-muted">Company
                 <p class="fw-light text-marine">{{ work.Company1 }}
                 </p>
-            </label>
+            </span>
 
-            <label class="col-6 text-muted">Position
+            <span class="col-6 text-muted">Position
                 <p class="fw-light text-marine">{{ work.Position1 }}</p>
-            </label>
+            </span>
 
-            <label class="col-6 text-muted">Started
+            <span class="col-6 text-muted">Started
                 <p class="fw-light text-marine">{{ work.Started1 or 'No started date!' }}</p>
-            </label>
+            </span>
 
-            <label class="col-6 text-muted">Ended
+            <span class="col-6 text-muted">Ended
                 <p class="fw-light text-marine">{{ work.Ended1 or 'No eded date!' }}</p>
-            </label>
+            </span>
 
-            <label class="col-12 text-muted">Contributions
+            <span class="col-12 text-muted">Contributions
                 <p class="fw-light text-marine" style="text-align: justify;">
                     {{ work.Contribution1 or 'No contributions informed!'}}
                 </p>
-            </label>
+            </span>
         </div>
     {% endif %}
 {% endblock %}

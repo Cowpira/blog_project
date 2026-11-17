@@ -26,17 +26,17 @@
                 {% endif %}
 
                 <div class="container text-center mb-3">
-                    <div {% if 'C#' in user.Cod_Lang  or '.NET' in user.Cod_Lang  %} class="language-badges badge bg-c"
-                        {% elif user.Cod_Lang == 'Back-End' %} class="language-badges badge bg-backend"
-                        {% else %} class="language-badges badge bg-{{ user.Cod_Lang| trim(' ') |lower }}"{% endif %}>
+                    <span {% if 'C#' in user.Cod_Lang  or '.NET' in user.Cod_Lang  %} class="language-badges badge bg-c fs-6"
+                        {% elif user.Cod_Lang == 'Back-End' %} class="language-badges badge bg-backend fs-6"
+                        {% else %} class="language-badges badge bg-{{ user.Cod_Lang| trim(' ') |lower }} fs-6" {% endif %}>
                         {{ user.Cod_Lang }}
-                    </div>
+                    </span>
 
                     {% if user.Years_Exp %}
-                        <label class="ms-3 text-dark fw-bolder fs-5">
+                        <span class="ms-3 text-dark fw-bolder fs-5">
                             {{ user.Years_Exp }} 
                             <span class="fw-light smaller-texts text-muted">years exp</span>
-                        </label>
+                        </span>
                     {% endif %}
                 </div>
             </div>
@@ -46,6 +46,7 @@
         <div class="dev_card_body">
             <div class="row text-center p-2">
                 <span class="smaller-texts fw-lighter text-dark mt-1">Work at</span> 
+                
                 <small class="text-orange fp-font fw-bold small-texts">
                     {% if user.works.Company1 %} 
                         {{ user.works.Company1 }}
@@ -66,13 +67,25 @@
 
             <!-- action buttons -->
             <div class="d-flex justify-content-center align-items-center">
+                <div class="mb-3" {% if user_in %} data-bs-toggle="tooltip" class="d-inline-block mb-3" 
+                    data-bs-animation="false" data-bs-placement="top" 
+                    title="Question by {{ user.First_Name.split(' ')[0] }} {% endif %}">
+                    
+                    <a href="{{ url_for('search_posts') }}?tag=Null&author_id={{ user.Id }}&page=1&list=4" 
+                        class="fp-buttons fp-teal-btn">
+                        <i class="bi bi-file-earmark-text" style="font-size: .9rem;"></i> 
+                        {% if not user_in %} Questions {% endif %} 
+                    </a>
+                    <span class="ms-2"></span>
+                </div>
+
                 <!-- if user in is the same as the user ID show profile and edit buttons  -->
                 {% if user_in and user_in.Id == user.Id %}
-                    <div class="mb-3 gap-3">
+                    <div class="mb-3">
                         <a href="{{ url_for('dev_account') }}" class="fp-buttons fp-gray-btn">
                             <i class="bi bi-person-badge" style="font-size: .9rem;"></i> Profile
                         </a>
-                        <span class="ms-3"></span>
+                        <span class="ms-2"></span>
 
                         <a href="{{ url_for('my_posts', page=1, list=10) }}" class="fp-buttons fp-orange-btn">
                             <i class="bi bi-list-columns-reverse" style="font-size: .9rem;"></i> Posts
@@ -84,7 +97,7 @@
                             <i class="bi bi-person-lines-fill" style="font-size: .9rem;"></i> Resume
                         </a>
                     </div>
-                    <span class="ms-3"></span>
+                    <span class="ms-2"></span>
                 {% endif %}
 
                 <!-- show message button for developers that isn't the developer account owner -->

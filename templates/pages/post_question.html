@@ -25,9 +25,9 @@
                     novalidate action="{{url_for("update_post", post_id=edit_post.Id)}}" method="POST">
                     
                     <div class="col-12 col-lg-11">
-                        <label for="title" class="form-label fw-light text-dark">Title 
+                        <p class="form-label fw-light text-dark">Title 
                             <span class="fw-bolder text-danger">*</span>
-                        </label>
+                        </p>
                         <input type="text" class="form-control" tabindex="1" name="edit-title" maxlength="70" id="edit_title" 
                             value="{{edit_post.Title}}" required>
                     </div>
@@ -36,9 +36,9 @@
                     <div class="col-12 col-lg-11 mt-4">
                         <div class="row d-flex justify-content-around">
                             <div class="col-10">
-                                <label for="question" class="form-label fw-light text-dark">Question 
+                                <p class="form-label fw-light text-dark">Question 
                                     <span class="fw-bolder text-danger">*</span>
-                                </label>
+                                </p>
                             </div>
 
                             <div class="col-1">
@@ -127,9 +127,9 @@
                     data-mode="new" action="{{url_for("post_question", post_id=-1)}}" method="POST">
                     
                     <div class="col-12 col-lg-11">
-                        <label for="title" class="form-label fw-light text-dark">Title 
+                        <p class="form-label fw-light text-dark">Title 
                             <span class="fw-bolder text-danger">*</span>
-                        </label>
+                        </p>
                         <input type="text" class="form-control" tabindex="1" name="title" id="new_title"
                             maxlength="70" placeholder="Question Title" required>
                     </div>

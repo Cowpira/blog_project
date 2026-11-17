@@ -115,10 +115,10 @@
                     {% if answers | length > 0 %}
                         <div class="col d-none d-md-block">
                             <div class="answers-sidebar-menu text-center py-2 mt-2">
-                                <label class="text-light small-texts header-bg p-3"> Answered by </label>
+                                <span class="text-light small-texts header-bg p-3"> Answered by </span>
                                 <!-- LISTING ALL DEVELOPERS WHO ANSWERED THE POST -->  
                                 {% for answer in answers  %}
-                                    <nav id="navbar-answers-{{answer.Id}}" class="mt-2">
+                                    <nav id="navbar-answers-{{answer.Id}}" class="mt-3">
                                         <a class="nav-link small-texts mb-1" href="#item-{{answer.Id}}">
                                             {{answer.write_answer.First_Name.split(" ")[0]}}
                                         </a>

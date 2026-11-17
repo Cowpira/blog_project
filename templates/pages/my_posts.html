@@ -11,6 +11,19 @@
         {% include "alerts.html" ignore missing with context %}
     {% endif %}
 
+    <!-- css style to add chevron to the accordion collapse -->
+    <style>
+        a[data-bs-toggle="collapse"]:not(.collapsed) .bi-chevron-double-down {
+            transform: rotate(180deg);
+        }
+
+        /* adding transition to rotate the icon */
+        a[data-bs-toggle="collapse"] .bi-chevron-double-down {
+            transition: transform .6s ease;
+            display: inline-block; 
+        }
+    </style>
+
     <main class="container-fluid start-content">
         {% if user_in and not my_posts %}
             <div class="row py-5" data-spy="scroll" data-bs-offset="0">

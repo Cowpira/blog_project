@@ -68,7 +68,7 @@ async def create_user(new_dev, url_for, bg_task, db: Session):
             Cod_Title= title,
             Cod_Lang= coding_language,
             Years_Exp= new_dev.get("experience"),
-            Email= new_dev.get("email"),
+            Email= new_dev.get("dev_email"),
             Password= auth_settings.encrypt(new_dev.get("password")),
             Created= datetime.now(timezone.utc),
             Type= 'developer',
