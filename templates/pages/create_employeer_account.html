@@ -75,13 +75,12 @@
                                     value="{{data.phone or ''}}" placeholder="Enter company's phone" required autocomplete="phone">
                             </label>
                         </div>
+                        <span class="col-12 text-center fw-light smaller-texts text-danger">* required fields</span>
                     </div>
 
                     <!-- tab navigation buttons -->
-                    <div class="col-12 col-md-10 offset-md-1 col-lg-8 offset-lg-2 navigation_menu d-flex justify-content-between mt-4 py-4">
-                        <span class="fw-light smaller-texts text-danger mt-3">* required fields</span>
-
-                        <a href="#" onclick="access_tab();" class="fp-buttons fp-gray-btn p-2" tabindex="6">
+                    <div class="col-3 offset-9 navigation_menu d-flex text-end mt-4 py-4">
+                        <a href="#" onclick="access_tab();" class="fp-buttons fp-gray-btn" tabindex="6">
                             &nbsp; Next <i class="bi bi-arrow-right-circle-fill px-2" style="font-size: 1.3rem;"></i>
                         </a>
                     </div>
@@ -115,7 +114,7 @@
                             </label>
                         </div>
                         
-                        <div class="col-12 py-1">
+                        <div class="col-12 text-center py-1">
                             <i id="pass-icon"></i>
                             <span id="message"></span>
                         </div>
@@ -135,8 +134,8 @@
                     </div>
                     
                     <!-- tab navigation buttons -->
-                    <div class="col-12 col-md-10 offset-md-1 col-lg-8 offset-lg-2 navigation_menu d-flex justify-content-between mt-2 py-4">
-                        <a href="#" onclick="personal_tab();" class="fp-buttons fp-gray-btn p-2" tabindex="11">
+                    <div class="col-12 navigation_menu d-flex justify-content-evenly mt-2 py-4">
+                        <a href="#" onclick="personal_tab();" class="fp-buttons fp-gray-btn" tabindex="11">
                             <i class="bi bi-arrow-left-circle-fill px-2" style="font-size: 1.3rem;"></i> Previous &nbsp;
                         </a>
                         
