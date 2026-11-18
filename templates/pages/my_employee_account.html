@@ -31,28 +31,52 @@
                 {% endif %}
 
                 <ul class="nav mb-3 mt-2 d-flex justify-content-center" id="pills-tab" role="tablist">
-                    <li class="nav-item" role="presentation">
-                        <a href="/me/my_data" class="nav-link navlink-tab-menu active" id="profile-tab" data-bs-toggle="pill" 
-                        data-bs-target="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="true">Profile</a>
+                    <li class="nav-item dropdown">
+                        <a href="#" class="nav-link navlink-tab-menu active dropdown-toggle" id="Dropdown_Profile" 
+                            role="button" data-bs-toggle="dropdown" aria-expanded="false">Profile
+                        </a>
+
+                        <ul class="dropdown-menu" aria-labelledby="Dropdown_Profile">
+                            <li>
+                                <a href="/me" class="dropdown-item smaller-texts active" id="profile-tab" data-bs-toggle="pill" 
+                                    data-bs-target="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="true">
+                                    <i class="bi bi-person-badge-fill" style="font-size: 1rem;"></i> &nbsp; My Profile
+                                </a>
+                            </li>
+
+                            <li>
+                                <a href="/me/edit" class="dropdown-item smaller-texts" id="edit-data-tab" data-bs-toggle="pill" 
+                                    data-bs-target="#pills-edit-data" role="tab" aria-controls="pills-edi-profile" aria-selected="false">
+                                    <i class="bi bi-person-lines-fill" style="font-size: 1rem;"></i> &nbsp; Update Data
+                                </a>
+                            </li>
+                        </ul>
                     </li>
 
-                    <li class="nav-item" role="presentation">
-                        <a href="/me/edit" id="edit-data-tab" data-bs-toggle="pill" role="tab"
-                        data-bs-target="#pills-edit-data" aria-controls="pills-profile" aria-selected="false"></a>
-                    </li>
+                    <li class="nav-item dropdown">
+                        <a href="#" class="nav-link navlink-tab-menu dropdown-toggle ms-2" id="Dropdown_Company" 
+                            role="button" data-bs-toggle="dropdown" aria-expanded="false">Company
+                        </a>
 
-                    <li class="nav-item" role="presentation">
-                        <a href="/me/my_company" class="nav-link navlink-tab-menu" id="company-tab" data-bs-toggle="pill" 
-                        data-bs-target="#pills-company" role="tab" aria-controls="pills-company" aria-selected="true">Company</a>
-                    </li>
+                        <ul class="dropdown-menu" aria-labelledby="Dropdown_Company">
+                            <li>
+                                <a href="/me/my_company" class="dropdown-item smaller-texts" id="company-tab" data-bs-toggle="pill" 
+                                    data-bs-target="#pills-company" role="tab" aria-controls="pills-company" aria-selected="true">
+                                    <i class="bi bi-buildings-fill" style="font-size: 1rem;"></i> &nbsp; Company
+                                </a>
+                            </li>
 
-                    <li class="nav-item" role="presentation">
-                        <a href="/me/edit_company" id="edit-company-tab" data-bs-toggle="pill" role="tab"
-                        data-bs-target="#pills-edit-company" role="tab" aria-controls="pills-company" aria-selected="false"></a>
+                            <li>
+                                <a href="/me/edit_company" class="dropdown-item smaller-texts" id="edit-company-tab" data-bs-toggle="pill" 
+                                    data-bs-target="#pills-edit-company" role="tab" aria-controls="pills-company" aria-selected="false">
+                                    <i class="bi bi-repeat" style="font-size: 1rem;"></i> &nbsp; Update Company
+                                </a>
+                            </li>
+                        </ul>
                     </li>
                     
                     <li class="nav-item" role="presentation">
-                        <a href="/me/change_password" class="nav-link navlink-tab-menu" id="change-pass-tab" data-bs-toggle="pill" 
+                        <a href="/me/change_password" class="nav-link navlink-tab-menu ms-2" id="change-pass-tab" data-bs-toggle="pill" 
                         data-bs-target="#pills-change-pass" role="tab" aria-controls="pills-change-pass" aria-selected="false">Change Password</a>
                     </li>
                 </ul>
