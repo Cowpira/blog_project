@@ -669,10 +669,7 @@ textPath {
     color: var(--fp-orange-color);
 }
 
-.answer-box{ 
-    border: 2px dashed rgb(164, 164, 164); 
-    margin-top: -17px; 
-}
+.answer-box{ border: 2px dashed rgb(164, 164, 164); margin-top: -17px; }
 
 .accordion-body-modals{
     height: 300px; 
