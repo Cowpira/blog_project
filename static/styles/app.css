@@ -384,6 +384,7 @@ main{  min-height: calc(100vh - 360px); }
 }
 
 .action_bar_menu{
+    width: 100%;
     top: 6rem;
     height: 3.4rem;
     display: flex;
@@ -669,7 +670,10 @@ textPath {
     color: var(--fp-orange-color);
 }
 
-.answer-box{ border: 2px dashed rgb(164, 164, 164); margin-top: -17px; }
+.answer-box{ 
+    border: 2px dashed rgb(164, 164, 164); 
+    margin-top: -17px; 
+}
 
 .accordion-body-modals{
     height: 300px; 
@@ -837,15 +841,6 @@ textPath {
     transition: all .5s ease-out;
 }
 
-.fp-orange-btn{
-    color: var(--fp-orange-color);
-    border: 1px solid var(--fp-orange-color);
-    background: linear-gradient(to right, var(--fp-orange-color) 50%, transparent 50%);
-    background-size: 200% 100%;
-    background-position: right bottom;
-    transition: all .5s ease-out;
-}
-
 .fp-blue-btn{
     color: var(--fp-marine-color);
     border: 1px solid var(--fp-marine-color);
@@ -855,7 +850,27 @@ textPath {
     transition: all .5s ease-out;
 }
 
-.fp-red-btn:hover, .fp-gray-btn:hover, .fp-blue-btn:hover, .fp-orange-btn:hover{
+.fp-orange-btn{
+    color: var(--fp-orange-color);
+    border: 1px solid var(--fp-orange-color);
+    background: linear-gradient(to right, var(--fp-orange-color) 50%, transparent 50%);
+    background-size: 200% 100%;
+    background-position: right bottom;
+    transition: all .5s ease-out;
+}
+
+.fp-teal-btn{
+    color: var(--fp-teal-color);
+    border: 1px solid var(--fp-teal-color);
+    background: linear-gradient(to right, var(--fp-teal-color) 50%, transparent 50%);
+    background-size: 200% 100%;
+    background-position: right bottom;
+    transition: all .5s ease-out;
+    
+}
+
+.fp-red-btn:hover, .fp-gray-btn:hover, .fp-blue-btn:hover, 
+.fp-orange-btn:hover, .fp-teal-btn:hover{
     color: var(--fp-white-color);
     background-position: left bottom;
 }
