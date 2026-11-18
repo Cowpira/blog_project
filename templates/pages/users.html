@@ -148,58 +148,11 @@
                     {% include "user_layout.html" with context %}
                 {% endfor %}
 
+                <!-- modal to send message for Developers -->
+                {% include "modal_send_message.html" %}
+                
                 <!-- div is to display the developer modal -->
                 <div id="dislay_modal_resume"></div>
-
-                <!--  MODAL TO SEND A MESSAGE FOR A DEVELOPER -->
-                <div class="modal gen-mdl" id="global-send-msg" tabindex="-1" data-bs-backdrop="static" 
-                data-bs-keyboard="false" aria-labelledby="staticSendMessage" aria-hidden="true">
-                    
-                    <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content">
-                            <div class="modal-header d-flex justify-content-around">
-                                <h1 class="col-10 text-center title-headers">
-                                    <i class="bi bi-chat-right-dots" style="font-size: 2rem;"></i>
-                                    <span class="col-12 text-light fs-6">Message to </span> 
-                                    <span id="global-dev-name"></span>
-                                </h1>
-
-                                <a href="#" class="gen-mdl-close btn-close-modal position-absolute p-1 top-0 end-0">
-                                    <i class="bi bi-x-circle-fill" style="font-size: 1.7rem;"></i>
-                                </a>
-                            </div>
-                    
-                            <form id="global-send-msg-frm" class="needs-validation" novalidate method="POST" action="">
-                                <div class="modal-body">
-                                    <input type="hidden" id="global-dev-id" name="dev_id" value="">
-                                    <textarea id="global-msg-text" type="text" class="form-control" tabindex="1" 
-                                        style="height: 270px; white-space: pre-wrap;" name="msg_to_send" maxlength="1500" 
-                                        oninput="updateCount(this, 'msg-counter', 'msg-bars')" required></textarea>
-
-                                    <progress class="col-12" id="msg-bars" value="0"></progress>
-                                    <div class="row d-flex justify-content-around smaller-texts fw-light">
-                                        <span class="col-6 text-danger">* required fields</span>
-                                        <span id="msg-counter" class="col-6 text-muted text-end">0 / 1500</span>
-                                    </div>
-                                    
-                                    <span id="form_valid" class="alert alert-field d-none mt-2 invalid-feedback 
-                                        animate__animated animate__fadeInUp animate__duration-1s">
-                                        <b>You must enter your reply!!</b>
-                                    </span>
-                                </div>
-                    
-                                <div class="col-12 modal-footer d-flex justify-content-center">
-                                    <div class="py-1">
-                                        <button type="submit" id="global-send-msg" onclick="validate_mdl_send_msg();" 
-                                            tabindex="2" class="fp-buttons fp-orange-btn">
-                                            <i class="bi bi-send" style="font-size: 1.3rem;"></i> Send
-                                        </button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
             </div>
         {% endif %}
         
