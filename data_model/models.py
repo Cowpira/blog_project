@@ -393,7 +393,7 @@ class Jobs(Base):
     Location: Mapped[str]= mapped_column(String(10), nullable=True)
     Contract: Mapped[str]= mapped_column(String(5), nullable=True)
     Duration: Mapped[str]= mapped_column(String(10), default='Full-Time', nullable=False)
-    Payment_Type: Mapped[str]= mapped_column(String(10), nullable=True)
+    Payment_Type: Mapped[str]= mapped_column(String(10), default='Hourly', nullable=True)
     Salary_Start: Mapped[String]= mapped_column(String(10), nullable=True)
     Salary_End: Mapped[String]= mapped_column(String(10) , nullable=False)
     Other_Requirements: Mapped[str]= mapped_column(String(1000), nullable=True)
