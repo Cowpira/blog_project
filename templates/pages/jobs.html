@@ -174,7 +174,7 @@
                                         <span class="fs-5 fp-font fw-bolder text-orange">
                                             ${{ (job.Salary_End) }}
 
-                                            {% if (job.Salary_End) | length <= 3 %}
+                                            {% if (job.Payment_Type == 'Hourly')  %}
                                                 <span class="text-muted smaller-texts">hour</span>
                                             {% endif %}
                                         </span>
