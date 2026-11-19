@@ -33,8 +33,8 @@ async def add_job(data, cur_employee, db: Session):
             Lang_Requirements= data.get("tags_selected"),
             Other_Requirements= data.get("requirements"),
             Payment_Type= data.get("payment"),
-            Salary_Start= data.get("minSalary").replace(",", ""),
-            Salary_End= data.get("maxSalary").replace(",", ""),
+            Salary_Start= data.get("minSalary"),
+            Salary_End= data.get("maxSalary"),
             Description= data.get("description"),
             Benefits= data.get("benefits"),
             Status= data.get("job_status"),
@@ -92,8 +92,8 @@ async def update_job(job_data, job_id, db: Session):
             job_found.Lang_Requirements= job_data.get("tags_selected")
             job_found.Other_Requirements= job_data.get("requirements")
             job_found.Payment_Type= job_data.get("payment")
-            job_found.Salary_Start= job_data.get("minSalary").replace(",", "")
-            job_found.Salary_End= job_data.get("maxSalary").replace(",", "")
+            job_found.Salary_Start= job_data.get("minSalary")
+            job_found.Salary_End= job_data.get("maxSalary")
             job_found.Description= job_data.get("description")
             job_found.Benefits= job_data.get("benefits")
 
