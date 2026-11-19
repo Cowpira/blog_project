@@ -53,12 +53,11 @@
                         {% else %} align-items-end {% endif %} mb-3">
                             
                             <pre class="fw-light lh-base msg_bubble {% if msg.Person_Id == user_in.Id %} msg_reply 
-                            {% else %} msg_sender {% endif %} 
-                            m-0 px-2 py-2 rounded">{{- msg.Message_Content | safe -}}</pre>
+                            {% else %} msg_sender {% endif %} m-0 px-2 py-2 rounded">{{- msg.Message_Content | safe -}}</pre>
                             
                             <small class="text-muted fw-lighter mx-3" style="font-size: .60rem;">
-                                <span class="msg_pointer {% if msg.Person_Id == user_in.Id %} blue_pointer {% else %}
-                                gray_pointer {% endif %}"></span>
+                                <span class="msg_pointer {% if msg.Person_Id == user_in.Id %} gray_pointer {% else %}
+                                blue_pointer {% endif %}"></span>
                                 {{msg.msg_sender.First_Name}} • {{msg.Send_Date.strftime('%b %d, %H:%M')}}
                             </small>
                         </div>
