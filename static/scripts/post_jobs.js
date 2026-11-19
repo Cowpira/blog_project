@@ -3,8 +3,10 @@ function review_job(){
     // getting values from inputs and checkboxes
     var job_status= document.getElementById('job_status');
     var title= document.getElementById('title');
+    var duration= document.getElementById('duration');
     var selected_boxes= document.getElementById('selected_boxes');
     
+    var minSalary= document.getElementById('minSalary');
     var maxSalary= document.getElementById('maxSalary');
     var other_req_text= document.getElementById('other_req');
     var role_desc_text= document.getElementById('role_desc');
@@ -17,15 +19,19 @@ function review_job(){
     // getting SPAN tags to display the inputs and checkboxes values
     var review_status= document.getElementById('review_job_status');
     var review_title= document.getElementById('review_job_title');
+    var review_duration= document.getElementById('review_job_duration');
     var review_prog_lang= document.getElementById('review_prog_lang');
     var review_location= document.getElementById('review_location');
     var review_contract_type= document.getElementById('review_contract_type');
     var review_pay_type= document.getElementById('review_pay_type');
     
+    var review_min_sal= document.getElementById('review_min_sal');
     var review_max_sal= document.getElementById('review_max_sal');
     var review_other_req= document.getElementById('review_other_requir');
     var review_description= document.getElementById('review_description');
     var review_benefits= document.getElementById('review_benefits');
+
+    var show_min_sal= document.getElementById('show_min_sal');
     
     if (review_location) review_location.innerHTML= work_local;
     if (review_contract_type) review_contract_type.innerHTML= contracts;
@@ -33,8 +39,14 @@ function review_job(){
 
     if (review_status && job_status) review_status.innerHTML= job_status.value;
     if (review_title && title) review_title.innerHTML= title.value;
+    if (review_duration && duration) review_duration.innerHTML= duration.value;
     if (review_prog_lang && selected_boxes) review_prog_lang.innerHTML= selected_boxes.value;
-    if (review_max_sal && maxSalary) review_max_sal.innerHTML= maxSalary.value;
+
+    if (minSalary && minSalary.value > 0){
+        show_min_sal.classList.remove('d-none');
+        if (review_min_sal && minSalary && (minSalary.value > 0)) review_min_sal.innerHTML= "$" + minSalary.value;
+    }else{ show_min_sal.classList.add('d-none'); }
+    if (review_max_sal && maxSalary) review_max_sal.innerHTML= "$" + maxSalary.value;
 
     if (review_other_req && other_req_text) review_other_req.innerHTML= other_req_text.value;
     if (review_description && role_desc_text) review_description.innerHTML= role_desc_text.value;

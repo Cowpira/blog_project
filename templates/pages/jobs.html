@@ -165,14 +165,16 @@
 
                                 <div class="d-flex justify-content-around">
                                     <div class="smaller-texts text-muted mb-1">Min Salary <br>
-                                        <span class="fs-5 fp-font fw-bolder text-orange">${{ (job.Salary_Start | string).split('.')[0] or '-' }}</span>
+                                        <span class="fs-5 fp-font fw-bolder text-orange">
+                                            {% if job.Salary_Start != '0' %} ${{ (job.Salary_Start)}} {% else %} -- {% endif %}
+                                        </span>
                                     </div>
 
                                     <div class="smaller-texts text-muted mb-1">Max Salary * <br>
                                         <span class="fs-5 fp-font fw-bolder text-orange">
-                                            ${{ (job.Salary_End | string).split('.')[0] }}
+                                            ${{ (job.Salary_End) }}
 
-                                            {% if (job.Salary_End | string).split('.')[0] | length <= 3 %}
+                                            {% if (job.Salary_End) | length <= 3 %}
                                                 <span class="text-muted smaller-texts">hour</span>
                                             {% endif %}
                                         </span>

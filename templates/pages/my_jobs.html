@@ -77,8 +77,7 @@
                                         
                                         {% if job.Closed %}
                                             <div class="ms-2 mt-1">
-                                                <span class="badge rounded-pill bg-danger
-                                                    animate__animated animate__flash animate__repeat-2">
+                                                <span class="badge rounded-pill bg-danger animate__animated animate__flash animate__repeat-2">
                                                     &nbsp; Closed &nbsp;
                                                 </span>
                                             </div>
@@ -102,9 +101,9 @@
                                         </div>
 
                                         <div class="col-1 text-end">
-                                            <div class="animate__animated animate__flash animate__repeat-2 
+                                            <div class="ms-3 animate__animated animate__flash animate__repeat-2 
                                                 animate__slow animate__delay-1s" data-bs-toggle="tooltip" data-bs-animation="false" 
-                                                data-bs-placement="top" title="View Full Job">
+                                                data-bs-placement="top" title="Full Job">
                                                     
                                                 <a id="job-{{ job.Id }}" href="#" class="text-orange fw-bolder accordion-flush collapsed" 
                                                     aria-expanded="true" data-bs-toggle="collapse" data-bs-target="#job-collapse-{{ job.Id }}" 

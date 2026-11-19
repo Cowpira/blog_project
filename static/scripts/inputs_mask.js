@@ -147,8 +147,8 @@ $(document).ready(function(){
     });
 
     $('#phone').mask('(000) 000-0000');
-    $('#minSalary').mask('#,##0', {reverse: true});
-    $('#maxSalary').mask('#,##0', {reverse: true});
+    $('#minSalary').mask('#.##0', {reverse: true});
+    $('#maxSalary').mask('#.##0', {reverse: true});
 
     $('#phone').mask('(000) 000-0000');
 

@@ -30,22 +30,22 @@
                     </li>
 
                     <li class="nav-item" role="presentation">
-                        <a href="#pills-payment" class="nav-link navlink-tab-menu" id="payment-tab" data-bs-toggle="pill" 
+                        <a href="#pills-payment" class="ms-2 nav-link navlink-tab-menu" id="payment-tab" data-bs-toggle="pill" 
                         data-bs-target="#pills-payment" role="tab" aria-controls="pills-payment" aria-selected="false">Payment</a>
                     </li>
 
                     <li class="nav-item" role="presentation">
-                        <a href="#pills-description" class="nav-link navlink-tab-menu" id="description-tab" data-bs-toggle="pill" 
+                        <a href="#pills-description" class="ms-2 nav-link navlink-tab-menu" id="description-tab" data-bs-toggle="pill" 
                         data-bs-target="#pills-description" role="tab" aria-controls="pills-description" aria-selected="false">Description</a>
                     </li>
 
                     <li class="nav-item" role="presentation">
-                        <a href="#pills-benefits" class="nav-link navlink-tab-menu" id="benefits-tab" data-bs-toggle="pill" 
+                        <a href="#pills-benefits" class="ms-2 nav-link navlink-tab-menu" id="benefits-tab" data-bs-toggle="pill" 
                         data-bs-target="#pills-benefits" role="tab" aria-controls="pills-benefits" aria-selected="false">Benefits</a>
                     </li>
 
                     <li class="nav-item" role="presentation">
-                        <a href="#pills-review" onclick="review_job();" class="nav-link navlink-tab-menu" id="review-tab" data-bs-toggle="pill" 
+                        <a href="#pills-review" onclick="review_job();" class="ms-2 nav-link navlink-tab-menu" id="review-tab" data-bs-toggle="pill" 
                         data-bs-target="#pills-review" role="tab" aria-controls="pills-review" aria-selected="false">Review</a>
                     </li>
                 </ul>
@@ -57,8 +57,8 @@
                         <!-- TAB TO ADD POSITION DATA -->
                         <div class="tab-pane show active row" id="pills-position" role="tabpanel" aria-labelledby="position-tab">
                             <div class="row justify-content-center"> 
-                                <div class="col-12 col-sm-10 col-md-9 col-xxl-8 mb-4">
-                                    <label for="title" class="form-label fw-light text-dark">Job Status</label>
+                                <div class="col-12 col-sm-11 col-lg-10 mb-3">
+                                    <span for="title" class="form-label fw-light text-dark">Job Status</span>
                                     
                                     <select class="form-select form-control" tabindex="1" id="job_status" name="job_status">
                                         {% if edit_job.Status %}
@@ -74,51 +74,72 @@
                                     </select>
                                 </div>
 
-                                <div class="col-12 col-sm-10 col-md-9 col-xxl-8 p-2 mt-3">
-                                    <label class="form-label fw-light text-dark">Job Title <span class="fw-bolder text-danger">*</span></label>
-                                    <input type="text" class="form-control" tabindex="2" name="title" maxlength="70" 
-                                        id="title" placeholder="Job title" required value="{{edit_job.Title}}">
+                                <div class="col-12 col-sm-11 col-lg-10 p-2 mt-2">
+                                    <label for="title" class="col-12 form-label fw-light text-dark">Job Title 
+                                        <span class="fw-bolder text-danger">*</span>
+                                        <input type="text" class="form-control" tabindex="2" name="title" maxlength="70" 
+                                            id="title" placeholder="Job title" required value="{{edit_job.Title}}">
+                                    </label>
                                 </div>
-                                <span class="col-12 d-lg-block"></span>
+                                
+                                <div class="col-12 col-sm-11 col-lg-10 p-2 mt-3">
+                                    <span class="form-label fw-light text-dark">Job Duration</span>
 
-                                <div class="col-6 col-sm-5 col-xxl-4 p-2 mt-4">
-                                    <label class="col-12 form-label fw-light text-dark">Location <span class="fw-bolder text-danger">*</label>
+                                    <select id="duration" class="form-select form-control" tabindex="3" name="duration" 
+                                        aria-label="Select the job duration">
+                                        <option value="{{ edit_job.Duration }}" selected>
+                                            {{ edit_job.Duration }}
+                                        </option>
+                                        <option value="">Select the duration</option>
+                                        <option value="Contractor">Contractor</option>
+                                        <option value="Frelancer">Frelancer</option>
+                                        <option value="Full-Time">Full-Time</option>
+                                        <option value="Part-Time">Part-Time</option>
+                                        <option value="Sesonal">Sesonal</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-6 col-sm-5 p-2 mt-3">
+                                    <div class="col-12 form-label fw-light text-dark">Location 
+                                        <span class="fw-bolder text-danger">*
+                                    </div>
                                     
                                     <input type="radio" class="btn-check" name="work_location" id="hybrid" value="Hybrid" autocomplete="off"
                                         {% if edit_job.Location == 'Hybrid' %} checked {% endif %}>
-                                    <label class="radio-button fw-light" tabindex="3" for="hybrid">Hybrid</label>
+                                    <label class="radio-button fw-light" tabindex="4" for="hybrid">Hybrid</label>
 
                                     <input type="radio" class="btn-check" name="work_location" id="on-site" value="On-site" autocomplete="off"
                                         {% if edit_job.Location == 'On-site' %} checked {% endif %}>
-                                    <label class="radio-button fw-light" tabindex="4" for="on-site">On-site</label>
+                                    <label class="radio-button fw-light" tabindex="5" for="on-site">On-site</label>
 
                                     <input type="radio" class="btn-check" name="work_location" id="remote" value="Remote" autocomplete="off"
                                         {% if edit_job.Location == 'Remote' %} checked {% endif %}>
-                                    <label class="radio-button fw-light" tabindex="5" for="remote">Remote</label>
+                                    <label class="radio-button fw-light" tabindex="6" for="remote">Remote</label>
                                 </div>
 
-                                <div class="col-6 col-sm-5 col-md-4 col-xxl-4 p-2 mt-4 text-end">
-                                    <label class="col-12 form-label fw-light text-dark">Contract Type</label>
+                                <div class="col-6 col-sm-5 p-2 mt-3 text-end">
+                                    <div class="col-12 form-label fw-light text-dark">Contract Type</div>
 
                                     <input type="radio" class="btn-check" name="contract" id="1099" value="1099" autocomplete="off"
                                         {% if edit_job.Contract == '1099' %} checked {% endif %}>
-                                    <label class="radio-button fw-light" tabindex="6" for="1099">1099</label>
+                                    <label class="radio-button fw-light" tabindex="7" for="1099">1099</label>
 
                                     <input type="radio" class="btn-check" name="contract" id="c_2_c" value="C2C" autocomplete="off"
                                         {% if edit_job.Contract == 'C2C' %} checked {% endif %}>
-                                    <label class="radio-button fw-light" tabindex="7" for="c_2_c">C2C</label>
+                                    <label class="radio-button fw-light" tabindex="8" for="c_2_c">C2C</label>
 
                                     <input type="radio" class="btn-check" name="contract" id="w_c" value="W2" autocomplete="off"
                                         {% if edit_job.Contract == 'W2' %} checked {% endif %}>
-                                    <label class="radio-button fw-light" tabindex="8" for="w_c">W2</label>
+                                    <label class="radio-button fw-light" tabindex="9" for="w_c">W2</label>
                                 </div>
 
-                                <div class="col-12 col-sm-10 col-md-9 col-xxl-8 p-2 mt-4">
+                                <div class="col-12 col-sm-11 col-lg-10 p-2 mt-4">
                                     <a href="#" class="fp-btn-posts fp-btn-post-view dropdown-toggle" type="button" id="dropdownMenuCheck" 
                                         data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">Required Programming Languages</a>
                                     
                                     <span class="text-muted smaller-texts fw-light">*select one or more tag</span>
-                                    <input type="text" id="selected_boxes" style="height: 16px;" name="tags_selected" tabindex="9"
+                                    <input type="text" id="selected_boxes" style="height: 16px;" name="tags_selected" tabindex="10"
                                         class="form-control smaller-texts text-muted mt-2" readonly value="{{edit_job.Lang_Requirements}}">
                 
                                     <ul class="dropdown-menu px-3" style="width: 55% !important;" aria-labelledby="dropdownMenuCheck">
@@ -132,24 +153,26 @@
                                     </ul>
                                 </div>
 
-                                <div class="col-12 col-sm-10 col-md-9 col-xxl-8 p-2 mt-4">
-                                    <label class="form-label fw-light text-dark">Other Requirements</label>
+                                <div class="col-12 col-sm-11 col-lg-10 p-2 mt-4">
+                                    <label for="other_req" class="col-12 form-label fw-light text-dark">Other Requirements
                                     
-                                    <textarea id="text-1" type="text" class="form-control" tabindex="10" name="requirements" maxlength="700" 
-                                        placeholder="List other requirements necessary: Certifications, graduation, years of experience ..."
-                                        style="height: 200px; white-space: pre-wrap;" oninput="updateCount(this, 'counter', 'bars');">{{- edit_job.Other_Requirements -}}</textarea>
+                                        <textarea id="other_req" type="text" class="form-control" tabindex="11" name="requirements" maxlength="700" 
+                                            placeholder="List other requirements necessary: Certifications, graduation, years of experience ..."
+                                            style="height: 200px; white-space: pre-wrap;" oninput="updateCount(this, 'counter', 'bars');">{{- edit_job.Other_Requirements -}}</textarea>
+                                    </label>
 
                                     <progress class="col-12" id="bars" value="0"></progress>
                                     <div class="row d-flex justify-content-around smaller-texts fw-light">
                                         <span id="counter" class="col-12 text-muted text-end">0 / 700</span>
                                     </div>
                                 </div>
+                                <span class="col-12 text-center fw-light smaller-texts text-danger">* required fields</span>
 
                                 <!-- tab navigation buttons -->
-                                <div class="col-12 navigation_menu d-flex justify-content-between mt-4 py-5">
-                                    <span class="fw-light smaller-texts text-danger mt-3">* required fields</span>
+                                <div class="col navigation_menu d-flex justify-content-evenly py-5">
+                                    <span class="col"></span>
 
-                                    <a href="#" onclick="payment_tab();" class="fp-buttons fp-gray-btn p-2" tabindex="11">
+                                    <a href="#" onclick="payment_tab();" class="fp-buttons fp-gray-btn p-2" tabindex="12">
                                         &nbsp; Next <i class="bi bi-arrow-right-circle-fill px-2" style="font-size: 1.3rem;"></i>
                                     </a>
                                 </div>
@@ -160,52 +183,56 @@
                         <div class="tab-pane" id="pills-payment" role="tabpanel" aria-labelledby="payment-tab">
                             <div class="row d-flex justify-content-center">
 
-                                <div class="col-12 col-sm-10 col-md-9 col-xxl-8 text-center">
-                                    <label class="col-12 form-label fw-light text-dark">Payment Type<span class="fw-bolder text-danger">*</span></label>
+                                <div class="col-6 text-center mt-3">
+                                    <div class="col-12 form-label fw-light text-dark">Payment Type
+                                        <span class="fw-bolder text-danger">*</span>
+                                    </div>
 
                                     <input type="radio" class="btn-check" name="payment" id="hourly" value="Hourly" autocomplete="off"
                                         {% if edit_job.Payment_Type == 'Hourly' %} checked {% endif %}>
-                                    <label class="radio-button fw-light" tabindex="12" for="hourly">Hourly</label>
+                                    <label class="radio-button fw-light" tabindex="13" for="hourly">Hourly</label>
 
                                     <input type="radio" class="btn-check" name="payment" id="monthly" value="Monthly" autocomplete="off"
                                         {% if edit_job.Payment_Type == 'Monthly' %} checked {% endif %}>
-                                    <label class="radio-button fw-light" tabindex="13" for="monthly">Monthly</label>
+                                    <label class="radio-button fw-light" tabindex="14" for="monthly">Monthly</label>
 
                                     <input type="radio" class="btn-check" name="payment" id="yearly" value="Yearly" autocomplete="off"
                                         {% if edit_job.Payment_Type == 'Yearly' %} checked {% endif %}>
-                                    <label class="radio-button fw-light" tabindex="14" for="yearly">Yearly</label>
+                                    <label class="radio-button fw-light" tabindex="15" for="yearly">Yearly</label>
                                 </div>
                                 <span class="col-12 d-sm-block"></span>
 
-                                <div class="col-9 col-sm-7 col-md-6 col-xxl-4 p-2 mt-4">
+                                <div class="col-9 col-sm-7 col-md-6 p-2 mt-4">
                                     <div class="row d-flex justify-content-around">
-                                        <label class="fw-light text-dark text-center">Salary range</label>
+                                        <span class="fw-light text-dark text-center">Salary range</span>
 
                                         <div class="col-5 p-2">
-                                            <label>Minimum:</label>
-                                            <input type="text" class="form-control" tabindex="15" id="minSalary" name="minSalary" maxlength="7" 
-                                                placeholder="0" value="{{edit_job.Salary_Start}}">
+                                            <label for="minSalary">Minimum:
+                                                <input type="text" class="form-control" tabindex="16" id="minSalary" name="minSalary" 
+                                                    maxlength="7" placeholder="0" value="{{edit_job.Salary_Start}}">
+                                            </label>
                                         </div>
 
                                         <div class="col-5 p-2">
-                                            <label>Maximum: <span class="fw-bolder text-danger">*</span></label>
-                                            <input type="text" class="form-control" tabindex="16" id="maxSalary" name="maxSalary" maxlength="7" 
-                                                placeholder="1,000,000" required value="{{edit_job.Salary_End}}">
+                                            <label for="maxSalary">Maximum: <span class="fw-bolder text-danger">*</span>
+                                                <input type="text" class="form-control" tabindex="17" id="maxSalary" name="maxSalary" maxlength="7" 
+                                                    placeholder="1,000,000" required value="{{edit_job.Salary_End}}">
+                                            </label>
                                         </div>
                                     </div>
                                     <p class="text-center fw-lighter text-primary text-end smaller-texts">
                                         If salary is set enter only max
                                     </p>
                                 </div>
+                                <span class="col-12 text-center fw-light smaller-texts text-danger">* required fields</span>
 
                                 <!-- tab navigation buttons -->
-                                <div class="col-12 navigation_menu d-flex justify-content-between mt-5">
-                                    <a href="#" onclick="position_tab();" class="fp-buttons fp-gray-btn p-2" tabindex="18">
+                                <div class="col navigation_menu d-flex justify-content-evenly mt-5">
+                                    <a href="#" onclick="position_tab();" class="fp-buttons fp-gray-btn p-2" tabindex="19">
                                         <i class="bi bi-arrow-left-circle-fill px-2" style="font-size: 1.3rem;"></i> Previous &nbsp;
                                     </a>
-                                    <span class="fw-light smaller-texts text-danger mt-3">* required fields</span>
 
-                                    <a href="#" onclick="description_tab();" class="fp-buttons fp-gray-btn p-2" tabindex="17">
+                                    <a href="#" onclick="description_tab();" class="fp-buttons fp-gray-btn p-2" tabindex="18">
                                         &nbsp; Next <i class="bi bi-arrow-right-circle-fill px-2" style="font-size: 1.3rem;"></i>
                                     </a>
                                 </div>
@@ -216,26 +243,28 @@
                         <div class="tab-pane" id="pills-description" role="tabpanel" aria-labelledby="description-tab">
                             <div class="row d-flex justify-content-center">
                                 <div class="col-12 col-md-10 col-xxl-8 p-2">
-                                    <label class="form-label fw-light text-dark">Role Description <span class="fw-bolder text-danger">*</span></label>
+                                    <label for="role_desc" class="col-12 form-label fw-light text-dark">Role Description 
+                                        <span class="fw-bolder text-danger">*</span>
                                     
-                                    <textarea id="role_desc" type="text" class="form-control" tabindex="19" name="description" maxlength="1500" 
-                                        style="height: 520px; white-space: pre-wrap;" placeholder="Describle the position in details ..." 
-                                        required oninput="updateCount(this, 'counter-1', 'bars-1');">{{- edit_job.Description -}}</textarea>
-                                
+                                        <textarea id="role_desc" type="text" class="form-control" tabindex="20" name="description" maxlength="1500" 
+                                            style="height: 520px; white-space: pre-wrap;" placeholder="Describle the position in details ..." 
+                                            required oninput="updateCount(this, 'counter-1', 'bars-1');">{{- edit_job.Description -}}</textarea>
+                                    </label>
+
                                     <progress class="col-12" id="bars-1" value="0"></progress>
                                     <div class="row d-flex justify-content-around smaller-texts fw-light">
                                         <span id="counter-1" class="col-12 text-muted text-end">0 / 1500</span>
                                     </div>
                                 </div>
+                                <span class="col-12 text-center fw-light smaller-texts text-danger">* required fields</span>
             
                                 <!-- tab navigation buttons -->
-                                <div class="col-12 navigation_menu d-flex justify-content-between mt-3 py-5">
-                                    <a href="#" onclick="payment_tab();" class="fp-buttons fp-gray-btn p-2" tabindex="21">
+                                <div class="col navigation_menu d-flex justify-content-evenly py-5">
+                                    <a href="#" onclick="payment_tab();" class="fp-buttons fp-gray-btn p-2" tabindex="22">
                                         <i class="bi bi-arrow-left-circle-fill px-2" style="font-size: 1.3rem;"></i> Previous &nbsp;
                                     </a>
-                                    <span class="fw-light smaller-texts text-danger mt-3">* required fields</span>
 
-                                    <a href="#" onclick="benefits_tab();" class="fp-buttons fp-gray-btn p-2" tabindex="20">
+                                    <a href="#" onclick="benefits_tab();" class="fp-buttons fp-gray-btn p-2" tabindex="21">
                                         &nbsp; Next <i class="bi bi-arrow-right-circle-fill px-2" style="font-size: 1.3rem;"></i>
                                     </a>
                                 </div>
@@ -246,26 +275,28 @@
                         <div class="tab-pane" id="pills-benefits" role="tabpanel" aria-labelledby="benefits-tab">
                             <div class="row d-flex justify-content-center">
                                 <div class="col-12 col-md-10 col-xxl-8 p-2">
-                                    <label class="form-label fw-light text-dark">Benefits <span class="fw-bolder text-danger">*</span></label>
+                                    <label for="benefits" class="col-12 form-label fw-light text-dark">Benefits 
+                                        <span class="fw-bolder text-danger">*</span>
                                     
-                                    <textarea id="benefits" type="text" class="form-control" tabindex="22" name="benefits" maxlength="1000" 
-                                    style="height: 460px; white-space: pre-wrap;" placeholder="List all job benefits, bonuses, offers..." 
-                                    required oninput="updateCount(this, 'counter-2', 'bars-2');">{{- edit_job.Benefits -}}</textarea>
-                                
+                                        <textarea id="benefits" type="text" class="form-control" tabindex="23" name="benefits" maxlength="1000" 
+                                            style="height: 460px; white-space: pre-wrap;" placeholder="List all job benefits, bonuses, offers..." 
+                                            required oninput="updateCount(this, 'counter-2', 'bars-2');">{{- edit_job.Benefits -}}</textarea>
+                                    </label>
+
                                     <progress class="col-12" id="bars-2" value="0"></progress>
                                     <div class="row d-flex justify-content-around smaller-texts fw-light">
                                         <span id="counter-2" class="col-12 text-muted text-end">0 / 1000</span>
                                     </div>
                                 </div>
+                                <span class="col-12 text-center fw-light smaller-texts text-danger">* required fields</span>
             
                                 <!-- tab navigation buttons -->
-                                <div class="col-12 navigation_menu d-flex justify-content-between mt-3 py-5">
-                                    <a href="#" onclick="description_tab();" class="fp-buttons fp-gray-btn p-2" tabindex="24">
+                                <div class="col-12 navigation_menu d-flex justify-content-evenly py-5">
+                                    <a href="#" onclick="description_tab();" class="fp-buttons fp-gray-btn p-2" tabindex="25">
                                         <i class="bi bi-arrow-left-circle-fill px-2" style="font-size: 1.3rem;"></i> Previous &nbsp;
                                     </a>
-                                    <span class="fw-light smaller-texts text-danger mt-3">* required fields</span>
 
-                                    <a href="#" onclick="job_review_tab(); review_min_sal(); review_job();" class="fp-buttons fp-gray-btn p-2" tabindex="23">
+                                    <a href="#" onclick="job_review_tab(); display_min_sal(); review_job();" class="fp-buttons fp-gray-btn p-2" tabindex="24">
                                         &nbsp; Review Job <i class="bi bi-arrow-right-circle-fill px-2" style="font-size: 1.3rem;"></i>
                                     </a>
                                 </div>
@@ -275,66 +306,72 @@
                         <!-- TAB TO REVIEW JOB -->
                         <div class="tab-pane" id="pills-review" role="tabpanel" aria-labelledby="review-tab">
                             <div class="row justify-content-center">
-                                <div class="col-11 col-md-8 col-lg-9 py-2">
-                                    <label class="col-12 fw-light text-dark fw-bold">Job Status</label>
+                                <div class="col-12 col-md-10 col-lg-9 py-2">
+                                    <div class="col-12 fw-light text-dark fw-bold">Job Status</div>
                                     <span id="review_job_status" class="fw-light text-marine fp-font"></span>
                                 </div>
                                 <span class="col-12 d-lg-block"></span>
 
-                                <div class="col-11 col-md-8 col-lg-9 py-2">
-                                    <label class="col-12 fw-light text-dark fw-bold">Job Title</label>
+                                <div class="col-6 col-md-5 col-lg-5 py-2">
+                                    <div class="col-12 fw-light text-dark fw-bold">Title</div>
                                     <span id="review_job_title" class="fw-light text-marine fp-font"></span>
+                                </div>
+
+                                <div class="col-6 col-md-5 col-lg-4 text-end py-2">
+                                    <div class="col-12 fw-light text-dark fw-bold">Duration</div>
+                                    <span id="review_job_duration" class="fw-light text-marine fp-font"></span>
                                 </div>
                                 <span class="col-12 d-lg-block"></span>
 
-                                <div class="col-11 col-md-8 col-lg-9 py-3">
-                                    <label class="col-12 fw-light text-dark fw-bold">Prefered Programming Language</label>
+                                <div class="col-12 col-md-10 col-lg-9 py-3">
+                                    <div class="col-12 fw-light text-dark fw-bold">Programming Language</div>
                                     <span id="review_prog_lang" class="fw-light text-marine fp-font"></span>
                                 </div>
                                 <span class="col-12 d-md-block"></span>
 
-                                <div class="col-6 col-md-4 col-lg-5 py-3">
-                                    <label class="col-12 fw-light text-dark fw-bold">Location</label>
+                                <div class="col-6 col-md-5 col-lg-4 py-3">
+                                    <div class="col-12 fw-light text-dark fw-bold">Location</div>
                                     <span id="review_location" class="fw-light text-marine fp-font"></span>
                                 </div>
 
-                                <div class="col-5 col-md-4 text-end py-3">
-                                    <label class="col-12 fw-light text-dark fw-bold">Type of Contract</label>
+                                <div class="col-6 col-md-5 text-end py-3">
+                                    <div class="col-12 fw-light text-dark fw-bold">Type of Contract</div>
                                     <span id="review_contract_type" class="fw-light text-marine fp-font"></span>
                                 </div>
                                 <span class="col-12 d-md-block"></span>
                             
-                                <div class="col-5 col-md-4 py-3">
-                                    <label class="col-12 fw-light text-dark fw-bold">Payment Type</label>
+                                <div class="col-4 col-md-5 col-lg-4 py-3">
+                                    <div class="col-12 fw-light text-dark fw-bold">Payment Type</div>
                                     <span id="review_pay_type" class="fw-light text-marine fp-font"></span>
                                 </div>
 
-                                <div class="col-6 col-md-4 col-lg-5 text-end py-3">
-                                    <label class="col-12 fw-light text-dark fw-bold">Salary Range</label>
-                                    <label id="show_min_sal" class="d-none">
-                                        <span id="review_min_sal" class="badge rounded-pill bg-primary fs-6">$</span>
+                                <div class="col-8 col-md-5 text-end py-3">
+                                    <div class="col-12 fw-light text-dark fw-bold">Salary Range</div>
+                                    
+                                    <span id="show_min_sal" class="d-none">
+                                        <span id="review_min_sal" class="badge rounded-pill bg-primary"></span>
                                         to
-                                    </label>
-                                    <span id="review_max_sal" class="badge rounded-pill bg-primary fs-6">$</span>
+                                    </span>
+                                    <span id="review_max_sal" class="badge rounded-pill bg-primary">$</span>
 
                                     <p class="text-primary smaller-texts">*vary according to experience</p>
                                 </div>
                                 <span class="col-12 d-lg-block"></span>
                                 
-                                <div class="col-11 col-md-8 col-lg-9 py-3">
-                                    <label class="col-12 fw-light text-dark fw-bold">Other Requirements</label>
+                                <div class="col-12 col-md-10 col-lg-9 py-3">
+                                    <div class="col-12 fw-light text-dark fw-bold">Other Requirements</div>
                                     <pre id="review_other_requir" class="fw-light lh-lg review-job-format"></pre>
                                 </div>
                                 <span class="col-12 d-lg-block"></span>
 
-                                <div class="col-11 col-md-8 col-lg-9 py-3">
-                                    <label class="col-12 fw-light text-dark fw-bold">Job Description</label>
+                                <div class="col-12 col-md-10 col-lg-9 py-3">
+                                    <div class="col-12 fw-light text-dark fw-bold">Job Description</div>
                                     <pre id="review_description" class="fw-light lh-lg review-job-format"></pre>
                                 </div>
                                 <span class="col-12 d-lg-block"></span>
 
-                                <div class="col-11 col-md-8 col-lg-9 py-3">
-                                    <label class="col-12 fw-light text-dark fw-bold">Benefits & Offers</label>
+                                <div class="col-12 col-md-10 col-lg-9 py-3">
+                                    <div class="col-12 fw-light text-dark fw-bold">Benefits & Offers</div>
                                     <pre id="review_benefits" class="fw-light lh-lg review-job-format"></pre>
                                 </div>
 
@@ -343,14 +380,13 @@
                                 </div>
 
                                 <!-- tab navigation buttons -->
-                                <div class="col-12 navigation_menu d-flex justify-content-between mt-4 py-5">
-                                    <a href="#" onclick="position_tab();" class="fp-buttons fp-blue-btn p-2" tabindex="26">
+                                <div class="col-12 navigation_menu d-flex justify-content-evenly py-5">
+                                    <a href="#" onclick="position_tab();" class="fp-buttons fp-blue-btn p-2" tabindex="27">
                                         <i class="bi bi-pen-fill px-2" style="font-size: 1.3rem;"></i> Edit &nbsp;
                                     </a>
-                                    <span class="fw-light smaller-texts text-danger mt-3">* required fields</span>
 
                                     {% if user_in.Work_At %}
-                                        <button type="submit" name="action" tabindex="25" onclick="validate_post_job();" 
+                                        <button type="submit" name="action" tabindex="26" onclick="validate_post_job();" 
                                             class="fp-buttons fp-orange-btn">
                                             <i class="bi bi-file-earmark-text px-2" style="font-size: 1.5rem;"></i> Update Job
                                         </button>
@@ -367,7 +403,7 @@
     <script src="{{url_for("static", path="scripts/post_jobs.js")}}"></script>
 
     <script>
-        function review_min_sal(){
+        function display_min_sal(){
             var show_div= document.getElementById('show_min_sal');
             var minSalary= document.getElementById('minSalary');
             var review_min_sal= document.getElementById('review_min_sal');

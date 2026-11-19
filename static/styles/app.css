@@ -1097,7 +1097,7 @@ input[type="file"]::file-selector-button {
 /* ADDING COLORS TO THE TAG BADGES  */
 .language-badges{
     font-family: var(--fp-font);
-    font-size: 9px;
+    font-size: 11.5px;
     font-weight: var(--fp-font-weight_500);
     --bs-bg-opacity: 1;
     color: rgba(24, 24, 24, 0.78);
@@ -1116,7 +1116,7 @@ input[type="file"]::file-selector-button {
     color: var(--fp-white-color); 
 }
 .bg-mysql{ 
-    background-color: rgba(160, 160, 160, 0.94); 
+    background-color: rgba(191, 191, 191, 0.94); 
     opacity: 1; 
     color: var(--fp-black-color); 
 }
