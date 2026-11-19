@@ -141,8 +141,8 @@ main{  min-height: calc(100vh - 360px); }
     border: 1px solid #e0e0e0 !important;
 }
 /* add point to gray message ballon */
-.msg_sender_pointer {
-    right: 87px !important;
+.gray_pointer {
+    left: 7px !important;
     background-color: #f1f3f4 !important;
     border-right: 1px solid #e0e0e0 !important;
     border-bottom: 1px solid #e0e0e0 !important;
@@ -155,7 +155,7 @@ main{  min-height: calc(100vh - 360px); }
     border: 1px solid #bbdefb !important;
 }
 /* add point to blue message ballon */
-.msg_reply_pointer {
+.blue_pointer {
     left: 2px !important;
     background-color: #e3f2fd !important;
     border-right: 1px solid #bbdefb !important;

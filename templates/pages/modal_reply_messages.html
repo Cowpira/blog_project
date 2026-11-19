@@ -56,8 +56,8 @@
                             {% else %} msg_sender {% endif %} 
                             m-0 px-2 py-2 rounded">{{- msg.Message_Content | safe -}}</pre>
                             
-                            <small class="text-muted fw-lighter mx-3" style="font-size: 0.70rem;">
-                                <span class="msg_pointer msg_sender_pointer"></span>
+                            <small class="text-muted fw-lighter mx-3" style="font-size: .60rem;">
+                                <span class="msg_pointer blue_pointer"></span>
                                 {{msg.msg_sender.First_Name}} • {{msg.Send_Date.strftime('%b %d, %H:%M')}}
                             </small>
                         </div>
@@ -73,8 +73,9 @@
                                     <pre class="fw-light lh-base msg_bubble {% if reply.Person_Id == user_in.Id %} msg_reply 
                                     {% else %} msg_sender {% endif %} m-0 px-2 py-2 rounded">{{- reply.Message_Content | safe -}}</pre>
                                     
-                                    <small class="text-muted fw-lighter mx-2" style="font-size: 0.75rem;">
-                                        <span class="msg_pointer msg_reply_pointer"></span>
+                                    <small class="text-muted fw-lighter mx-2" style="font-size: .60rem;">
+                                        <span class="msg_pointer {% if reply.Person_Id == user_in.Id %} gray_pointer 
+                                        {% else %} blue_pointer {% endif %}"></span>
                                         {{reply.msg_sender.First_Name}} • {{reply.Send_Date.strftime('%b %d, %H:%M')}}
                                     </small>
                                 </div>
@@ -111,40 +112,8 @@
                 </form>
             </div>
         </div>
-    </div>
-
-    <!-- <div class="scrollable-div mx-3 my-2 py-2 border rounded bg-light">       
-            <!-- Mensagem Inicial --
-            <div class="container d-flex flex-column {% if msg.Person_Id == user_in.Id %} align-items-start 
-            {% else %} align-items-end {% endif %} mb-3">
-                
-                <pre class="fw-light lh-base msg_bubble {% if msg.Person_Id == user_in.Id %} msg_reply 
-                {% else %} msg_sender {% endif %} 
-                m-0 px-3 py-2 rounded">{{- msg.Message_Content | safe -}}</pre>
-                
-                <small class="text-muted fw-lighter mx-2" style="font-size: 0.70rem;">
-                    {{msg.msg_sender.First_Name}} • {{msg.Send_Date.strftime('%b %d, %H:%M')}}
-                </small>
-            </div>
-            
-            <!-- Loop de Replies --
-            {% set parameter = namespace(parentId=-1) %}
-            {% if msg.replies %}
-                {% for reply in msg.replies %}
-                    {% set parameter.parentId = reply.Parent_Id %}
-                    <div class="container d-flex flex-column {% if reply.Person_Id == user_in.Id %} 
-                    align-items-start {% else %} align-items-end {% endif %} mb-3">
-                        
-                        <pre class="fw-light lh-base msg_bubble {% if reply.Person_Id == user_in.Id %} msg_reply 
-                        {% else %} msg_sender {% endif %} m-0 px-3 py-2 rounded">{{- reply.Message_Content | safe -}}</pre>
-                        
-                        <small class="text-muted fw-lighter mx-2" style="font-size: 0.75rem;">
-                            {{reply.msg_sender.First_Name}} • {{reply.Send_Date.strftime('%b %d, %H:%M')}}
-                        </small>
-                    </div>
-                {% endfor %}
-            {% endif %}
-        </div> -->
+    </div>  
+           
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
