@@ -117,3 +117,14 @@ for (let i = 1; i < 0; i++) {
         }
     });
 }
+
+function display_min_sal(){
+    var show_div= document.getElementById('show_min_sal');
+    var minSalary= document.getElementById('minSalary');
+    var review_min_sal= document.getElementById('review_min_sal');
+    
+    if(review_min_sal){
+        review_min_sal.innerHTML= minSalary.value;
+        show_div.classList.remove('d-none');
+    }
+}
