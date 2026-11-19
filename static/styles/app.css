@@ -129,7 +129,7 @@ main{  min-height: calc(100vh - 360px); }
     position: absolute !important;
     width: 12px !important;
     height: 12px !important;
-    bottom: 18px !important;
+    bottom: 14.2px !important;
     transform: rotate(45deg) !important;
     z-index: 5 !important;
 }
