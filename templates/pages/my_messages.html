@@ -11,7 +11,7 @@
         {% include "alerts.html" with context %}
     {% endif %}
     
-    <main class="container-fluid start-content">
+    <main id="message-container" class="container-fluid start-content">
         {% if not my_messages %}
             {% set items_per_page = 4 %}
         {% else %}
@@ -236,4 +236,28 @@
             {% endfor %}
         {% endif %}
     </main>
+
+    <script>
+        const FIVE_MINUTES = 1 * 60 * 1000;
+
+        async function refreshMessages() {
+            try {
+            const response = await fetch('/restricted/my_messages/1&4&all');
+            const messages = await response.json();
+            
+            const container = document.getElementById('message-container');
+            container.innerHTML = messages.map(msg => `
+                <div class="message">
+                    <p>${msg.text}</p>
+                    <small>${new Date(msg.received_at).toLocaleString()}</small>
+                </div>
+            `).join('');
+            } catch (error) {
+            console.error('Failed to refresh messages:', error);
+            }
+        }
+
+        setInterval(refreshMessages, FIVE_MINUTES);
+    </script>
+
 {% endblock %}
