@@ -88,7 +88,7 @@ async def add_developer(request: Request, bg_task: BackgroundTasks, db: Session=
     
     if request.query_params.get('new_user'):
         dev_data= await request.form()
-        result= await developers_dao.create_user(dev_data, request.url_for, bg_task, db)
+        result= await developers_dao.add_new_dev(dev_data, request.url_for, bg_task, db)
     
     if result:
         response= http_responses.status_200_ok("bi bi-person-badge", 

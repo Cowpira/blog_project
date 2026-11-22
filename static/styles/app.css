@@ -118,8 +118,8 @@ main{  min-height: calc(100vh - 360px); }
     line-height: 1.5;
     padding: 5px;
     margin: 3px;
-    width: fit-content;
     max-width: 83%;
+    min-width: 17%;
     display: block;
     overflow-x: hidden;
 }
@@ -127,11 +127,10 @@ main{  min-height: calc(100vh - 360px); }
 /* 📐 adding the square to the ballons messages */
 .msg_pointer {
     position: absolute !important;
+    top: -6px !important;
     width: 12px !important;
     height: 12px !important;
-    bottom: 14.2px !important;
     transform: rotate(45deg) !important;
-    z-index: 5 !important;
 }
 
 /* message ballon gray */
@@ -142,7 +141,7 @@ main{  min-height: calc(100vh - 360px); }
 }
 /* add point to gray message ballon */
 .gray_pointer {
-    left: 7px !important;
+    left: 12px !important;
     background-color: #f1f3f4 !important;
     border-right: 1px solid #e0e0e0 !important;
     border-bottom: 1px solid #e0e0e0 !important;
@@ -156,7 +155,7 @@ main{  min-height: calc(100vh - 360px); }
 }
 /* add point to blue message ballon */
 .blue_pointer {
-    left: 2px !important;
+    left: 17px !important;
     background-color: #e3f2fd !important;
     border-right: 1px solid #bbdefb !important;
     border-bottom: 1px solid #bbdefb !important;
@@ -234,13 +233,22 @@ main{  min-height: calc(100vh - 360px); }
 
 /* STYLE FOR MESSAGES PAGE */
 /* highliting rows for unread messages */
-.table.table-striped tbody tr.msg-unread-row {
+.table.table-striped tbody tr.msg-unread {
     --bs-table-bg: #e6ebfa6f !important;   
     --bs-table-striped-bg: #e7e8f670 !important;
 }
-.table.table-striped tbody tr.msg-unread-row td {
+.table.table-striped tbody tr.msg-unread td {
     font-weight: 600 !important;
     color: #396ebe !important;
+}
+
+.table.table-striped tbody tr.msg-replied {
+    --bs-table-bg: #fff14b30 !important;   
+    --bs-table-striped-bg: #fffffe70 !important;
+}
+.table.table-striped tbody tr.msg-replied td {
+    font-weight: 600 !important;
+    color: #c3a80c !important;
 }
 
 .msg-btn{

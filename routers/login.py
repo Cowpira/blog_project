@@ -57,9 +57,6 @@ async def login(request: Request, db: Annotated[Session, Depends(get_db)],
         # calling method to create a session id
         session_id= create_session(user__in.Id)
         
-        # update user total messages when he/her login Employee or Developer
-        await message_dao.update_total_messages(user__in, db)
-
         # setting a cook to store user session
         if access_token:
             response= responses.RedirectResponse("/", status_code=status.HTTP_302_FOUND)

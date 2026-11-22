@@ -1,39 +1,35 @@
-from sqlalchemy.orm import selectinload
+from sqlalchemy.orm import aliased, selectinload, Session
 from datetime import datetime, timezone
-from sqlalchemy import func, select, delete, or_
-from data_model.models import Message, Person, Developer
-from sqlalchemy.orm import Session    
+from sqlalchemy import and_, exists, func, select, delete, or_
+from data_model.models import Message, Person, Developer 
 from services import http_responses
 
 
 # function to increase person totals messages
-async def update_total_messages(developer, db: Session):
-    try:
-        # update user loged in total messages 
-        query = select(Message).where(Message.To == developer.Id, Message.Viewed == False, Message.Parent_Id == None)
-        developer.Total_Messages= len(db.execute(query).scalars().all())
-       
-        db.add(developer)
-        db.commit()
-        db.refresh(developer)
-       
-    except ValueError:
-        return f'Could not update total of messages for the user {developer.First_Name}!'
+def add_total_messages(user, db: Session):
+    # find the user and updated the total of messages
+    user_query= select(Person).where(Person.Id == user.Id)
+    user_found= db.execute(user_query).scalar()
+
+    if user_found:
+        user_found.Total_Messages += 1
+    
+    db.add(user_found)
+    db.commit()
 
 
 
 # function to decrease person total messages
 def subtract_total_msg(user_in, db: Session):
-        # find the user and updated the total of messages
-        user_query= select(Person).where(Person.Id == user_in.Id)
-        user_found= db.execute(user_query).scalar()
+    # find the user and updated the total of messages
+    user_query= select(Person).where(Person.Id == user_in.Id)
+    user_found= db.execute(user_query).scalar()
 
-        if user_found:
-            user_found.Total_Messages -= 1
+    if user_found and user_found.Total_Messages > 0:
+        user_found.Total_Messages -= 1
 
-            db.add(user_found)
-            db.commit()
-            db.refresh(user_found)
+        db.add(user_found)
+        db.commit()
 
 
 
@@ -41,31 +37,37 @@ def subtract_total_msg(user_in, db: Session):
 async def update_msg_viwed(user_in, msg_id, db: Session):
     msg_query= select(Message).where(Message.Id == msg_id)
     msg_found= db.execute(msg_query).scalar()
+    was_updated= False
 
-    if msg_found and not msg_found.Viewed:
-        msg_found.Viewed= True
+    if msg_found:
+        # cehck if msg is unred and msg recepient
+        if msg_found.Viewed == 0 and msg_found.To == user_in.Id:
+            msg_found.Viewed= 1
+            was_updated= True
 
-        db.add(msg_found)
-        db.commit()
-        db.refresh(msg_found)
+        # msg thread: sort all messages by sent date, and check last reply to
+        elif msg_found.replies:
+            unread_replies= False
+
+            for reply in msg_found.replies:
+                if reply.To == user_in.Id and reply.Viewed == 0:
+                    reply.Viewed=1
+                    unread_replies= True
+                
+            if unread_replies:
+                msg_found.Viewed= 1
+                was_updated= True
 
         # call function to descrease total of messages an user have
-        subtract_total_msg(user_in, db)
-
-
-
-# count how many chats a user are participating
-async def count_chats(user_id, db: Session):
-    query= select(func.count(Message.Id)).where(Message.Viewed == False, Message.replies.any()) \
-            .where(or_(Message.Person_Id == user_id, Message.To == user_id))
-
-    return db.scalar(query)
+        if was_updated:
+            db.commit()
+            subtract_total_msg(user_in, db)
 
 
         
 # function to list all messages to the employee or user online
 async def list_messages(user_id, msg_by, db: Session):
-    
+
     if msg_by == 'chats':
         query= select(Message).where(Message.replies.any()) \
             .where(or_(Message.Person_Id == user_id, Message.To == user_id)) \
@@ -78,20 +80,39 @@ async def list_messages(user_id, msg_by, db: Session):
             .options(selectinload(Message.replies)).order_by(Message.Send_Date.desc())
         msg= "There is no message for you!"
 
-    elif msg_by == 'sys':
-        query= select(Message).where(Message.To == user_id, Message.Parent_Id.is_(None), Message.System_Message == True) \
+    elif msg_by == 'employee':
+        query= select(Message).join(Person, Message.Person_Id == Person.Id) \
+            .where(Message.To == user_id, Message.Parent_Id.is_(None), Person.Type == 'employeer') \
             .options(selectinload(Message.replies)).order_by(Message.Send_Date.desc())
-        msg= "You have no message from <br> Future Programmers"
+        msg= "You have no message from <br> Employees"
 
     elif msg_by == 'unread':
         query= select(Message).where(Message.To == user_id, Message.Parent_Id.is_(None), Message.Viewed == False) \
             .options(selectinload(Message.replies)).order_by(Message.Send_Date.desc())
         msg= "You have no unread message!"
     
-    else:
-        query= select(Message).where(Message.To == user_id, Message.Parent_Id.is_(None), Message.System_Message == False) \
-            .options(selectinload(Message.replies)).order_by(Message.Send_Date.desc())
-        msg= "You have no message from any <br> Developers or Employeer!"
+    elif msg_by == 'dev':
+        Reply = aliased(Message)
+        ReplySender = aliased(Person)
+
+        has_dev_reply = exists(
+            select(Reply.Id).join(ReplySender, Reply.Person_Id == ReplySender.Id)
+            .where(Reply.Parent_Id == Message.Id, Reply.To == user_id, ReplySender.Type == 'developer',
+            )
+        )
+
+        query = (
+            select(Message).outerjoin(Person, Message.Person_Id == Person.Id)
+            .where(Message.Parent_Id.is_(None),
+                or_(
+                    and_(Message.To == user_id, Person.Type == 'developer'),
+                    and_(Message.Person_Id == user_id, has_dev_reply),
+                ),
+            )
+            .options(selectinload(Message.replies))
+            .order_by(Message.Send_Date.desc())
+        )
+        msg= "You have no message from any <br> Developers!"
 
         
     # getting a list of messages
@@ -111,7 +132,7 @@ async def send_message(msg, sender, msg_id, msg_to, parent_id, system, db: Sessi
             Message_Content= msg,
             Send_Date= datetime.now(timezone.utc),
             System_Message= system,
-            Viewed= False,
+            Viewed= 0,
             To= msg_to,
             Person_Id= None if sender == 'FP System' else sender.Id,
             Parent_Id= parent_id if parent_id > 0 else msg_id 
@@ -122,6 +143,12 @@ async def send_message(msg, sender, msg_id, msg_to, parent_id, system, db: Sessi
 
         db.add(new_msg)
         db.commit()
+
+        # update total message a user have
+        user_query= select(Person).where(Person.Id == msg_to)
+        user_found= db.execute(user_query).scalar()
+        add_total_messages(user_found, db)
+
         return http_responses.status_200_ok("bi bi-send-check-fill", f"Message succesfully sent to {receiver}")
     
     except SystemError as sys_error:
@@ -130,47 +157,102 @@ async def send_message(msg, sender, msg_id, msg_to, parent_id, system, db: Sessi
 
 
 # function to save message when developer answer or reply a post
-async def reply_message(msg, user_in, msg_id, msg_to, parent_id, system, db: Session):
+async def reply_message(msg, user_in, msg_id, msg_to, system, db: Session):
     try:
-        # save rely as new message 
+        # fetch parent msg to check unread state
+        query= select(Message).where(Message.Id == msg_id)
+        parent_msg= db.execute(query).scalar_one_or_none()
+
+        sender_unread= False
+        recepient_unread= False
+
+        if parent_msg:
+            # cehck if user in has unread msg/reply in a thread
+            if parent_msg.Viewed == 0 and parent_msg.To == user_in.Id:
+                sender_unread= True
+            elif parent_msg.replies:
+                last_reply= max(parent_msg.replies, key= lambda r: r.Send_Date)
+
+                if last_reply.To == user_in.Id and last_reply.Viewed == 0:
+                    sender_unread= True
+                elif last_reply.To == msg_to and last_reply.Viewed == 0:
+                    # recepient alredy have unread msg reply in a thread
+                    recepient_unread= True
+
+            if parent_msg.Viewed == 0 and parent_msg.To == msg_to:
+                recepient_unread= True
+
+
+            parent_msg.Viewed= 2
+            for reply in parent_msg.replies:
+                if reply.To == user_in.Id and reply.Viewed == 0:
+                    reply.Viewed= 1
+
+        # save new reply 
         new_msg= Message(
             Message_Content= msg,
             Send_Date= datetime.now(timezone.utc),
             System_Message= system,
-            Viewed= True,
+            Viewed= 0,
             To= msg_to,
             Person_Id= user_in.Id,
-            Parent_Id= parent_id
+            Parent_Id= msg_id
         )
+
+        if parent_msg:
+            parent_msg.Viewed = 2
 
         db.add(new_msg)
         db.commit()
 
+        # subtract one from total msg if a user in already replied a unread msg thread
+        if sender_unread:
+            subtract_total_msg(user_in, db)
+
+        # add 1 to total msg a recepient have, if they dont have unread msg in a thread
+        if not recepient_unread:
+            recep_query= select(Person).where(Person.Id == msg_to)
+            recep_found= db.execute(recep_query).scalar()
+            if recep_found:
+                add_total_messages(recep_found, db)
+
+
         # setting this message parent ID so we can track as chat
-        query= select(Message).where(Message.Id == msg_id)
-        parent_msg= db.execute(query).scalar()
+        target_parent_id= msg_id
+        query= select(Message).where(Message.Id == target_parent_id)
+        parent_msg= db.execute(query).scalar_one_or_none()
 
-        if parent_msg:
-            parent_msg.Viewed = True
-
-            db.add(parent_msg)
-            db.commit()
-
-        # call function to descrease total of messages an user have
-        subtract_total_msg(user_in, db) 
         return http_responses.status_200_ok("bi bi-send-check-fill", f"{user_in.First_Name} your reply was sent")
     
     except SystemError as sys_error:
         return http_responses.status_200_ok("bi bi-send-check-fill", f"Count not reply. Error {sys_error}")
 
-    
+
+
+# count how many chats a user are participating
+async def count_chats(user_id, db: Session):
+    Reply= aliased(Message)
+
+    unread_replies= exists(
+        select(Reply.Id).where(
+            Reply.Parent_Id == Message.Id, 
+            Reply.To == user_id, 
+            Reply.Viewed == 0)
+    )
+
+    query= select(func.count(Message.Id)) \
+        .where(Message.Parent_Id.is_(None), or_(Message.Person_Id == user_id, Message.To == user_id), \
+            unread_replies,
+        )
+    return db.scalar(query) or 0
+
+ 
 
 # function to delete a message by id
 async def delete_message_by_id(msg_id, user_in, db: Session):
     try:
         query= delete(Message).where(Message.To == user_in.Id, Message.Id == msg_id)
-
-        await update_total_messages(user_in, db)
+        add_total_messages(user_in, db)
         
         db.execute(query)
         db.commit()

@@ -28,7 +28,7 @@ async def get_random_developers(db: Session):
 
 
 # function to create a new developer
-async def create_user(new_dev, url_for, bg_task, db: Session):
+async def add_new_dev(new_dev, url_for, bg_task, db: Session):
     title= None
     coding_language= None
 

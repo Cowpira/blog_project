@@ -2,6 +2,7 @@
 from __future__ import annotations 
 from datetime import datetime, timezone
 from decimal import Decimal
+from enum import IntEnum
 from sqlalchemy import JSON, DateTime, ForeignKey, Integer, Numeric, String, Boolean, Text, Uuid
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 from services.db_connection import Base, engine
@@ -80,7 +81,6 @@ class Developer(Person):
     projects: Mapped["Project"]= relationship(back_populates= "write_project", cascade= "all, delete-orphan")
     applicant_dev: Mapped[List["Job_Application"]]= relationship(back_populates= "dev_applied", cascade= "all, delete-orphan")
     
-
 
 # EDUCATION TABLE
 class Education(Base):
@@ -361,6 +361,11 @@ class Company(Base):
 
 
 
+class ViewedStatus(IntEnum):
+    UNREAD= 0
+    VIEWED= 1
+    REPLIED= 2
+
 # MESSAGES TABLE TO LIST USERS AND EMPLOYEE
 class Message(Base):
     __tablename__= "messages"
@@ -369,7 +374,7 @@ class Message(Base):
     Message_Content: Mapped[str]= mapped_column(Text, nullable= False)
     Send_Date: Mapped[datetime]= mapped_column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
     System_Message: Mapped[bool]= mapped_column(Boolean, default= False)
-    Viewed: Mapped[bool]= mapped_column(Boolean, default=False)
+    Viewed: Mapped[int]= mapped_column(Integer, default=ViewedStatus.UNREAD, nullable=False)
     To: Mapped[uuid.UUID]= mapped_column(Uuid(as_uuid=True), nullable= False)
 
     # defining Answer & User relationship
