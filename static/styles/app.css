@@ -294,7 +294,7 @@ main{  min-height: calc(100vh - 360px); }
 .link_menu[aria-expanded="true"] .bottom{ rotate: -45deg; }
 
 .dropdown-menu{
-    background-color: rgba(21, 21, 21, 0.759);
+    background-color: rgba(0 0 0 / 96%);
     --bs-dropdown-link-color: white;
     --bs-dropdown-padding-y: .8rem !important;
     --bs-dropdown-min-width: 7.7rem !important;

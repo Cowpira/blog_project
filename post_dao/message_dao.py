@@ -67,52 +67,107 @@ async def update_msg_viwed(user_in, msg_id, db: Session):
         
 # function to list all messages to the employee or user online
 async def list_messages(user_id, msg_by, db: Session):
+    ReplyDateAlias= aliased(Message)
+
+    # subquery to get all latest reply date in a message chat thread
+    latest_replies= (select(
+            ReplyDateAlias.Parent_Id.label("parent_id"),
+            func.max(ReplyDateAlias.Send_Date).label("last_reply_date"),
+        ).where(
+            ReplyDateAlias.Parent_Id.is_not(None)
+        )
+        .group_by(ReplyDateAlias.Parent_Id).subquery()
+    )
+
+    # sort by newest reply date if replies exist, otherwise by message Send_Date
+    latest_activity= func.coalesce(
+        latest_replies.c.last_reply_date, Message.Send_Date
+    )
 
     if msg_by == 'chats':
-        query= select(Message).where(Message.replies.any()) \
-            .where(or_(Message.Person_Id == user_id, Message.To == user_id)) \
-            .options(selectinload(Message.replies)).order_by(Message.Send_Date.desc())
+        query= (select(Message)
+            .where(
+                Message.Parent_Id.is_(None),
+                Message.replies.any(), 
+                or_(Message.Person_Id == user_id, Message.To == user_id),
+            )
+        )
         msg= "You have not chat yet!"
 
     elif msg_by == 'employee':
-        query= select(Message).join(Person, Message.Person_Id == Person.Id) \
-            .where(Message.To == user_id, Message.Parent_Id.is_(None), Person.Type == 'employeer') \
-            .options(selectinload(Message.replies)).order_by(Message.Send_Date.desc())
+        query= (select(Message).join(Person, Message.Person_Id == Person.Id)
+            .where(
+                Message.To == user_id,
+                Message.Parent_Id.is_(None),
+                Person.Type == 'employeer',
+            )
+        )
         msg= "You have no message from <br> Employees"
 
     elif msg_by == 'unread':
-        query= select(Message).where(Message.To == user_id, Message.Parent_Id.is_(None), Message.Viewed == False) \
-            .options(selectinload(Message.replies)).order_by(Message.Send_Date.desc())
-        msg= "You have no unread message!"
-    
-    elif msg_by == 'dev':
-        Reply = aliased(Message)
-        ReplySender = aliased(Person)
-
-        has_dev_reply = exists(
-            select(Reply.Id).join(ReplySender, Reply.Person_Id == ReplySender.Id)
-            .where(Reply.Parent_Id == Message.Id, Reply.To == user_id, ReplySender.Type == 'developer',
+        UnreadReply= aliased(Message)
+        has_unread_reply= exists(
+            select(UnreadReply.Id).where(
+                UnreadReply.Parent_Id == Message.Id,
+                UnreadReply.To == user_id,
+                UnreadReply.Viewed == False,
             )
         )
 
-        query = (
-            select(Message).outerjoin(Person, Message.Person_Id == Person.Id)
-            .where(Message.Parent_Id.is_(None),
+        query= (select(Message)
+            .where(
+                Message.Parent_Id.is_(None), 
                 or_(
-                    and_(Message.To == user_id, Person.Type == 'developer'),
-                    and_(Message.Person_Id == user_id, has_dev_reply),
+                    and_(Message.To == user_id, Message.Viewed == False),
+                    has_unread_reply,
                 ),
             )
-            .options(selectinload(Message.replies))
-            .order_by(Message.Send_Date.desc())
+        )
+        msg= "You have no unread message!"
+    
+    elif msg_by== 'dev':
+        Reply= aliased(Message)
+        ReplySender= aliased(Person)
+
+        has_dev_reply= exists(
+            select(Reply.Id)
+            .join(ReplySender, Reply.Person_Id == ReplySender.Id)
+            .where(
+                Reply.Parent_Id == Message.Id, 
+                Reply.To == user_id, 
+                ReplySender.Type == 'developer',
+            )
+        )
+
+        query= (
+            select(Message)
+            .outerjoin(Person, Message.Person_Id == Person.Id)
+            .where(Message.Parent_Id.is_(None),
+                   or_(
+                       and_(Message.To == user_id, Person.Type == 'developer'),
+                       and_(Message.Person_Id == user_id, has_dev_reply),
+                ),
+            )
         )
         msg= "You have no message from any <br> Developers!"
+
     else:
-        query= select(Message).where(Message.Parent_Id.is_(None), \
-            or_(Message.Person_Id == user_id, Message.To == user_id)) \
-            .options(selectinload(Message.replies)).order_by(Message.Send_Date.desc())
+        query= select(Message).where(
+            Message.Parent_Id.is_(None),
+            or_(Message.Person_Id == user_id, Message.To == user_id),
+        )
         msg= "There is no message for you!"
-        
+
+
+    # attach latest reply, eager load replies, sort newest activity first
+    query= (
+        query.outerjoin(
+            latest_replies, Message.Id == latest_replies.c.parent_id
+        )
+        .options(selectinload(Message.replies))
+        .order_by(latest_activity.desc())
+    )
+
     # getting a list of messages
     messages= db.scalars(query).all()
 
