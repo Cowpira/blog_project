@@ -26,9 +26,10 @@
                 <a href="{{ url_for("my_messages", page=1, list=items_per_page, msg_by="dev") }}" 
                     class="btn btn-sm msg-btn {{ 'msg-active' if msg_by == 'dev' }}">Developers</a>
 
-                <a href="{{ url_for("my_messages", page=1, list=items_per_page, msg_by="employee") }}" 
-                    class="btn btn-sm msg-btn {{ 'msg-active' if msg_by == 'employee' }}">Employeers</a>
-                
+                {% if not user_in.Type == 'employeer' %}
+                    <a href="{{ url_for("my_messages", page=1, list=items_per_page, msg_by="employee") }}" 
+                        class="btn btn-sm msg-btn {{ 'msg-active' if msg_by == 'employee' }}">Employeers</a>
+                {% endif %}
 
                 <a href="{{ url_for("my_messages", page=1, list=items_per_page, msg_by="unread") }}"
                     class="btn btn-sm msg-btn {{ 'msg-active' if msg_by == 'unread' }}">Unread</a>
