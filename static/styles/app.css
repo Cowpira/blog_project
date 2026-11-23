@@ -178,8 +178,8 @@ main{  min-height: calc(100vh - 360px); }
 }
 
 .navbar-style .nav-link.active, .nav-link:focus{
-    color: rgb(169, 169, 169);
-    font-weight: bolder;
+    color: rgb(0, 0, 0);
+    font-weight: 800 !important;
 } 
 
 .navbar-scrolled{
