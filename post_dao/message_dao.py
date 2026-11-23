@@ -74,12 +74,6 @@ async def list_messages(user_id, msg_by, db: Session):
             .options(selectinload(Message.replies)).order_by(Message.Send_Date.desc())
         msg= "You have not chat yet!"
 
-    elif msg_by == 'all':
-        query= select(Message).where(Message.Parent_Id.is_(None), \
-            or_(Message.Person_Id == user_id, Message.To == user_id)) \
-            .options(selectinload(Message.replies)).order_by(Message.Send_Date.desc())
-        msg= "There is no message for you!"
-
     elif msg_by == 'employee':
         query= select(Message).join(Person, Message.Person_Id == Person.Id) \
             .where(Message.To == user_id, Message.Parent_Id.is_(None), Person.Type == 'employeer') \
@@ -113,7 +107,11 @@ async def list_messages(user_id, msg_by, db: Session):
             .order_by(Message.Send_Date.desc())
         )
         msg= "You have no message from any <br> Developers!"
-
+    else:
+        query= select(Message).where(Message.Parent_Id.is_(None), \
+            or_(Message.Person_Id == user_id, Message.To == user_id)) \
+            .options(selectinload(Message.replies)).order_by(Message.Send_Date.desc())
+        msg= "There is no message for you!"
         
     # getting a list of messages
     messages= db.scalars(query).all()

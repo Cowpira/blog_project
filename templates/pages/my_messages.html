@@ -149,6 +149,11 @@
                     {% endif %}
                 </tbody>
             </table>
+
+            <div id="reloaded" class="d-none col-12 text-center smaller-texts text-orange 
+                animate__animated animate__fadeInDown animate__slow">
+                reloading messages <img src="{{ url_for('static', path='/images/loader_msg.gif') }}" alt="" width="30" height="30">
+            </div>
         </div>
 
         <div class="row d-flex justify-content-between smaller-texts fw-light">
@@ -163,11 +168,6 @@
                 <i class="bi bi-x text-danger position-relative" style="font-size: 1.2rem; top: 3px;"></i>
                 <small>Not viewed</small>
             </div>
-
-            <span id="reloaded" class="col text-center smaller-texts text-orange d-none animate__animated 
-                animate__fadeInDown animate__slow">
-                reloading messages <img src="{{ url_for('static', path='/images/loader_msg.gif') }}" alt="" width="30" height="30">
-            </span>
 
             <div class="col text-danger text-end">
                 <b> * </b> Deleted messages cannot be recovered
@@ -245,7 +245,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             if (sessionStorage.getItem('autoReloaded') === 'true') {
                 sessionStorage.removeItem('autoReloaded');
-                
+                    
                 const reloaded_msg= document.getElementById('reloaded');
                 reloaded_msg.classList.remove('d-none');
 
@@ -257,7 +257,7 @@
 
         setTimeout(() => {
             sessionStorage.setItem('autoReloaded', 'true');
-            window.location.reload();
-        }, 50000);
+            window.location.href="{{ url_for('my_messages', page=1, list=4, msg_by='all') }}";
+        }, 5000);
   </script>
 {% endblock %}
