@@ -255,9 +255,13 @@
             }
         });
 
-        setTimeout(() => {
-            sessionStorage.setItem('autoReloaded', 'true');
-            window.location.href="{{ url_for('my_messages', page=1, list=4, msg_by='all') }}";
+        setInterval(() => {
+            const isModalOpen = document.querySelector('.modal.show') !== null;
+
+            if (!isModalOpen){
+                sessionStorage.setItem('autoReloaded', 'true');
+                window.location.href="{{ url_for('my_messages', page=1, list=4, msg_by='all') }}";
+            }
         }, 50000);
   </script>
 {% endblock %}
