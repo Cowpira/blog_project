@@ -2,18 +2,18 @@ from datetime import datetime, timezone
 from sqlalchemy import or_, select
 from sqlalchemy.orm import Session, aliased, joinedload
 from data_model.models import Company, Developer, Jobs, Job_Application
-from services import http_responses
+from services import http_responses, helper
 
 
 # function to list all jobs
-async def list_all_jobs(db: Session):
+async def list_all_jobs(page, items_total, db: Session):
     try:
-        query= select(Jobs) \
-        .options(joinedload(Jobs.job_belongs_company)) \
-        .order_by(Jobs.Posted_Date.desc())
+        query= (select(Jobs)
+            .options(joinedload(Jobs.job_belongs_company))
+            .order_by(Jobs.Created.desc())
+        )
 
-        result= db.execute(query).scalars().all()
-        return result
+        return helper.global_data_pagination(query, page, items_total, db)
     except ValueError:
        return http_responses.status_204_no_content("bi bi-clipboard-x-fill", "There is no job available yet!")
 
@@ -39,7 +39,7 @@ async def add_job(data, cur_employee, db: Session):
             Benefits= data.get("benefits"),
             Status= data.get("job_status"),
             Closed= False,
-            Posted_Date= datetime.now(timezone.utc),
+            Created= datetime.now(timezone.utc),
             employeer_id= cur_employee.Id,
             company_id= company_found.Id
         )
@@ -56,12 +56,12 @@ async def add_job(data, cur_employee, db: Session):
 
 
 # function to get all jobs by employee ID
-async def list_jobs_by_employee(cur_employee, db: Session):
-    query= select(Jobs).where(Jobs.employeer_id == cur_employee.Id).order_by(Jobs.Posted_Date.desc())
-    jobs_found= db.execute(query).scalars().all()
+async def list_jobs_by_employee(cur_employee, page, items_total, db: Session):
+    query= (select(Jobs)
+        .where(Jobs.employeer_id == cur_employee.Id)
+    )
 
-    return jobs_found if jobs_found else \
-    http_responses.status_204_no_content("bi bi-clipboard-x-fill", "Sorry, you have not post job yet!")
+    return helper.global_data_pagination(query, page, items_total, db)
         
 
 
@@ -115,40 +115,40 @@ async def update_job(job_data, job_id, db: Session):
 
 
 # function to search job by Title, or Company
-async def search_jobs(job_param, contracts, durations, states, locations, db:Session):
-    if not job_param:
-        return []
-    
+async def search_jobs(job_param, states, contracts, durations, locations, page, items_total, db:Session):
     param= job_param.strip()
+    clean_param= f"%{job_param}%"
+
+    if not param:
+        return []
 
     query= select(Jobs).join(Jobs.job_belongs_company)
 
     if param in contracts:
-        query= query.where(Jobs.Contract.ilike(param))
+        query= query.where(Jobs.Contract.ilike(clean_param))
     
     elif param in durations:
-        query= query.where(Jobs.Duration.ilike(param))
+        query= query.where(Jobs.Duration.ilike(clean_param))
 
     elif param in locations:
-            query= query.where(Jobs.Location.ilike(param))
+            query= query.where(Jobs.Location.ilike(clean_param))
             
     elif param in states:
-        query= query.where(Company.State.ilike(param))
+        query= query.where(Company.State.ilike(clean_param))
 
     else:
         query= query.where(
-            or_(
-                Company.Company.ilike(param),
-                Company.Country.ilike(param)
-            )
+            or_(Company.Company.ilike(clean_param), 
+                Company.Country.ilike(clean_param))
         )
 
-    query= query.options(joinedload(Jobs.job_belongs_company)) \
-        .order_by(Jobs.Posted_Date.desc())
-
-    job_found= db.execute(query).scalars().all()
+    query= (query
+            .options(
+                joinedload(Jobs.job_belongs_company)
+            ).order_by(Jobs.Created.desc())
+        )
     
-    return job_found if job_found else []
+    return helper.global_data_pagination(query, page, items_total, db)
 
 
 
@@ -181,7 +181,7 @@ async def close_job(job_id, db: Session):
         if job_found:
             job_found.Closed= True
             job_found.Status= 'Closed for Applications'
-            job_found.Posted_Date= datetime.now(timezone.utc)
+            job_found.Created= datetime.now(timezone.utc)
 
             db.commit()
             db.refresh(job_found)
@@ -197,7 +197,12 @@ async def close_job(job_id, db: Session):
 # function to apply a developer into a job position
 async def apply_dev_job(job_id, cur_dev, db: Session):
     try:
-        query= select(Job_Application).where(Job_Application.dev_id == cur_dev.Id, Job_Application.job_id == job_id)
+        query= (select(Job_Application)
+            .where(
+                Job_Application.dev_id == cur_dev.Id, 
+                Job_Application.job_id == job_id
+            )
+        )
         dev_applied= db.execute(query).scalar()
 
         j_query= select(Jobs).where(Jobs.Id == job_id)
@@ -210,7 +215,7 @@ async def apply_dev_job(job_id, cur_dev, db: Session):
             return http_responses.status_302_found("bi bi-ban-fill", f"You have already applied for {job_title}!!")
         else:
             application= Job_Application( 
-                Applied_Date= datetime.now(timezone.utc),
+                Created= datetime.now(timezone.utc),
                 job_id= job_id,
                 dev_id= cur_dev.Id
             )
@@ -226,33 +231,36 @@ async def apply_dev_job(job_id, cur_dev, db: Session):
 
 
 # function to list all jobs applications by developer ID
-async def list_all_jobs_dev_application(cur_dev, db: Session):
+async def list_all_jobs_dev_application(cur_dev, page, items_total, db: Session):
     try:
-        query= select(
-            Company.Company.label("company_name"),
-            Jobs.Title.label("job_position"),
-            Job_Application.Applied_Date.label("applied_date"),
-            Jobs.Status.label("job_status")  
-        ) \
-        .join(Jobs, Job_Application.job_id == Jobs.Id) \
-        .join(Company, Jobs.company_id == Company.Id) \
-        .filter(Job_Application.dev_id == cur_dev.Id) \
-        .order_by(Job_Application.Applied_Date.desc())
+        query= (
+            select(
+                Company.Company.label("company_name"),
+                Jobs.Title.label("job_position"),
+                Job_Application.Created.label("created"),
+                Jobs.Status.label("job_status")  
+            )
+            .join(Jobs, Job_Application.job_id == Jobs.Id)
+            .join(Company, Jobs.company_id == Company.Id)
+            .filter(Job_Application.dev_id == cur_dev.Id)
+            .order_by(Job_Application.Created.desc())
+        )
         
-        applications= db.execute(query).mappings().all()
-        return applications
+        return helper.global_data_pagination(query, page, items_total, db)
     except ValueError:
         return http_responses.status_204_no_content("bi bi-clipboard-x-fill", "Sorry, you haven't applied yet!!!")
 
 
 
 # function to get all jobs applyed by a developer
-async def get_jobs_applies(cur_dev, db: Session):
+async def get_jobs_applies(cur_dev, page, items_total, db: Session):
     try:
-        query= select(Job_Application.job_id).filter(Job_Application.dev_id == cur_dev.Id)
-        applic_found= db.execute(query).scalars().all()
+        query= (
+            select(Job_Application.job_id)
+            .filter(Job_Application.dev_id == cur_dev.Id)
+        )
 
-        return applic_found
+        return helper.global_data_pagination(query, page, items_total, db)
     except ValueError:
         return http_responses.status_503_service_unavailable("bi bi-database-fill-x", 
                                                             "Could not retrieve data. Try again!!!")
@@ -260,26 +268,25 @@ async def get_jobs_applies(cur_dev, db: Session):
 
 
 # function to get all developers that applied for a job
-async def list_job_applicants(job_id, db: Session):
+async def list_job_applicants(job_id, page, items_total,  db: Session):
     dev_alias= aliased(Developer, flat=True)
 
     try:
-        query= select(
+        query= (select(
                 Jobs.Title.label("job_position"),
                 dev_alias.Id.label('dev_id'),
                 dev_alias.First_Name.label("f_name"),
                 dev_alias.Last_Name.label("l_name"),
                 Jobs.Status.label("job_status")  
-            ) \
-            .select_from(Job_Application) \
-            .join(Job_Application.application_job) \
-            .join(Job_Application.dev_applied.of_type(dev_alias)) \
-            .filter(Job_Application.job_id == job_id) \
-            .order_by(Job_Application.Applied_Date.desc())
+            ) 
+            .select_from(Job_Application) 
+            .join(Job_Application.application_job) 
+            .join(Job_Application.dev_applied.of_type(dev_alias)) 
+            .filter(Job_Application.job_id == job_id)
+            .order_by(Job_Application.Created.desc())
+        )
 
-        applicants_found= db.execute(query).all()
-
-        return applicants_found
+        return helper.global_data_pagination(query, page, items_total, db)
     except ValueError:
         return http_responses.status_503_service_unavailable("bi bi-database-fill-x", 
                                                             "Could not retrieve data. Try again!!!")

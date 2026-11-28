@@ -1,10 +1,9 @@
-import math
-import os
-import secrets
-import dotenv
+import math, os, secrets, dotenv
+from sqlalchemy import func, select
 from services import http_responses, image_utils
 from fastapi import responses, status, templating
 from sqlalchemy.orm import Session
+from sqlalchemy.sql import Select
 from post_dao import company_dao
 from PIL import UnidentifiedImageError
 from starlette.concurrency import run_in_threadpool
@@ -31,8 +30,7 @@ templates= templating.Jinja2Templates(directory= "templates/pages")
 
 
 # List options for total items per page
-limit_items: list[int] = [1, 2, 10, 16]
-total_items: int= 4
+ALLOWED_LIMITS = {1, 2, 4, 6, 10, 16}
 
 
 # variable to add user into session
@@ -90,23 +88,65 @@ def unique_string(byte: int= 8) -> str:
     return secrets.token_urlsafe(byte)
 
 
+
 # function to add pagination
-def pagination_settings(items_list, page, obj_class, items_per_page):
-    if page < 1:
-        page= page * -1
+def global_data_pagination(data_source, page, item_per_page, db: Session):
+    page= max(1, abs(page))
 
-    start= (page - 1) * items_per_page
-    end= start + items_per_page
+    if isinstance(data_source, list):
+        data_set_total= len(data_source) 
 
-    # setting the pagination
-    if not items_list == None:
-        pagination= {
-            "cur_page": page,
-            "items_found": len(items_list),
-            "lenght": 0,
-            "items_per_page": items_per_page, f"{obj_class}": items_list[start:end],
-            "total": list(range(1, (math.ceil(len(items_list) / items_per_page) + 1)))
-        }
-        return pagination
+    elif isinstance(data_source, Select):
+        count= select(func.count()).select_from(data_source.order_by(None).subquery())
+        data_set_total= db.scalar(count) or 0
+    else: 
+        data_set_total= db.scalar(select(func.count()).select_from(data_source)) or 0
+
+    # return a empty list is there is not data found
+    if data_set_total == 0:
+        return []
+
+    total_pages= math.ceil(data_set_total / item_per_page)
+    page= min(page, total_pages)
+    offset= (page - 1) * item_per_page
+
+    if isinstance(data_source, list):
+        data_set= data_source[offset : offset + item_per_page]
+
+    elif isinstance(data_source, Select):
+        paginate_query= data_source.offset(offset).limit(item_per_page)
+
+        # if the query ismulte column we use mapping functio
+        is_multi_column= (
+            len(data_source.column_descriptions) > 1
+            or data_source.column_descriptions[0].get("entity") is None
+        )
+
+        if is_multi_column:
+            data_set= db.execute(paginate_query).mappings().all()
+        else:
+            data_set= db.scalars(paginate_query).unique().all()
+
     else:
-        return None
+        # fetching data for each page
+        data_query= (
+            select(data_source)
+            .order_by(data_source.Created.desc())
+            .offset(offset)
+            .limit(item_per_page)
+        )
+        data_set= db.scalars(data_query).all()
+
+        
+    # dictionary return to populate HTML layout and paginate the data
+    paginated_data={
+        "data_set": data_set,
+        "cur_page": page,
+        "items_found": data_set_total,
+        "items_per_page": item_per_page,
+        "total": list(range(1, total_pages + 1)),
+        "has_prev": page > 1,
+        "has_next": page < total_pages
+    }
+
+    return paginated_data

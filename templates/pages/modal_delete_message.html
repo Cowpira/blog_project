@@ -1,0 +1,43 @@
+{% block content %}
+    <div class="modal fade" id="mdl_del_msg-{{ msg.Id}}" data-bs-backdrop="static" data-bs-keyboard="false" aria-hidden="true" 
+        aria-labelledby="mdl_del_msg_Label" tabindex="-1">
+            
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header d-flex justify-content-around">
+                    <h1 class="col-10 text-center title-headers">
+                        <i class="bi bi-chat-dots" style="font-size: 2.5rem;"></i> Deleting Message
+                    </h1>
+                    
+                    <a href="#" data-bs-dismiss="modal"
+                        class="gen-mdl-close btn-close-modal text-orange position-absolute p-1 top-0 end-0">
+                        <i class="bi bi-x-circle-fill fs-3"></i>
+                    </a>
+                </div>
+
+                <div class="modal-body text-center">
+                    <b class="mb-3 text-dark fw-bolder">Are you sure you want to continue?</b>
+
+                    <div class="text-danger animate__animated animate__flash animate__repeat-3 animate__delay-2s">
+                        <i class="bi bi-trash-fill" style="font-size: 3.8rem;"></i>
+                    </div>
+
+                     {% set msg_receiver = msg.get_chat_partner(user_in.Id) %}
+                    <div class="col-10 offset-1 p-2">
+                        <b><p class="fs-3 text-danger" style="font-weight: 600;">
+                            Delete messages with  <span class="text-dark">{{msg_receiver.First_Name}} </span> <br>
+                            This action CANNOT be undone!!
+                        </p></b>
+                    </div>
+                </div>
+
+                <div class="col modal-footer d-flex justify-content-center">
+                    <a href="{{ url_for('delete_message', msg_id=msg.Id, msg_by=msg_by|urlencode if msg_by else 'all') }}" 
+                        class="fp-buttons fp-red-btn px-4">
+                       <i class="bi bi-trash-fill" style="font-size: 1.3rem;"></i> Confirm Deletion
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

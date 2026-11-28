@@ -1,27 +1,27 @@
 {% block content %}
-    {% if answers %} 
-        <div class="col-12 col-md-10 col-lg-8 offset-lg-2 mb-5 card">
-            <div class="row title-answers-container text-center py-2 header-bg">
-                <span class="fs-4 fw-lighter text-light">Post {{post.Title}}</span> <br> 
-                
-                <p class="smaller-texts text-warning">
-                    has {{post.Total_Answer}} answer{% if post.Total_Answer > 1 %}s {% endif %}
-                </p>
-            </div>
-
-            <!-- LISTING ALL DEVELOPERS WHO ANSWERED THE POST -->
-            {% for answer in answers %}
-                <div class="py-2 mx-2" data-bs-spy="scroll" data-bs-target="#navbar-answers-{{ answer.Id }}" 
-                    data-bs-smooth-scroll="true" tabindex="0">
+    <div class="row card mt-3">
+        <div class="title-answers-container text-center header-bg p-0">
+            <span class="fs-4 fw-lighter text-light">Post {{post.Title}}</span> <br> 
             
+            <p class="smaller-texts text-warning">
+                has {{post.Total_Answer}} answer{% if post.Total_Answer > 1 %}s {% endif %}
+            </p>
+        </div>
+
+        <!-- LISTING ALL DEVELOPERS WHO ANSWERED THE POST -->
+        {% for answer in answers %}
+            <div class="card-body" data-bs-spy="scroll" data-bs-target="#navbar-answers-{{ answer.Id }}" 
+                data-bs-smooth-scroll="true" tabindex="0">
+        
                 <!-- Answer Header Block -->
-                <div class="row py-2 mt-1" style="background-color: #afafafca; border-radius: 6px;">
+                <div class="row py-1" style="background-color: #e0e0e07a; border-radius: 6px;">
                     <div id="item-{{ answer.Id }}" class="col-8 col-md-9 answers-content">By 
                         <span class="fs-2 text-orange mt-2">{{ answer.write_answer.First_Name }}</span>
                     </div>
-                    <i class="col-4 col-md-3 text-end text-muted mt-3"  style="font-size: .8px">
-                        Posted: {{ answer.Posted.strftime('%B, %d %Y') }}
-                    </i>
+
+                    <span class="col-4 col-md-3 text-end text-muted mt-3 smaller-texts">
+                        On: {{ answer.Posted.strftime('%B, %d %Y') }}
+                    </span>
                 </div>
 
                 {# getting answer and tags to add code highlight #}
@@ -29,9 +29,9 @@
                 {% set tags = answer.Tag.split(' ') if answer.Tag else [] %}
                 
                 {% include "code_highlight.html" with context %}
-            
-                <!-- Action Interactions Bar -->
-                <div class="container-fluid d-flex justify-content-around mt-2 mb-4">
+
+            <!-- Action Interactions Bar -->
+                <div class="container-fluid d-flex justify-content-around mt-2 mb-1">
                     <hr class="text-muted col-4">
 
                     {% if post.Opened and user_in.Id == answer.dev_id %}
@@ -52,7 +52,7 @@
                             data-bs-target="#mdl-reply-answer" data-bs-answer-id="{{answer.Id}}">
                             <i class="bi bi-reply-all-fill" style="font-size: .6rem;"></i> Reply
                         </a>
-                       
+                        
                         <hr class="text-muted col-4">
                     {% else %}
                         {% for item in replies_by_answer.get(answer.Id, []) %}
@@ -67,23 +67,15 @@
                         <hr class="text-muted col-4">
                     {% endif %}
                 </div>
+            </div>
 
-                <!-- Render Target Replies Fragment -->
-                {% for reply in replies_by_answer.get(answer.Id, []) %}
-                    {% include "view_post_replies.html" with context %}
-                {% endfor %}
+            <!-- Render Target Replies Fragment -->
+            {% for reply in replies_by_answer.get(answer.Id, []) %}
+                {% include "view_post_replies.html" with context %}
             {% endfor %}
-        </div>
-        <span class="col-2 col-sm-3 col-md-2 col-lg-2 d-none d-sm-block"></span>
-    {% else %}
-        <!-- if post listed does not have any answer -->
-        <div class="row text-center">
-            <span class="fw-light fs-3 text-muted fp-font">
-                This post has no answer yet!  
-            </span>
-        </div>
-    {% endif %}
-
+        {% endfor %}
+    </div>
+    
 
     <!-- ================================================================= -->
     <!-- GLOBAL MODALS PLACEHOLDERS (LOADED ONCE AT THE BOTTOM OF THE PAGE)-->

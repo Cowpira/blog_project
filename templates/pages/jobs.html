@@ -6,13 +6,8 @@
 {% endblock %}
 
 {% block content %}
-    <!-- include alert page to handle alert messages -->
-    {% if result.status_code %}
-        {% include "alerts.html" ignore missing with context %}
-    {% endif %}
-
     <main class="container-fluid start-content">
-        {% if jobs.get('jobs', [])|length == 0 %}
+        {% if jobs.get('data_set', [])|length == 0 %}
             <div class="col-12 text-center py-5">
                 <div class="animate__animated animate__fadeInUp animate__slow mt-5">
                     <i class="bi bi-calendar2-week" style="font-size: 8rem;"></i>
@@ -29,13 +24,13 @@
                 <b class="text-orange fs-6">Future Programmers</b>
             </div>
         {% else %}
+            <!-- menu bar for filters -->
             <div class="row header-bg text-center">
-                <div class="col py-2">
-                    <a class="mt-2 mb-2 btn btn-sm msg-btn {{ 'msg-active' if msg_by == 'state' }} dropdown-toggle" 
+                <div class="col-2 p-3">
+                    <a class="fp-buttons fp-orange-btn dropdown-toggle" 
                         href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
                         View
                     </a>
-                    
                     <ul class="dropdown-menu px-3" aria-labelledby="dropdownMenuCheck">
                         {% for item in limit_items %}
                             <div class="form-check ms-3 mb-3">
@@ -46,16 +41,18 @@
                             </div>
                         {% endfor %}
                     </ul>
-                
+                </div>
+               
+
+                <div class="col-9 py-2"> 
                     <a class="mx-2 mt-2 mb-2 btn btn-sm msg-btn {{ 'msg-active' if job_param in locations }} dropdown-toggle" 
                         href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
                         Location
-                    </a>
-                    
+                    </a>       
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                         {% for location in locations %}
                             <li>
-                                <a href="{{url_for("seach_jobs", page=1, list=total_items, job_param=location)}}" 
+                                <a href="{{url_for("seach_jobs", page=1, list=total_items, job_param= location)}}" 
                                     class="small-texts dropdown-item {{ 'text-orange' if job_param == location }}">
                                     {{location}}
                                 </a>
@@ -67,11 +64,10 @@
                         href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
                         Contract
                     </a>
-                    
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                         {% for contract in contracts %}
                             <li>
-                                <a href="{{url_for("seach_jobs", page=1, list=total_items, job_param=contract)}}" 
+                                <a href="{{url_for("seach_jobs", page=1, list=total_items, job_param= contract)}}" 
                                     class="small-texts dropdown-item {{ 'text-orange' if job_param == contract }}">
                                     {{contract}}
                                 </a>
@@ -83,11 +79,10 @@
                         href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
                         Duration
                     </a>
-                    
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                         {% for duration in durations %}
                             <li>
-                                <a href="{{url_for("seach_jobs", page=1, list=total_items, job_param=duration)}}" 
+                                <a href="{{url_for("seach_jobs", page=1, list=total_items, job_param= duration)}}" 
                                     class="small-texts dropdown-item {{ 'text-orange' if job_param == duration }}">
                                     {{duration}}
                                 </a>
@@ -99,11 +94,10 @@
                         href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
                         State
                     </a>
-
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                         {% for state in states %}
                             <li>
-                                <a href="{{url_for("seach_jobs", page=1, list=total_items, job_param=state)}}" 
+                                <a href="{{url_for("seach_jobs", page=1, list=total_items, job_param= state)}}" 
                                     class="small-texts dropdown-item {{ 'text-orange' if job_param == state }}">
                                     {{state}}
                                 </a>
@@ -111,11 +105,18 @@
                         {% endfor %}
                     </ul>
                 </div>
+
+                {% if result %}
+                    <span id="search_alert" class="col-12 text-warning fw-bold text-center animate__animated 
+                    animate__fadeIn animate__slow" style="font-size: 11px;">
+                        {{ result }}
+                    </span>
+                {% endif %}
             </div>
 
             <!-- div container to list all jobs card -->
             <div class="row d-flex justify-content-evenly">
-                {% for job in jobs.get('jobs', []) %}
+                {% for job in jobs.get('data_set', []) %}
                     <div class="job-card my-4">
                         <div class="row job-card-body">
                             <div class="d-flex justify-content-between border-bottom mt-2">
@@ -202,7 +203,7 @@
                             <span class="col text-end small-texts text-muted fw-lighter">
                                 <span class="bi bi-calendar-week" 
                                     data-bs-toggle="tooltip" data-bs-placement="left" data-bs-animation="false"
-                                    title="Posted {{ job.Posted_Date.strftime('%B, %d %Y') }}"></span>
+                                    title="Posted {{ job.Created.strftime('%B, %d %Y') }}"></span>
                             </span>
                           
                             <div class="border-top mt-auto py-2 d-flex justify-content-around">
@@ -505,75 +506,61 @@
                 {% endfor %}
 
                 <!-- jobs pagination -->
-                {% if jobs.get('items_per_page', 0) > limit_items[-1] + 1 %}
-                    <div class="py-3" data-spy="scroll" data-bs-offset="0">
-                        <div id="error_limit" class="col-12 text-center text-warning py-5">
+                <!-- pagination block -->
+                {% if jobs.get('cur_page') not in jobs.get('total', []) %}
+                    <div class="py-5">
+                        <div id="error_404" class="col-12 text-center text-danger py-5">
                             <div class="animate__animated animate__bounce animate__slower animate__repeat-2">
-                                <i class="bi bi-grid-3x3-gap-fill" style="font-size: 7rem;"></i>
+                                <i class="bi bi-file-earmark-excel-fill " style="font-size: 7rem;"></i>
                             </div>
                             
-                            <span class="page_title animate__animated animate__fadeInUp animate__delay-1s animate__slow">
-                                {{ jobs.get('items_per_page') }} items per page not permitted!
-                            </span>
+                            <h1 class="page_title animate__animated animate__fadeInUp animate__delay-1s animate__slow">
+                                Page {{ jobs.get('cur_page') }} not found!
+                            </h1>
                         </div>
                     </div>
-                {% else %}
-                    <!-- pagination block -->
-                    {% if jobs.get('cur_page') not in jobs.get('total', []) %}
-                        <div class="py-5">
-                            <div id="error_404" class="col-12 text-center text-danger py-5">
-                                <div class="animate__animated animate__bounce animate__slower animate__repeat-2">
-                                    <i class="bi bi-file-earmark-excel-fill " style="font-size: 7rem;"></i>
-                                </div>
+                {% elif jobs.get('total')|length > 1 %}
+                    <nav class="mt-5 mb-1">
+                        <ul class="pagination justify-content-center">
+                            {% if jobs.get('cur_page') >= 2 %}
+                                <li class="page-item">
+                                    <a class="page-link" href="{{ url_for("list_jobs") }}?page={{ jobs.get('cur_page', 1) - 1 }}&list={{ jobs.get('items_per_page', 10) }}">
+                                        Previous
+                                    </a>
+                                </li>
+                            {% else %}
+                                <li class="page-item disabled">
+                                    <span class="page-link">Previous</span>
+                                </li>
+                            {% endif %}
                                 
-                                <h1 class="page_title animate__animated animate__fadeInUp animate__delay-1s animate__slow">
-                                    Page {{ jobs.get('cur_page') }} not found!
-                                </h1>
-                            </div>
-                        </div>
-                    {% elif jobs.get('total')|length > 1 %}
-                        <nav class="mt-5 mb-1">
-                            <ul class="pagination justify-content-center">
-                                {% if jobs.get('cur_page') >= 2 %}
-                                    <li class="page-item">
-                                        <a class="page-link" href="{{ url_for("list_jobs") }}?page={{ jobs.get('cur_page', 1) - 1 }}&list={{ jobs.get('items_per_page', 10) }}">
-                                            Previous
-                                        </a>
-                                    </li>
-                                {% else %}
-                                    <li class="page-item disabled">
-                                        <span class="page-link">Previous</span>
-                                    </li>
-                                {% endif %}
-                                    
-                                {% for page in jobs.get('total', []) %}
-                                    <li class="page-item {% if page == jobs.get('cur_page') %}page-active{% endif %} ">
-                                        <a class="page-link {% if page == jobs.get('cur_page') %} page-active {% endif %}" 
-                                            href="{{ url_for("list_jobs") }}?page={{ page }}&list={{ jobs.get('items_per_page', 10) }}">
-                                            {{page}}
-                                        </a>
-                                    </li>
-                                {% endfor %}
-                                
-                                {% if jobs.get('cur_page') == jobs.get('total')|length %}
-                                    <li class="page-item disabled">
-                                        <span class="page-link">Next</span>
-                                    </li>
-                                {% else %}
-                                    <li class="page-item">
-                                        <a class="page-link" href="{{ url_for("list_jobs") }}?page={{ jobs.get('cur_page', 1) + 1 }}&list={{ jobs.get('items_per_page', 10) }}">
-                                            Next
-                                        </a> 
-                                    </li>
-                                {% endif %}
-                            </ul>
+                            {% for page in jobs.get('total', []) %}
+                                <li class="page-item {% if page == jobs.get('cur_page') %}page-active{% endif %} ">
+                                    <a class="page-link {% if page == jobs.get('cur_page') %} page-active {% endif %}" 
+                                        href="{{ url_for("list_jobs") }}?page={{ page }}&list={{ jobs.get('items_per_page', 10) }}">
+                                        {{page}}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                            
+                            {% if jobs.get('cur_page') == jobs.get('total')|length %}
+                                <li class="page-item disabled">
+                                    <span class="page-link">Next</span>
+                                </li>
+                            {% else %}
+                                <li class="page-item">
+                                    <a class="page-link" href="{{ url_for("list_jobs") }}?page={{ jobs.get('cur_page', 1) + 1 }}&list={{ jobs.get('items_per_page', 10) }}">
+                                        Next
+                                    </a> 
+                                </li>
+                            {% endif %}
+                        </ul>
 
-                            <span class="d-flex justify-content-center fs-6 fw-lighter">
-                                Page: <b class="px-2"> {{ jobs.get('cur_page', 1) }} </b> out of <b class="px-2"> {{ jobs.get('total', [])|length }}.</b>
-                                &nbsp;&nbsp; Total of &nbsp;<b>{{ jobs.get('items_found', 0) }}</b> &nbsp; jobs found.
-                            </span>
-                        </nav>
-                    {% endif %}
+                        <span class="d-flex justify-content-center fs-6 fw-lighter">
+                            Page: <b class="px-2"> {{ jobs.get('cur_page', 1) }} </b> of <b class="px-2"> {{ jobs.get('total', [])|length }}</b>
+                            - &nbsp;<b>{{ jobs.get('items_found', 0) }} jobs total </b>
+                        </span>
+                    </nav>
                 {% endif %}
             </div>
         {% endif %}

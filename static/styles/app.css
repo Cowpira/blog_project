@@ -179,7 +179,7 @@ main{  min-height: calc(100vh - 360px); }
 
 .navbar-style .nav-link.active, .nav-link:focus{
     color: rgb(0, 0, 0);
-    font-weight: 800 !important;
+    border-radius: 65px;
 } 
 
 .navbar-scrolled{
@@ -189,16 +189,15 @@ main{  min-height: calc(100vh - 360px); }
     opacity: 1;
 }
 .navbar-scrolled .nav-link.active{
-    color: var(--fp-white-color);
-    font-weight: bolder;
+    background-color: #ffffffc9;
+    font-size: 17px !important;
 } 
 
 .nav-menu{
     font-family: var(--fp-font);
     font-size: 18px;
-    font-weight: 400 !important;
+    font-weight: 500 !important;
     color: var(--fp-orange-color);
-    font-weight: 800;
     margin: 0 3px 0;
     display: block;
     padding: 2px 15px;
@@ -262,7 +261,11 @@ main{  min-height: calc(100vh - 360px); }
     background-color: var(--fp-orange-color);
     transition: .7s ease-in-out;
 }
-
+.msg-btn:focus{
+    color: #FFF; 
+    border: 1px solid #FFF; 
+    background-color: rgb(157, 157, 157);
+}
 .msg-active, .msg-active:hover{
     border: 1px solid var(--fp-white-color);
     color: var(--fp-white-color);
@@ -491,11 +494,10 @@ progress::-moz-progress-bar {
 .post-img{ border-radius: 50%; }
 
 .post-closed{
-    margin-top: -8px !important;
-    padding: 5px;
+    padding: 10px;
     background-color: #D32F2F;
     color: #FFF;
-    font-weight: 700;
+    font-weight: 400;
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
 }
@@ -698,9 +700,6 @@ textPath {
     align-items: center;
     padding-bottom: 0.75rem; /* Adjust bottom spacing as needed */
 }
-
-/* 2. Center the chevron and give it a little top margin */
-.accordion-button::after { margin-left: 0; margin-top: 0.1rem; }
 .accordion-button:hover{ background-color: rgb(243, 243, 243);}
 
 .post-banner-display{
@@ -711,13 +710,13 @@ textPath {
 .post-banner-display::after {
     content: "";
     position: absolute;
-    top: -2px;                   /* Sits exactly on top of the bottom border */
-    left: 50%;                   /* Starts right in the middle horizontally */
-    transform: translateX(-50%); /* Ensures it anchors perfectly at the center point */
-    width: 0;                    /* Starts completely invisible */
+    top: -2px;                   
+    left: 50%;                   
+    transform: translateX(-50%);
+    width: 0;
     height: 2px;              
     background-color: #2c4983; 
-    transition: width 0.6s ease-in-out; /* Smooth transition animation */
+    transition: width 0.6s ease-in-out;
 }
 .post-banner-display:hover::after { width: 100%; }
 
@@ -1048,21 +1047,30 @@ input[type="file"]::file-selector-button {
     --bs-pagination-padding-x: 0.85rem;
     --bs-pagination-padding-y: 0.60rem;
     --bs-pagination-color: #BDBDBD;
+
+    /* pagination disabled btn */
+    --bs-pagination-disabled-color: rgb(226 226 226 / 75%);
+    --bs-pagination-disabled-bg: transparent;
+    --bs-pagination-disabled-border-color: #ebebeb;
 }
-.page-link:hover { color: #252525d3; background-color:#9E9E9E ; }
+.page-link{ font-weight: 500;}
+.page-link:hover { 
+    color: #ee6002d3; 
+    font-weight: 500;
+    background-color: rgb(246, 246, 246) ; 
+}
 
 .page-active{
     z-index: 3;
     color: var(--fp-orange-color);
-    background-color: rgba(61, 61, 61, 0.633);
-    font-weight: 600;
+    background-color: rgba(36, 36, 36, 0.895);
+    font-weight: 500;
     border-color: var(--fp-orange-color);
 }
 
 /* STYLING THE CARROSEL FOR POSTS LANGUAGES LIST  */
 .langs{
     font-family: var(--fp-font);
-    /* width: 70px; */
     text-decoration: none;
     font-weight: 300;
     color: black;
@@ -1077,7 +1085,7 @@ input[type="file"]::file-selector-button {
     color: rgb(231, 213, 57); 
     font-weight: var(--fp-font-weight_400); 
 }
-.c:HOVER, .bootstrap:HOVER{ 
+.c_sharp:HOVER, .bootstrap:HOVER{ 
     color: rgb(127, 41, 136); 
     font-weight: var(--fp-font-weight_400);
 }
@@ -1395,7 +1403,6 @@ input[type="file"]::file-selector-button {
 }
 
 
-
 /* Footer STYLES */
 .footer_title{
     font-family: var(--fp-font);
@@ -1422,23 +1429,101 @@ input[type="file"]::file-selector-button {
 /* ADDING STYLE TO POST_VIEW PAGE  */
 .table>:not(caption)>*>*{ padding: 1.3rem .2rem;}
 
-.answers-sidebar-menu{
-    position: fixed;
-    top: 90px; 
-    z-index: 10;
-    background-color: rgba(243, 243, 243, 0.693);
+
+
+.return_post_btn{
+    width: 6.8rem;
+    height: 2.7rem;
+    font-weight: 500;
+    border-radius: 60px;
+    background-color: rgb(251, 136, 4);
+    color: black;
+    float: right;
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+    overflow: hidden;
+    transition: background-color 0.4s ease-in-out, color 0.4s ease-in-out;
+}
+.return_post_btn .i_icon{
+    position: relative; 
+    display: block;
+    width: 100%;
+    overflow: visible;
+}
+.return_post_btn .i_icon::before{ 
+    position: relative;
+    display: inline-block;
+    font-size: 2.5rem;
+}
+.return_post_btn:hover .i_icon::before{ 
+    animation: slideEffect 1.5s ease-in-out forwards; 
+}
+
+@keyframes slideEffect {
+    0% { 
+        transform: translateX(0); 
+        opacity: 1; 
+    }
+    40% { 
+        transform: translateX(-60%); 
+        opacity: 1; 
+    }
+    41%{ opacity: 0; }
+    50%{
+        transform: translateX(160px);
+        opacity: 0;
+    }
+    51%{ opacity: 1; }
+    100%{
+        transform: translateX(0);
+        opacity: 1;
+    }
 }
 
 .title-answers-container{
     position: sticky;
-    top: 100px; 
+    top: 65px; 
     z-index: 10;
     background-color: rgba(243, 243, 243, 0.693);
 }
 
-.answers-content{ padding-top: 175px; margin-top: -175px; }
+.answers-content{ 
+    padding-top: 175px; 
+    margin-top: -175px; 
+}
 
-.header-bg{ 
+.sticky_sidebar_wrapper {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 40px;
+    align-self: flex-start;
+}
+
+.side_nav_menu{
+    position: static !important;
+    top: 145px;
+    align-items: center;
+    min-height: calc(100vh - 285px);
+    max-height: calc(100vh - 285px);
+    overflow-y: auto;
+    overflow-x: clip;
+    border: .4px solid rgba(222, 222, 222, 0.7);
+    background-color: rgba(242, 242, 242, 0.771);
+}
+.return_btn_wrapper {
+    padding-top: 14px;
+    padding-bottom: 14px;
+    z-index: 10;
+}
+
+.hearder_label{
+    position: sticky !important;
+    top: 65px;
+    text-align: center;
+    z-index: 10;
+}
+.header-bg{
     background: rgba(61, 61, 61, 0.931);
     border-top-left-radius: 7px; 
     border-top-right-radius: 7px;

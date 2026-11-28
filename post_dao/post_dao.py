@@ -1,20 +1,14 @@
-from datetime import datetime, timezone
 import uuid
-from services import http_responses
+from datetime import datetime, timezone
+from services import http_responses, helper
 from data_model.models import Post, Developer
 from sqlalchemy.orm import Session
 from sqlalchemy import or_, select
 
 
 # function to list all posts
-def list_posts(db: Session):
-    result= db.execute(select(Post))
-
-    if result:
-        return result.scalars().all()
-    else:
-        return http_responses.status_204_no_content("bi bi-clipboard-x-fill", "No post found <br> Try again!")
-
+def list_posts(page, total_items, db: Session):
+    return helper.global_data_pagination(Post, page, total_items, db)
 
 
 # function to create a new post
@@ -99,29 +93,47 @@ async def get_post_to_edit(id, db: Session):
 
 
 # function to list post by Title, Tag, Author 
-async def search_post(post_param, author_id, db: Session):
-    param= f"%{post_param}%"
+async def search_post(languages, tag, param, page, items_total, author_id, db: Session):
+    lower_langs= [lang.lower() for lang in languages]
+    clean_tag= tag.strip().lower() if isinstance(tag, str) else ""
+    clean_param= param.strip().lower() if isinstance(param, str) else ""
 
-    if isinstance(author_id, str):
-        author_uuid= uuid.UUID(author_id)
+    if clean_tag in lower_langs or clean_param in lower_langs:
+        query= (select(Post).join(Developer)
+            .where(Post.Tag.ilike(f"%{clean_tag}%"), Post.Tag.ilike(f"%{clean_param}%"))
+            .order_by(Post.Id.desc())
+        )
     else:
-        author_uuid= author_id
+        input_param= f"%{param}%"
 
-    query= select(Post).join(Developer).where(or_(
-        Post.dev_id == author_uuid,
-        Post.Title.ilike(param), 
-        Post.Tag.ilike(param), 
-        Developer.First_Name.ilike(param), 
-        Developer.Last_Name.ilike(param))).order_by(Post.Id.desc())
+        if isinstance(author_id, str):
+            author_uuid= uuid.UUID(author_id)
+        else:
+            author_uuid= author_id
+
+        query= (
+            select(Post).join(Developer)
+            .where(or_(
+                Post.dev_id == author_uuid,
+                Post.Title.ilike(input_param), 
+                Post.Tag.ilike(input_param), 
+                Developer.First_Name.ilike(input_param), 
+                Developer.Last_Name.ilike(input_param))
+            )
+            .order_by(Post.Id.desc())
+        )
+
+    data_result= helper.global_data_pagination(query, page, items_total, db)
+
+
+    if data_result:
+        if (not clean_tag in lower_langs) and len(data_result.get('data_set')) > 0:
+            # check if post(s) found is from single dev
+            data= data_result.get('data_set', [])
+            data_result["single_dev"]= len({post.dev_id for post in data}) == 1
+
     
-    posts= db.execute(query).scalars().all()
-
-    if posts:
-        return posts
-    else:
-        return False
-        # http_responses.status_404_not_found("bi bi-credit-card-2-front", f"No post found for parameter: {post_param} !")
-
+    return data_result
 
 
 #function to update post to close state

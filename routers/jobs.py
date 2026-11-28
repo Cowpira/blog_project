@@ -1,8 +1,6 @@
-import os
-import io
-import uuid
+import os, io, uuid
 from typing import List
-from fastapi import APIRouter, Depends, HTTPException, Request, Response
+from fastapi import APIRouter, Depends, Request, Response
 from sqlalchemy.orm import Session
 from post_dao import developers_dao, jobs_dao, portfolio_dao
 from routers import post
@@ -26,38 +24,33 @@ states= ['Arizona', 'Atlanta', 'California', 'Colorado', 'Florida', 'Massachuset
         'Mississipi', 'New York', 'New Jersey', 'Texas', 'Tenese', 'Virginia', 'Washington']
 locations= ['Hybrid', 'On-site', 'Remote']
 
-# function to list all jobs
-async def load_jobs(jobs, page, list, job_param, request, result, cur_user, db):
-    if list and list >= 1:
-        helper.total_items= list
 
+# function to list all jobs
+async def load_jobs(jobs_list, result, job_param, page, list, request, cur_user, db):
     # return the list of jobs applied by an developer in
     jobs_applied= []
     if cur_user:
-        jobs_applied= await jobs_dao.get_jobs_applies(cur_user, db)
+        jobs_applied= await jobs_dao.get_jobs_applies(cur_user, page, list, db)
 
-    # in case job return an error http_response
-    if type(jobs) is HTTPException:
-        result= jobs
-        jobs= []
-
-    paginated_jobs= helper.pagination_settings(jobs, page, 'jobs', helper.total_items)
-    return helper.templates.TemplateResponse("jobs.html", {'request': request, 'result': result, 'user_in': cur_user, 'job_param': job_param, 
-                                                        'contracts': contracts, 'durations': durations, 'locations': locations, 
-                                                        'jobs': paginated_jobs, 'states': states, 'limit_items': helper.limit_items, 
-                                                        'total_items': helper.total_items, 'jobs_applied': jobs_applied, 
-                                                        'website_url': os.environ.get("website_url")})
+    return helper.templates.TemplateResponse(
+        "jobs.html", {
+            'request': request, 'result': result, 'user_in': cur_user, 'job_param': job_param, 
+            'contracts': contracts, 'durations': durations, 'locations': locations, 'jobs': jobs_list, 
+            'states': states, 'limit_items': sorted(helper.ALLOWED_LIMITS), 'total_items': list, 
+            'jobs_applied': jobs_applied, 'website_url': os.environ.get("website_url")
+        }
+    )
 
 ##############################################################################################################################
 ############################################### PUBLIC FUNCTIONS FOR ALL USERS  ##############################################
 
 # function to list all jobs
 @public_api.get('', include_in_schema= False, response_model=List[JobResponse])
-async def list_jobs(request: Request, page: int= 1, list: int= 0, db: Session= Depends(get_db), 
+async def list_jobs(request: Request, page: int= 1, list: int=6, db: Session= Depends(get_db), 
                     cur_user: Developer= Depends(get_current_user)):
-   
-    jobs= await jobs_dao.list_all_jobs(db)
-    return await load_jobs(jobs, page, list, '', request, '', cur_user, db)
+
+    jobs= await jobs_dao.list_all_jobs(page, list, db)
+    return await load_jobs(jobs, None, None, page, list, request, cur_user, db)
 
 
 ##############################################################################################################################
@@ -78,7 +71,8 @@ async def add_job(request: Request, cur_employee: Person= Depends(get_current_us
 #method to add new job
 @restrict_api.post('/add_job')
 @limiter.limit("3/hour") # limit post 3 jobs per hour
-async def add_job(request: Request, db: Session= Depends(get_db), cur_user: Person= Depends(get_current_user)):
+async def add_job(request: Request, page: int= 1, list: int=6,
+                  db: Session= Depends(get_db), cur_user: Person= Depends(get_current_user)):
 
     if not cur_user:
         return await helper.login_expired()
@@ -86,11 +80,12 @@ async def add_job(request: Request, db: Session= Depends(get_db), cur_user: Pers
     result= await jobs_dao.add_job(await request.form(), cur_user, db)
 
     if result.status_code == 404:
-        return helper.templates.TemplateResponse("post_job.html", {'request': request, 'result': result,
-                                                                'languages': post.languages, 'user_in': cur_user})
+        return helper.templates.TemplateResponse("post_job.html", 
+                                                {'request': request, 'result': result,
+                                                'languages': post.languages, 'user_in': cur_user})
     else:
         jobs= await jobs_dao.list_all_jobs(db)
-        return await load_jobs(jobs, 1, helper.total_items, None, request, result, cur_user, db)
+        return await load_jobs(jobs, result, None, page, list, request, cur_user, db)
     
 
 
@@ -109,8 +104,8 @@ async def update_job(request: Request, job_id: uuid.UUID, cur_employee: Employee
 # function to update a job
 @restrict_api.post('/update_job/{job_id}', include_in_schema=False)
 @limiter.limit("5/hour") # limit update 5 jobs per hour
-async def update_job(request: Request, job_id: uuid.UUID, cur_employee: Employee= Depends(get_current_user),
-                    db: Session= Depends(get_db)):
+async def update_job(request: Request, page: int= 1, list: int=6, job_id: uuid.UUID | int=0, 
+                    cur_employee: Employee= Depends(get_current_user), db: Session= Depends(get_db)):
     if not cur_employee:
         return await helper.login_expired()
     
@@ -118,7 +113,7 @@ async def update_job(request: Request, job_id: uuid.UUID, cur_employee: Employee
 
     if result.status_code == 200:
         jobs= await jobs_dao.list_all_jobs(db)
-        return await load_jobs(jobs, 1, helper.total_items, None, request, result, cur_employee, db)
+        return await load_jobs(jobs, None, None, page, list, request, result, cur_employee, db)
     else:
         edit_job= await jobs_dao.get_job_to_edit(job_id, db)
         return helper.templates.TemplateResponse("edit_job.html", {'request': request, 'result':'', 'edit_job': edit_job,
@@ -128,52 +123,62 @@ async def update_job(request: Request, job_id: uuid.UUID, cur_employee: Employee
 
 # function to search jobs by parameter
 @public_api.get('/seach_jobs/{page}&{list}&{job_param}', include_in_schema=False)
-async def seach_jobs(request: Request, job_param: str= None, page: int=1, list: int=0, 
+async def seach_jobs(request: Request, job_param: str= None, page: int=1, list: int=6, 
                     cur_user: Person= Depends(get_current_user), db: Session= Depends(get_db)):
 
-    # list all jobs found by parameter 
-    jobs_found= await jobs_dao.search_jobs(job_param, contracts, durations, states, locations, db)
-    result= None
-    
-    if not jobs_found:
-        result= http_responses.status_204_no_content("bi bi-bookmark-x-fill", f"Sorry. No jobs found for {job_param}!")
-        jobs_found= await jobs_dao.list_all_jobs(db)
+    if list and list >= 1:
+        helper.total_items= list
 
-    return await load_jobs(jobs_found, page, list, job_param, request, result, cur_user, db)
+    # list all jobs found by parameter 
+    jobs_found= await jobs_dao.search_jobs(job_param, states, contracts, durations, locations, page, helper.total_items, db)
+    result= None
+
+    if not jobs_found:
+        result= f"No {job_param} jobs found!"
+        jobs_found= await jobs_dao.list_all_jobs(page, helper.total_items, db)
+
+    return await load_jobs(jobs_found, result, job_param, page, list, request, cur_user, db)
     
 
 
 # function to list all jobs posted by a employee
 @restrict_api.get('/my_jobs', include_in_schema=False)
-async def my_jobs(request: Request, cur_employee: Employee= Depends(get_current_user), 
+async def my_jobs(request: Request, page: int=1, list: int=6, cur_employee: Employee= Depends(get_current_user), 
                 db: Session= Depends(get_db)):
     
     if not cur_employee:
         return await helper.login_expired()
     
-    result= await jobs_dao.list_jobs_by_employee(cur_employee, db)
-    return helper.templates.TemplateResponse("my_jobs.html", {'request': request, 'result':result, 
-                                                            'user_in': cur_employee})
+    if list and list >= 1:
+        helper.total_items= list
+    
+    jobs_list= await jobs_dao.list_jobs_by_employee(cur_employee, page, list, db)
+
+    if jobs_list:
+        result= http_responses.status_204_no_content("bi bi-clipboard-x-fill", "Sorry, you have not post job yet!")
+
+    return helper.templates.TemplateResponse("my_jobs.html",
+                                            {'request': request, 'result': result, 'jobs': jobs_list, 'user_in': cur_employee})
     
 
 
 # function to close a job
 @restrict_api.get('/close_job/{job_id}', include_in_schema=False)
-async def close_job(request: Request, job_id: uuid.UUID, cur_employee: Employee= Depends(get_current_user), 
-                db: Session= Depends(get_db)):
+async def close_job(request: Request, page: int= 1, list: int=6, job_id: uuid.UUID | int=0, 
+                    cur_employee: Employee= Depends(get_current_user), db: Session= Depends(get_db)):
     if not cur_employee:
         return await helper.login_expired()
     
     jobs= await jobs_dao.list_all_jobs(db)
     result= await jobs_dao.close_job(job_id, db)
 
-    return await load_jobs(jobs, 1, helper.total_items, None, request, result, cur_employee, db)
+    return await load_jobs(jobs, result, None, page, list, request, cur_employee, db)
 
 
 
 # function to apply a developer into a jop
 @restrict_api.post('/job_apply/{job_id}', include_in_schema= False)
-async def job_apply(request: Request, job_id: uuid.UUID, cur_dev: Developer= Depends(get_current_user),
+async def job_apply(request: Request, page: int= 1, list: int=6, job_id: uuid.UUID| int=0, cur_dev: Developer= Depends(get_current_user),
                 db: Session= Depends(get_db)):
     if not cur_dev:
         return await helper.login_expired()
@@ -181,7 +186,7 @@ async def job_apply(request: Request, job_id: uuid.UUID, cur_dev: Developer= Dep
     jobs= await jobs_dao.list_all_jobs(db)
     result= await jobs_dao.apply_dev_job(job_id, cur_dev, db)
 
-    return await load_jobs(jobs, 1, helper.total_items, None, request, result, cur_dev, db)
+    return await load_jobs(jobs, result, None, page, list, request, cur_dev, db)
 
 
 
@@ -225,7 +230,6 @@ async def download_dev_resume(dev_id: uuid.UUID, cur_emp: Employee= Depends(get_
 
 # function to format developer resume PDF
 def dev_resume_pdf(dev, dev_resume):
-
     # extracting each model from resume list
     edu, cert, front, back, databases, clouds, works, projects= None, None, None, None, None, None, None, None
     

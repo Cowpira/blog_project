@@ -12,29 +12,23 @@
     {% endif %}
     
     <main class="container-fluid start-content">
-        {% if not my_messages %}
-            {% set items_per_page = 4 %}
-        {% else %}
-            {% set items_per_page = my_messages.get('items_per_page') %}
-        {% endif %}
-
         <div class="row text-center py-3 header-bg" >
             <div class="col d-flex justify-content-evenly">
-                <a href="{{ url_for("my_messages", page=1, list=items_per_page, msg_by="all") }}" 
+                <a href="{{ url_for("my_messages", msg_by="all") }}" 
                     class="btn btn-sm msg-btn {{ 'msg-active' if msg_by == 'all' }}">All</a>
 
-                <a href="{{ url_for("my_messages", page=1, list=items_per_page, msg_by="dev") }}" 
+                <a href="{{ url_for("my_messages", msg_by="dev") }}" 
                     class="btn btn-sm msg-btn {{ 'msg-active' if msg_by == 'dev' }}">Developers</a>
 
                 {% if not user_in.Type == 'employeer' %}
-                    <a href="{{ url_for("my_messages", page=1, list=items_per_page, msg_by="employee") }}" 
+                    <a href="{{ url_for("my_messages", msg_by="employee") }}" 
                         class="btn btn-sm msg-btn {{ 'msg-active' if msg_by == 'employee' }}">Employeers</a>
                 {% endif %}
 
-                <a href="{{ url_for("my_messages", page=1, list=items_per_page, msg_by="unread") }}"
+                <a href="{{ url_for("my_messages", msg_by="unread") }}"
                     class="btn btn-sm msg-btn {{ 'msg-active' if msg_by == 'unread' }}">Unread</a>
                 
-                <a href="{{ url_for("my_messages", page=1, list=items_per_page, msg_by="chats") }}" 
+                <a href="{{ url_for("my_messages", msg_by="chats") }}" 
                     class="btn btn-sm msg-btn {{ 'msg-active' if msg_by == 'chats' }} position-relative">
                     Chats
 
@@ -77,20 +71,20 @@
                             </td>
                         </tr>
                     {% else %}
-                        {% for msg in my_messages.get("messages", []) %}
-                            {% set last_reply = (msg.replies | sort(attribute='Send_Date') | last) if msg.replies else none %}
-                            {% set last_msg = last_reply if last_reply else msg %}
-                            {% set unread_msg = (msg.Viewed == 0 and msg.To == user_in.Id) %}
-                            {% set unread_reply = (last_reply is not none and last_reply.To == user_in.Id and last_reply.Viewed == 0) %}
-
+                        {% for msg in my_messages.get("data_set", []) %}
+                            {% set last_reply= msg.replies[-1] if msg.replies else none %}
+                            {% set last_msg= last_reply if last_reply else msg %}
+                            {% set unread_msg= (msg.Viewed == 0 and msg.To == user_in.Id) %}
+                            {% set unread_reply= (last_reply is not none and last_reply.To == user_in.Id and last_reply.Viewed == 0) %}
+                            {% set partner = msg.get_chat_partner(user_in.Id) %}
                             
                             <tr class="fw-bold {% if unread_msg %}msg-unread{% elif unread_reply %}msg-replied{% endif %}">
                                 <!-- setting value for message sender an user or system message -->
                                 <td class="text-center smaller-texts fw-lighter text-nowrap">
-                                    {% if msg.replies and msg.replies[0].msg_sender.First_Name != user_in.First_Name %}
-                                        {{ msg.replies[0].msg_sender.First_Name }}
-                                    {% elif msg.System_Message %}
+                                    {% if msg.System_Message %}
                                         <span class="badge bg-secondary">FP Support</span>
+                                    {% elif partner %}
+                                        {{ partner.First_Name }}
                                     {% else %}
                                         {{ msg.msg_sender.First_Name }}
                                     {% endif %}
@@ -140,8 +134,8 @@
                                         </a>
                                     {% endif %}
 
-                                    <a href="{{ url_for('delete_message', msg_id=msg.Id, msg_by=msg_by|urlencode if msg_by else 'all') }}" 
-                                        class="mx-1 fp-buttons fp-btn-posts fp-btn-post-close px-2 py-1 d-inline-block" title="Delete Permanent">
+                                    <a href="#" data-bs-toggle="modal" data-bs-target="#mdl_del_msg-{{ msg.Id}}" class="mx-1 fp-buttons fp-btn-posts fp-btn-post-close px-2 py-1 d-inline-block" 
+                                        title="Delete Permanent">
                                         <i class="bi bi-trash"></i>
                                     </a>
                                 </td>
@@ -227,17 +221,17 @@
 
                 <span class="d-flex justify-content-center fs-6 fw-lighter">
                     Page <b class="px-2"> {{ my_messages.get('cur_page', 1) }} </b> of <b class="px-2"> {{ my_messages.get('total', [])|length }}</b>
-                        - &nbsp; <b>{{ my_messages.get('items_found', 0) }}</b> &nbsp; messages total
+                        - &nbsp; <b>{{ my_messages.get('items_found', 0) }} messages total </b>
                 </span>
             </nav>
         {% endif %}
 
-
         <!-- ================================== MESSAGES MODALS ========================================= -->
         {% if result.status_code != 204 %}
-            {% for msg in my_messages.get("messages", []) %}
+            {% for msg in my_messages.get("data_set", []) %}
                 {% include "modal_system_messages.html" ignore missing with context %}
                 {% include "modal_reply_messages.html" ignore missing with context %}
+                {% include "modal_delete_message.html" ignore missing with context %}
             {% endfor %}
         {% endif %}
     </main>
@@ -261,8 +255,8 @@
 
             if (!isModalOpen){
                 sessionStorage.setItem('autoReloaded', 'true');
-                window.location.href="{{ url_for('my_messages', page=1, list=4, msg_by='all') }}";
+                window.location.href="{{ url_for('my_messages', msg_by='all')|safe }}";
             }
-        }, 50000);
+        }, 5000);
   </script>
 {% endblock %}

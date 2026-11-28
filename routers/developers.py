@@ -1,5 +1,4 @@
-import os
-import uuid
+import os, uuid
 from fastapi import APIRouter, Depends, Request, status, UploadFile, BackgroundTasks
 from services import helper, http_responses, image_utils
 from services.db_connection import get_db
@@ -25,31 +24,36 @@ async def load_my_dev_account(request, result, cur_user, db):
     if not cur_user:
         return await helper.login_expired()
     
-    return helper.templates.TemplateResponse("my_dev_account.html", 
-                                            {'request': request, 'user_in': cur_user, 'result': result,
-                                            'resume': await portfolio_dao.resume_by_dev_id(cur_user.Id, db)})
+    return helper.templates.TemplateResponse(
+        "my_dev_account.html", {
+            'request': request, 'user_in': cur_user, 'result': result,
+            'resume': await portfolio_dao.resume_by_dev_id(cur_user.Id, db)
+        }
+    )
 
 
 # function to paginate developers and return HTML page
-async def developers_page_destination(request, search_dev, page, items_per_page, cur_user, result, db):
+async def developers_page_destination(request, search_dev, page, list, cur_user, result, db):
     null_search = False
 
     # getting all developer and their resume
     if search_dev:
-        user_list= await developers_dao.search_user(search_dev, db)
-        
-        if not user_list:
+        dev_list= await developers_dao.search_user(page, list, search_dev, db)
+
+        if not dev_list:
             null_search= True
-            user_list= await developers_dao.list_users(db)
+            dev_list= await developers_dao.list_users(page, list, db)
     else:
-        user_list= await developers_dao.list_users(db)
+        dev_list= await developers_dao.list_users(page, list, db)
 
 
-    paginated_users= helper.pagination_settings(user_list, page, 'user', items_per_page)
-    return helper.templates.TemplateResponse("users.html", 
-                                              {'request': request, 'user_in': cur_user, 'search': search_dev, 'null_search': null_search,
-                                               'result': result, 'users': paginated_users, 'limit_items': helper.limit_items,
-                                               'website_url': os.environ.get("website_url")})
+    return helper.templates.TemplateResponse(
+        "developers.html", {
+            'request': request, 'user_in': cur_user, 'search': search_dev, 'null_search': null_search,
+            'result': result, 'developers': dev_list, 'limit_items': sorted(helper.ALLOWED_LIMITS),
+            'website_url': os.environ.get("website_url")
+        }
+    )
 
 
 ##############################################################################################################################
@@ -57,23 +61,19 @@ async def developers_page_destination(request, search_dev, page, items_per_page,
 
 # function to list all developers
 @public_api.get('', response_model=list[Dev_Response], include_in_schema= False)
-async def users(request: Request, list: int=0, page: int= 1, db: Session= Depends(get_db), 
+async def developers(request: Request, page: int=1, list: int=6, db: Session= Depends(get_db), 
                 cur_user: Developer= Depends(get_current_user)):
-        
-    if list and list >= 1:
-        helper.total_items= list
-            
-    return await developers_page_destination(request, None, page, helper.total_items, cur_user, None, db)
+
+    return await developers_page_destination(request, None, page, list, cur_user, None, db)
     
 
 
 # function to list developers found
 @search_dev.get('', response_model=list[Dev_Response], include_in_schema= False)
-async def search_developer(request: Request, search_dev: str, page: int= 1, db: Session= Depends(get_db), 
+async def search_developer(request: Request, page: int= 1, list: int= 6, db: Session= Depends(get_db), 
                         cur_user: Developer= Depends(get_current_user)):
     # getting search parameter
-    search_dev= request.query_params.get('search_dev')
-    return await developers_page_destination(request, search_dev, page, helper.total_items, cur_user, None, db)
+    return await developers_page_destination(request, request.query_params.get('search_dev'), page, list, cur_user, None, db)
      
 
 
@@ -152,7 +152,6 @@ async def dev_resume_modal(request: Request, dev_id: uuid.UUID, cur_emp: Employe
         work= dev_resume.get("works") if isinstance(dev_resume, dict) else getattr(dev_resume, "works", None)
         proj= dev_resume.get("projects") if isinstance(dev_resume, dict) else getattr(dev_resume, "projects", None)
 
-        print()
         return helper.templates.TemplateResponse("modal_portfolio.html", {"request": request, 'user_in': cur_emp, "dev": dev_found, "edu": edu, 
                                                                         "cert": cert, "front": front, "back": back, 
                                                                         "databases": database, "clouds": cloud, "works": work, "proj": proj})
@@ -216,11 +215,13 @@ async def update_developer_password(request: Request, bg_tast: BackgroundTasks, 
 
 # function to list all jobs a developer applied
 @restrict_api.get('/jobs applied', include_in_schema= False)
-async def my_applications(request: Request, page: int= 1, db: Session= Depends(get_db),
+async def my_applications(request: Request, page: int= 1, list: int= 6, db: Session= Depends(get_db),
                           cur_dev: Developer= Depends(get_current_user)):
     if cur_dev:
-        result= await jobs_dao.list_all_jobs_dev_application(cur_dev, db)
-        return helper.templates.TemplateResponse("jobs_applied.html", {'request': request, 'result': result, 'user_in': cur_dev})
+        result= await jobs_dao.list_all_jobs_dev_application(cur_dev, page, list, db)
+        return helper.templates.TemplateResponse("jobs_applied.html", {
+            'request': request, 'result': result, 'user_in': cur_dev
+        })
     else:
         return await helper.login_expired()
   

@@ -279,6 +279,15 @@ $("#validate_resume").delay(6000).fadeIn(500).delay(3000).slideUp(800);
 $("#form_update_pass").delay(6000).fadeIn(500).delay(3000).slideUp(800);
 
 
+$(document).ready(function () {
+  const $alert = $("#search_alert");
+
+  // Only animate if the alert exists and actually contains a message
+  if ($alert.length && $alert.text().trim() !== "") {
+    $alert.hide().fadeIn(300).delay(6000).slideUp(800);
+  }
+});
+
 // Example starter JavaScript for disabling form submissions if there are invalid fields
 (function () {
   'use strict'

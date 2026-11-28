@@ -15,8 +15,8 @@
         {% if result and result.status_code == 204 %}
             <div class="row text-center" style="color: coral; padding-top:11rem;">
                 <div class="animate__animated animate__fadeInDown animate__delay-1s">
-                    <i class="{{result.detail[0]}} animate__animated animate__flash animate__slower animate__delay-3s animate__infinite" 
-                    style="font-size: 5rem;"></i>
+                    <i class="{{result.detail[0]}} animate__animated animate__flash animate__slower 
+                    animate__delay-3s animate__infinite" style="font-size: 5rem;"></i>
                 </div>
                 
                 <div class="py-2 fs-1 animate__animated animate__fadeInUp animated__slower animate__delay-3s">
@@ -24,11 +24,12 @@
                 </div>
             </div>
         {% elif search != 'None' %}
-            <form class="row py-3 justify-content-around needs-validation" style="background-color: rgba(36, 36, 36, 0.895);" 
-                novalidate action="{{ url_for('search_developer') }}" method="GET">
-        
+            <div class="row py-2 justify-content-around" style="background-color: rgba(36, 36, 36, 0.895);">
                 <!-- dropdown to select developers per page -->
-                <div class="col-3 mt-2">
+                <div class="col-3 mt-2" data-pagination-limit data-storage-key="total_items" 
+                    data-radio-name="devs" data-current-limit="{{ developers.get('items_per_page', 4) }}" 
+                    data-url-template="{{ website_url }}/developers?page=1&list={limit}">
+
                     <a href="#" class="fp-buttons fp-orange-btn dropdown-toggle" type="button" id="dropdownMenuCheck" 
                         data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">View
                     </a>
@@ -37,7 +38,7 @@
                         {% for limit in limit_items %}
                             <div class="form-check d-flex justify-content-center">
                                 <input class="form-check-input" type="radio" name="users" value="{{ limit }}" 
-                                id="limit_dev_{{ limit }}" {% if limit == users.get('items_per_page') %}checked{% endif %}>
+                                id="limit_dev_{{ limit }}" {% if limit == developers.get('items_per_page') %}checked{% endif %}>
 
                                 <p class="small-texts fw-light text-light ms-2" for="limit_dev_{{ limit }}">
                                     {{ limit }} developers
@@ -50,8 +51,7 @@
                 <!-- link for new users to sign up -->
                 {% if not user_in %}
                     <div class="d-none d-sm-block col-sm-3 text-center">
-                        <a href="#" data-bs-toggle="modal" data-bs-target="#modalNewUser" 
-                            class="ms-1 fp-links animate__animated animate__fadeInDown animate__slow">
+                        <a href="#" data-bs-toggle="modal" data-bs-target="#modalNewUser" class="ms-1 fp-links">
                             <i class="bi bi-person-fill-add"></i> <br> New here?
                         </a>
                     </div>
@@ -59,39 +59,44 @@
                
                 <!-- seach field -->
                 <div class="col-8 col-sm-5 col-md-4 mt-1">
-                    <div class="input-group input-group-sm">
-                        <input type="text" class="form-control search-input search_obj" name="search_dev" maxlength="50"
-                            value="{{ request.query_params.get('search_dev', '') if request else '' }}" id="search_dev_input"
-                            placeholder="Search by name, email, language..." required>
+                    <form class="row justify-content-around needs-validation" novalidate 
+                        action="{{ url_for('search_developer') }}" method="GET">
+                        <div class="input-group input-group-sm">
+                            <input type="text" class="form-control search-input search_obj" name="search_dev" maxlength="50"
+                                value="{{ request.query_params.get('search_dev', '') if request else '' }}" id="search_dev_input"
+                                placeholder="Search by name, email, language..." required>
 
-                        <button class="col-3 fp-buttons fp-orange-btn p-0 text-center" type="submit">
-                            <i class="bi bi-search fw-bolder" style="font-size: 1.1rem;"></i>
-                        </button>
-                    </div>
+                            <button class="col-3 fp-buttons fp-orange-btn p-0 text-center" type="submit">
+                                <i class="bi bi-search fw-bolder" style="font-size: 1.1rem;"></i>
+                            </button>
+                        </div>
+                    </form>
 
                     {% if null_search %}
-                        <div class="col-12 smaller-texts text-warning text-center mt-1 animate__animated animate__slideInDown animate__slow">
-                            Sorry. No developer {{ search }} found!
+                        <div id="search_alert" class="col-12 fw-bold text-warning text-center mt-1 animate__animated 
+                        animate__slideInDown animate__slow" style="font-size: 11px;">
+                            {{ search }} not found!
                         </div>
                     {% endif %}
                 </div>
-            </form>
+            </div>
+
         {% else %}
             <div class="row py-3 mb-4 align-items-center">
                 <div class="col-12 d-flex flex-wrap justify-content-around align-items-center action_bar_menu">
                     <p class="smaller-texts fw-light text-dark m-0 mt-1 px-3 py-2 badge rounded-pill bg-light border">
-                        {{ users.get('items_found', 0) }} Developers found
+                        {{ developers.get('items_found', 0) }} Developers found
                     </p>
 
-                    <a href="{{ url_for("users") }}?page=1&list={{ users.get('items_per_page') }}" 
-                    class="fp-links d-flex align-items-center py-2">
+                    <a href="{{ url_for("developers") }}?page=1&list={{ developers.get('items_per_page') }}" 
+                        class="fp-links d-flex align-items-center py-2">
                         <i class="bi bi-arrow-counterclockwise" style="font-size: 15px;"></i> Return
                     </a>
 
                     {% if not user_in %}
                         <a href="#" data-bs-toggle="modal" data-bs-target="#modalNewUser" 
                             class="fp-links d-flex align-items-center py-2">
-                            <i class="bi bi-person-add" style="font-size: 15px;"></i> <br> New here? njnj
+                            <i class="bi bi-person-add" style="font-size: 15px;"></i> <br> New here?
                         </a>
                     {% endif %}
                 </div>
@@ -100,69 +105,49 @@
 
 
         <!-- check if items per page is withim the limit -->
-        {% if users.get('items_per_page', 0) > limit_items[-1] + 1 %}
-            <div class="col-12 text-center text-warning py-3">
-                <div class="animate__animated animate__bounce animate__slow animate__repeat-2 mt-5">
-                    <i class="bi bi-grid-3x3-gap-fill" style="font-size: 8rem;"></i>
-                </div>
-                
-                <span class="page_title"> {{ users.get('items_per_page') }} items per page <br> Not permitted! </span>
-            </div>
-
-        <!-- check if the page in URL is valid  -->
-        {% elif users.get('cur_page', 0) != 1 and users.get('cur_page', 0) not in users.get('total', []) %}
-            <div class="col-12 text-center text-danger py-3">
-                <div class="animate__animated animate__bounce animate__slow animate__repeat-2 mt-5">
-                    <i class="bi bi-file-earmark-excel-fill " style="font-size: 8rem;"></i>
-                </div>
-                
-                <span class="page_title"> Page {{ users.get('cur_page') }} not found! </span>
-            </div>
-        {% else %}
-            <div class="developers-cards-row mt-4">
-                <!-- check ig the developer list is not empty -->
-                {% if users.get('user', [])|length == 0 %}
-                    <div class="row text-center py-5">
-                        <div class="animate__animated animate__fadeInUp animate__slow mt-5">
-                            <i class="bi bi-people-fill" style="font-size: 8rem;"></i>
-                        </div>
-
-                        <span class="page_title animate__animated animate__fadeIn animate__delay-2s"> 
-                            No developers available! 
-                        </span>
+        <div class="developers-cards-row mt-4">
+            <!-- check if the developer list is not empty -->
+            {% if developers.get('data_set', []) | length == 0 %}
+                <div class="row text-center py-5">
+                    <div class="animate__animated animate__fadeInUp animate__slow mt-5">
+                        <i class="bi bi-people-fill" style="font-size: 8rem;"></i>
                     </div>
-                {% endif %}
-            </div>
 
-            <div class="row d-flex justify-content-evenly mb-5">
-                {% if not user_in %}
-                    <div class="col-12 d-sm-none text-center">
-                        <a href="#" data-bs-toggle="modal" data-bs-target="#modalNewUser" 
-                            class="fs-5 text-marine text-decoration-none animate__animated animate__fadeInDown animate__slow">
-                            <i class="bi bi-person-fill-add" style="font-size: 1.5rem;"></i> New here?
-                        </a>
-                    </div>
-                {% endif %}
+                    <span class="page_title animate__animated animate__fadeIn animate__delay-2s"> 
+                        No developers available! 
+                    </span>
+                </div>
+            {% endif %}
+        </div>
 
-                {% for user in users.get('user', []) %}
-                    {% include "user_layout.html" with context %}
-                {% endfor %}
+        <div class="row d-flex justify-content-evenly mb-5">
+            {% if not user_in %}
+                <div class="col-12 d-sm-none text-center">
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#modalNewUser" 
+                        class="fs-5 text-marine text-decoration-none">
+                        <i class="bi bi-person-fill-add" style="font-size: 1.5rem;"></i> New here?
+                    </a>
+                </div>
+            {% endif %}
 
-                <!-- modal to send message for Developers -->
-                {% include "modal_send_message.html" %}
-                
-                <!-- div is to display the developer modal -->
-                <div id="dislay_modal_resume"></div>
-            </div>
-        {% endif %}
+            {% for dev in developers.get('data_set', []) %}
+                {% include "developers_layout.html" with context %}
+            {% endfor %}
+
+            <!-- modal to send message for Developers -->
+            {% include "modal_send_message.html" %}
+            
+            <!-- div is to display the developer modal -->
+            <div id="dislay_modal_resume"></div>
+        </div>
         
-        <!-- if page is not found -->
-        {% if users.get('total')|length > 1 %}
+        <!-- pagination block -->
+        {% if developers and developers.get('total')|length > 1 %}
             <nav class="mt-5 mb-1">
                 <ul class="pagination justify-content-center">
-                    {% if users.get('cur_page') >= 2 %}
+                    {% if developers.get('cur_page') >= 2 %}
                         <li class="page-item">
-                            <a class="page-link" href="{{ url_for("users") }}?page={{ users.get('cur_page', 1) - 1 }}&list={{ users.get('items_per_page', 10) }}">
+                            <a class="page-link" href="{{ url_for("developers") }}?page={{ developers.get('cur_page', 1) - 1 }}&list={{ developers.get('items_per_page', 10) }}">
                                 Previous
                             </a>
                         </li>
@@ -172,22 +157,22 @@
                         </li>
                     {% endif %}
                         
-                    {% for page in users.get('total', []) %}
-                        <li class="page-item {% if page == users.get('cur_page') %} page-active {% endif %}">
-                            <a class="page-link  {% if page == users.get('cur_page') %}page-active{% endif %}" 
-                                href="{{ url_for("users") }}?page={{ page }}&list={{ users.get('items_per_page', 10) }}">
+                    {% for page in developers.get('total', []) %}
+                        <li class="page-item {% if page == developers.get('cur_page') %} page-active {% endif %}">
+                            <a class="page-link  {% if page == developers.get('cur_page') %}page-active{% endif %}" 
+                                href="{{ url_for("developers") }}?page={{ page }}&list={{ developers.get('items_per_page', 10) }}">
                                 {{page}}
                             </a>
                         </li>
                     {% endfor %}
                     
-                    {% if users.get('cur_page') == users.get('total')|length %}
+                    {% if developers.get('cur_page') == developers.get('total') | length %}
                         <li class="page-item disabled">
                             <span class="page-link">Next</span>
                         </li>
                     {% else %}
                         <li class="page-item">
-                            <a class="page-link" href="{{ url_for("users") }}?page={{ users.get('cur_page', 1) + 1 }}&list={{ users.get('items_per_page', 10) }}">
+                            <a class="page-link" href="{{ url_for("developers") }}?page={{ developers.get('cur_page', 1) + 1 }}&list={{ developers.get('items_per_page', 10) }}">
                                 Next
                             </a>
                         </li>
@@ -195,8 +180,9 @@
                 </ul>
                     
                 <span class="d-flex justify-content-center fs-6 fw-lighter mb-3">
-                    Page: <b class="px-2"> {{ users.get('cur_page', 1) }} </b> out of <b class="px-2"> {{ users.get('total', [])|length }}.</b>
-                    &nbsp;&nbsp; Total of &nbsp;<b>{{ users.get('items_found', 0) }}</b> &nbsp; users found.
+                    Page: <b class="px-2"> {{ developers.get('cur_page', 1) }} </b> of 
+                    <b class="px-2"> {{ developers.get('total', [])|length }}</b>
+                    - &nbsp;<b>{{ developers.get('items_found', 0) }} developers total </b>
                 </span>
             </nav>
         {% endif %}
@@ -251,35 +237,4 @@
             </div>
         </div>
     </div>
-
-    <script>
-        // get the value user selected to load total items per page
-        document.addEventListener('DOMContentLoaded', function() {
-            const radio_selected = document.querySelectorAll('input[name="users"]');
-
-            radio_selected.forEach(function(radio) {
-                radio.addEventListener('change', function() {
-                    if (this.checked) {
-                        localStorage.clear;
-                        const total_posts = this.value;
-                        localStorage.setItem('total_users', total_posts);
-                        const url= "{{ website_url }}/users?page=1&list="+localStorage.getItem('total_users');
-                        window.location.href = url
-                        return localStorage;
-                    }
-                });
-            });
-        });
-
-        // keep the radio selected after reload the page
-        window.addEventListener('load', function() {
-            const storedValue = localStorage.getItem('total_users');
-            if (storedValue) {
-                const radioToSelect = document.querySelector(`input[type="radio"][name="users"][value="${storedValue}"]`);
-                if (radioToSelect) {
-                    radioToSelect.checked = true;
-                }
-            }
-        });
-    </script>
 {% endblock %}

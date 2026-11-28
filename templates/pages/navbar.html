@@ -18,7 +18,7 @@
             <!-- setting total items per page -->
             {% set total_items = 4 %}
             <div class="collapse navbar-collapse justify-content-end" id="navbarNavDropdown">
-                <ul class="navbar-nav text-center"> 
+                <ul class="navbar-nav text-center mt-2"> 
                     {% if user_in and user_in.Type == 'developer' %}
                         <li class="nav-item dropdown">
                             <a href="#" id="post-pages" role="button" data-bs-toggle="dropdown" aria-expanded="false" 
@@ -58,7 +58,7 @@
 
                     {% if user_in %}
                         <li class="nav-item">
-                            <a href="{{url_for("users")}}" class="nav-link nav-menu fs-5 fw-light 
+                            <a href="{{url_for("developers")}}" class="nav-link nav-menu fs-5 fw-light 
                                 {{'active' if active_page == 'developers'}}"> Developers
                             </a>
                         </li>
@@ -85,7 +85,7 @@
 
                                 <li class="text-center text-light fw-normal animate__animated animate__zoomIn"><b>List</b></li>
 
-                                <a href="{{url_for("users")}}?page=1&list={{total_items}}" 
+                                <a href="{{url_for("developers")}}?page=1&list={{total_items}}" 
                                     class="dropdown-item small-texts {{'active' if active_page == 'developers'}}">
                                     <i class="bi bi-person-video3 ms-2"></i> &nbsp; Developers
                                 </a>
@@ -93,7 +93,6 @@
                         </li>
                     {% endif %}
                     
-
                     <li class="nav-item">
                         <a href="{{url_for("contact_page")}}" class="nav-link nav-menu fs-5 fw-light 
                             {{'active' if active_page == 'contact'}}">Contact
@@ -105,12 +104,11 @@
                             {{'active' if active_page == 'help'}}">Help
                         </a>
                     </li>
-
-                   
+          
                     {% if not user_in %}
                         <li class="nav-item">
                             <a href="#" class="open_login nav-link nav-menu" data-bs-toggle="modal" data-bs-target="#loginModal">
-                                <i class="bi bi-lock" style="font-size: 1.7rem;"></i>
+                                <i class="bi bi-lock" style="font-size: 1.5rem;"></i>
                             </a>
                         </li>
                     {% else %}
@@ -160,7 +158,7 @@
                                 {% endif %}
 
                                 <li>
-                                    <a href="{{url_for("my_messages", page=1, list=total_items, msg_by="all")}}" class="dropdown-item small-texts 
+                                    <a href="{{url_for("my_messages", msg_by="all")}}" class="dropdown-item small-texts 
                                         {{'active' if active_page == 'messages'}}">
                                         <i class="bi bi-chat-right-dots ms-2"></i>&nbsp; Messages
 
@@ -183,7 +181,8 @@
                                 <li class="text-center text-light fw-normal animate__animated animate__zoomIn"><b>Actions</b></li>
                                 <li>
                                     {% if user_in.Active %}
-                                        <a href="#" class="dropdown-item small-texts" data-bs-toggle="modal" data-bs-target="#deactivateAccount">
+                                        <a href="#" class="dropdown-item small-texts" data-bs-toggle="modal" 
+                                            data-bs-target="#deactivateAccount">
                                             <i class="bi bi-person-slash ms-2"></i>&nbsp; Deactivate
                                         </a>
                                     {% endif %}
@@ -221,12 +220,17 @@
                     </a>
                 </div>
 
-                <form class="needs-validation" novalidate method="POST" action="{{url_for("deactivate_account")}}">
+                <form class="needs-validation" novalidate method="POST" action="{{url_for("deactivate_account")}}"
+                    style="border: 5px solid rgb(32, 63, 122);">
                     <div class="modal-body text-center">
                         <span class="mb-3 text-dark fw-light">Are you sure you want to continue?</span>
 
+                        <div class="text-marine animate__animated animate__pulse animate__repeat-3 animate__delay-2s">
+                            <i class="bi bi-emoji-tear-fill" style="font-size: 3.7rem;"></i>
+                        </div>
+
                         <div class="col-10 offset-1 p-2">
-                            <b><p class="fs-4 text-danger">
+                            <b><p class="fs-4 text-marine">
                                 To re-activate your account <br>
                                 You'll need to contact our support
                             </p></b>
@@ -260,9 +264,13 @@
                     </a>
                 </div>
 
-                <form class="needs-validation" novalidate method="POST">
+                <form class="needs-validation" novalidate method="POST" style="border: 5px solid rgb(187, 69, 69);">
                     <div class="modal-body">
                         <div class="col-10 offset-1 p-2 text-center">
+                            <div class="text-orange animate__animated animate__flash animate__repeat-3 animate__delay-2s">
+                                <i class="bi bi-exclamation-triangle-fill" style="font-size: 5.4rem;"></i>
+                            </div>
+
                             <b><p class="fs-4 text-danger">
                                 You want to delete your account?<br>
                                 This action cannot be undone

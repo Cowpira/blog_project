@@ -1,12 +1,11 @@
 # for older python versions to accept forwarding class references
 from __future__ import annotations 
 from datetime import datetime, timezone
-from decimal import Decimal
 from enum import IntEnum
-from sqlalchemy import JSON, DateTime, ForeignKey, Integer, Numeric, String, Boolean, Text, Uuid
+from sqlalchemy import JSON, DateTime, ForeignKey, Integer, String, Boolean, Text, Uuid
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 from services.db_connection import Base, engine
-from typing import List
+from typing import List, Optional
 import uuid
 
 
@@ -262,12 +261,12 @@ class Post(Base):
     Title: Mapped[str]= mapped_column(String(70))
     Tag: Mapped[List[str]]= mapped_column(JSON, default="")
     Question: Mapped[str]= mapped_column(Text)
-    Posted: Mapped[datetime | None]= mapped_column(DateTime(timezone=True), nullable= True)
+    Created: Mapped[datetime | None]= mapped_column(DateTime(timezone=True), nullable= True)
     Opened: Mapped[bool]= mapped_column(Boolean, default= True)
     Last_Update: Mapped[datetime | None]= mapped_column(DateTime(timezone=True), nullable= True)
     Closed_Date: Mapped[datetime | None]= mapped_column(DateTime(timezone=True), nullable=True)
     Total_Answer: Mapped[int]= mapped_column(Integer, default=0)
-
+    
     # defining User & Post relationship
     dev_id: Mapped[uuid.UUID]= mapped_column(ForeignKey("developer.Id"), nullable= False, index=True)
     author: Mapped["Developer"]= relationship(back_populates= "posts") 
@@ -275,6 +274,7 @@ class Post(Base):
     # defining User & Answer relationship
     answer_post: Mapped[List["Answer"]]= relationship("Answer", back_populates= "comment", cascade= "all, delete-orphan")
     
+
 
 # ANSWERS TABLE
 class Answer(Base):
@@ -372,7 +372,7 @@ class Message(Base):
 
     Id: Mapped[uuid.UUID]= mapped_column(Uuid(as_uuid=True), primary_key= True, index=True, nullable=False, default=uuid.uuid4)
     Message_Content: Mapped[str]= mapped_column(Text, nullable= False)
-    Send_Date: Mapped[datetime]= mapped_column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
+    Created: Mapped[datetime]= mapped_column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
     System_Message: Mapped[bool]= mapped_column(Boolean, default= False)
     Viewed: Mapped[int]= mapped_column(Integer, default=ViewedStatus.UNREAD, nullable=False)
     To: Mapped[uuid.UUID]= mapped_column(Uuid(as_uuid=True), nullable= False)
@@ -380,13 +380,47 @@ class Message(Base):
     # defining Answer & User relationship
     Person_Id: Mapped[uuid.UUID | None]= mapped_column(ForeignKey("person.Id"), index=True)
     msg_sender: Mapped["Person"]= relationship(back_populates= "messages")
+    msg_receiver: Mapped[Optional[Person]]= relationship("Person", primaryjoin="foreign(Message.To) == Person.Id", viewonly=True)
 
     Parent_Id: Mapped[uuid.UUID]= mapped_column(ForeignKey("messages.Id"), nullable=True)
     
-    replies: Mapped[List["Message"]]= relationship("Message", back_populates="parent_msg", cascade="all, delete-orphan")
+    replies: Mapped[List["Message"]]= relationship("Message", back_populates="parent_msg", order_by="Message.Created", cascade="all, delete-orphan")
     parent_msg: Mapped[List["Message"]]= relationship("Message", back_populates="replies", remote_side=[Id])
 
+    @property
+    # check if a message is a thread
+    def is_thread(self) -> bool:
+        return bool(self.replies)
 
+    # get chat partner name (whos receive a message)
+    def get_chat_partner(self, user_in_id: uuid.UUID) -> Optional["Person"]:
+        if not self.To or self.Person_Id == self.To:
+            return None
+        return (
+            self.msg_receiver if self.Person_Id == user_in_id else self.msg_sender
+        )
+
+    def get_msg_status(self, user_in_id: uuid.UUID) -> int:
+        # check if user_in has unread replies
+        has_unread_reply= any(
+            reply.To == user_in_id and reply.Viewed == ViewedStatus.UNREAD
+            for reply in self.replies
+        )
+
+        if has_unread_reply or (
+            self.To == user_in_id and self.Viewed == ViewedStatus.REPLIED
+        ):
+            return ViewedStatus.REPLIED
+
+        # check if a single message is for the user_in and its unread
+        if self.To == user_in_id and self.Viewed == ViewedStatus.UNREAD:
+            return ViewedStatus.UNREAD
+
+        # return viewed if a message or reply was viewed
+        return ViewedStatus.VIEWED
+
+
+    
 
 # JOBS TABLE
 class Jobs(Base):
@@ -406,7 +440,7 @@ class Jobs(Base):
     Benefits: Mapped[str]= mapped_column(String(1000), nullable=True)
     Status: Mapped[str]= mapped_column(String(100), nullable=True) 
     Closed: Mapped[bool]= mapped_column(Boolean, default=False)
-    Posted_Date: Mapped[datetime]= mapped_column(DateTime(timezone= True), nullable= False, default=lambda: datetime.now(timezone.utc))
+    Created: Mapped[datetime]= mapped_column(DateTime(timezone= True), nullable= False, default=lambda: datetime.now(timezone.utc))
     
     # defining Response & User relationship
     employeer_id: Mapped[uuid.UUID]= mapped_column(Uuid(as_uuid=True), ForeignKey("employeer.Id"), nullable= False, index=True)
@@ -425,7 +459,7 @@ class Job_Application(Base):
     __tablename__= "jobs_application"
 
     Id: Mapped[uuid.UUID]= mapped_column(Uuid(as_uuid=True), primary_key= True, index=True, nullable=False, default=uuid.uuid4)
-    Applied_Date: Mapped[datetime]= mapped_column(DateTime(timezone= True), nullable= False, default=lambda: datetime.now(timezone.utc))
+    Created: Mapped[datetime]= mapped_column(DateTime(timezone= True), nullable= False, default=lambda: datetime.now(timezone.utc))
 
     job_id: Mapped[uuid.UUID]= mapped_column(Uuid(as_uuid=True), ForeignKey("jobs.Id", ondelete="CASCADE"), nullable= False, index=True)
     application_job: Mapped["Jobs"]= relationship(back_populates="job_application")

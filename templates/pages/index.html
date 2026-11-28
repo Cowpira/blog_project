@@ -75,38 +75,38 @@
 
     <main class="container-fluid">
         <div class="row py-5 dl-flex justify-content-center" style="background-color: black;">
-            <a href="{{url_for("search_posts")}}?tag=Python&page=1&list={{total_items}}" 
+            <a href="{{url_for("post_search")}}?tag=Python" 
                 class="col-4 col-md-3 col-lg-2 text-center text-decoration-none banner-languages">
                 <i class="bi bi-filetype-py"></i><br>
                 <span class="fs-5 fw-light">Python</span>
             </a>
 
-            <a href="{{url_for("search_posts")}}?tag=html&page=1&list={{total_items}}" 
+            <a href="{{url_for("post_search")}}?tag=HTML" 
                 class="col-4 col-md-3 col-lg-2 text-center text-decoration-none banner-languages">
                 <i class="bi bi-braces"></i><br>
                 <span class="fs-5 fw-light">Front-End</span>
             </a>
 
-             <a href="{{url_for("search_posts")}}?tag=css&page=1&list={{total_items}}" 
+             <a href="{{url_for("post_search")}}?tag=CSS" 
                 class="col-4 col-md-3 col-lg-2 text-center text-decoration-none banner-languages">
                 <i class="bi bi-journal-code"></i><br>
                 <span class="fs-5 fw-light">CSS</span>
             </a>
             <span class="col-12 py-3 d-md-none"></span>
 
-            <a href="{{url_for("search_posts")}}?tag=backend&page=1&list={{total_items}}" 
+            <a href="{{url_for("post_search")}}?tag=backend" 
                 class="col-4 col-md-3 col-lg-2 text-center text-decoration-none banner-languages">
                 <i class="bi bi-terminal-dash"></i><br>
                 <span class="fs-5 fw-light">Back-End</span>
             </a>
 
-            <a href="{{url_for("search_posts")}}?tag=java&page=1&list={{total_items}}" 
+            <a href="{{url_for("post_search")}}?tag=java" 
                 class="col-4 col-md-3 col-lg-2 text-center text-decoration-none banner-languages">
                 <i class="bi bi-filetype-java"></i><br>
                 <span class="fs-5 fw-light">Java</span>
             </a>
 
-            <a href="{{url_for("search_posts")}}?tag=c&page=1&list={{total_items}}"
+            <a href="{{url_for("post_search")}}?tag=C_sharp"
                 class="col-4 col-md-3 col-lg-2 text-center text-decoration-none banner-languages">
                 <i class="bi bi-braces-asterisk"></i><br>
                 <span class="fs-5 fw-light">C#</span>
@@ -247,15 +247,16 @@
                 <span class="fs-5 fw-lighter text-muted">this week</span>
             </div>
 
-            {% if users.status_code == 204 %}
+            {% if developers.status_code == 204 %}
                 <div class="fs-4 fw-lighter text-danger">
-                    <i class="{{users.detail[0]}} fw-bolder fs-1 animate__animated animate__flash animate__slower animate__repeat-3"></i> 
-                    <br> {{users.detail[1]}}
+                    <i class="{{developers.detail[0]}} fw-bolder fs-1 animate__animated 
+                    animate__flash animate__slower animate__repeat-3"></i> 
+                    <br> {{developers.detail[1]}}
                 </div>
             {% else %}
                 <div class="row developers-cards-row d-flex justify-content-evenly">
-                    {% for user in users %}
-                        {% include "user_layout.html" ignore missing with context %}
+                    {% for dev in developers %}
+                        {% include "developers_layout.html" ignore missing with context %}
                     {% endfor %}
                 </div>
 

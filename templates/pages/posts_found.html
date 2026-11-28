@@ -5,48 +5,74 @@
 {% endblock %}
 
 {% block content %}
-    <main class="container-fluid start-content">
-        <!-- include alert page to handle alert messages -->
-        {% if result.status_code %}
-            {% include "alerts.html" ignore missing with context %}
-        {% endif %}
+    {% set dev = posts.get('data_set')[0] %}
 
+    <main class="container-fluid start-content">
         <div class="row action_bar_menu smaller-texts text-light">
             <div class="d-flex justify-content-evenly">
+                <div class="mt-1" data-pagination-limit data-storage-key="total_posts"
+                    data-storage-key="total_items" data-radio-name="posts" 
+                    data-current-limit="{{ posts.get('items_per_page', 4) }}" 
+                    data-url-template="{{ website_url }}/search_post?tag={{ tag }}&author_id={{dev.author.Id}}&list={limit}">
+
+                    <a href="#" class="fp-buttons fp-orange-btn dropdown-toggle" type="button" id="dropdownMenuCheck" 
+                        data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">View
+                    </a>
+
+                    <ul class="dropdown-menu col-3" aria-labelledby="dropdownMenuCheck">
+                        {% for limit in allowed_limit %}
+                            <div class="form-check d-flex justify-content-center">
+                                <input class="form-check-input" type="radio" name="posts" value="{{ limit }}" 
+                                    id="limit_post_{{ limit }}" {% if limit == posts.get('items_per_page') %}checked{% endif %}>
+
+                                <p class="small-texts fw-light text-light ms-2" for="limit_post_{{ limit }}">
+                                    {{ limit }} posts
+                                </p>
+                            </div>
+                        {% endfor %}
+                    </ul>
+                </div>
+
                 <div>
-                    <b class="fw-dolder fs-5 text-orange">{{posts.get('items_found')}}</b>
-                    {% if tag != 'Null' %}
-                        <span class="fw-bold language-badges badge bg-{{ tag|replace("#", "")|lower }}">
-                            {{ tag | upper }}
+                    <b class="fw-dolder fs-5 text-orange">{{ posts.get('items_found') }}</b>
+                    {% if tag|lower in langs|map('lower') %}
+                         <span class="fw-bold language-badges badge bg-{{ tag|replace("#", "")|lower }}">
+                            {{ tag }}
                         </span>
                     {% endif %}
-                    &nbsp; post{% if posts.get('items_found')>1 %}s{% endif %} found
+                    &nbsp;post{% if posts.get('items_found')>1 %}s{% endif %} found
                 </div>
             
-            <a href="{{url_for("list_posts")}}?page=1&list={{total_items}}" class="mt-1 fp-links">
-                <i class="bi bi-arrow-counterclockwise" style="font-size: 1.1rem;"></i> Return
-            </a>
-            
-            {% if user_in %}
-                <a href="{{url_for("post_question", post_id=0)}}" class="mt-1 fp-links small-texts">
-                    <i class="bi bi-person-raised-hand" style="font-size: 1.1rem;"></i> Ask
+                <a href="{{ url_for("list_posts") }}?page=1&list={{ posts.get('items_per_page') }}" class="mt-1 fp-links">
+                    &#8592; Return
                 </a>
-            {% endif %}
+                
+                {% if user_in %}
+                    <a href="{{ url_for("post_question", post_id=0) }}" class="mt-1 fp-links small-texts">
+                        <i class="bi bi-person-raised-hand" style="font-size: 1.1rem;"></i> Ask
+                    </a>
+                {% endif %}
             </div>
         </div>
 
         <!-- including page that share content with posts -->
         <div class="row d-flex justify-content-center py-4 mt-5">
-            {% if tag == 'Null' %}
+            {% if posts.get('single_dev') %}
                 <span class="text-center fs-4 text-dark fw-bold">
                     Asked by <b class="text-orange text-decoration-underline"> 
-                        {{ posts.get('post')[0].author.First_Name }} </b>
+                    {{ dev.author.First_Name }} </b>
+
+                    <!-- this label is a place holder for post author ID -->
+                    <label id="dev_id_holder" class="d-none" hidden>{{ dev.author.Id }}</label>
                 </span>
             {% endif %}
 
-            {% include 'posts_layout.html' %}
+            {% for post in posts.get('data_set') %}
+                {% include 'posts_layout.html' %}
+            {% endfor %}
         </div>
 
+        <!-- paginating posts found -->
         {% if posts.get('items_found') > 0 and posts.get('cur_page') not in posts.get('total') %}
             <div class="row py-5" data-spy="scroll" data-bs-offset="0">
                 <div id="list_of_users" class="col-12 text-center text-danger py-5">
@@ -55,7 +81,7 @@
                     </div>
                     
                     <h1 class="page_title animate__animated animate__fadeInUp animate__delay-1s animate__slow">
-                        Page {{posts.get('cur_page')}} not found!
+                        Page {{ posts.get('cur_page') }} not found!
                     </h1>
                 </div>
             </div>
@@ -64,8 +90,9 @@
                 <ul class="pagination justify-content-center">
                     {% if posts.get('cur_page') >= 2 %}
                         <li class="page-item">
-                            <a class="page-link" href="{{url_for("search_posts")}}?tag={{tag}}&page={{posts.get('cur_page')-1}}&list={{total_items}}" 
-                            tabindex="-1" aria-disabled="true">Previous
+                            <a class="page-link" tabindex="-1" aria-disabled="true"
+                            href="{{ url_for("post_search") }}?tag={{ tag }}&author_id={{dev.author.Id}}&page={{ posts.get('cur_page', 1) -1 }}&list={{ posts.get('items_per_page') }}">
+                                Previous
                             </a>
                         </li>
                     {% else %}
@@ -77,7 +104,8 @@
                     {% for page in posts.get('total') %}
                         <li class="page-item">
                             <a class="page-link {% if page == posts.get('cur_page') %} page-active {% endif %}" 
-                            href="{{url_for("search_posts")}}?tag={{tag}}&page={{page}}&list={{total_items}}"> {{page}}
+                                href="{{ url_for("post_search") }}?tag={{ tag }}&author_id={{dev.author.Id}}&page={{ page }}&list={{ posts.get('items_per_page') }}"> 
+                                {{ page }}
                             </a>
                         </li>
                     {% endfor %}
@@ -88,14 +116,16 @@
                         </li>
                     {% else %}
                         <li class="page-item">
-                            <a class="page-link" href="{{url_for("search_posts")}}?tag={{tag}}&page={{posts.get('cur_page')+1}}&list={{total_items}}">Next</a>
+                            <a class="page-link" href="{{ url_for("post_search") }}?tag={{ tag }}&author_id={{dev.author.Id}}&page={{ posts.get('cur_page',1) + 1 }}&list={{ posts.get('items_per_page',6) }}">
+                                Next
+                            </a>
                         </li>
                     {% endif %}
                 </ul>
-                <span class="d-flex justify-content-center fs-6 fw-lighter mb-3">Page: 
-                    <b class="px-2"> {{posts.get('cur_page')}} </b> out of 
-                    <b class="px-2"> {{posts.get('total')|length}}.</b>
-                    Total of {{posts.get('items_found')}} Posts found
+                <span class="d-flex justify-content-center fs-6 fw-lighter mb-3">Page 
+                    <b class="px-2"> {{ posts.get('cur_page') }} </b> of 
+                    <b class="px-2"> {{ posts.get('total')|length }}</b>
+                    - <b> {{ posts.get('items_found') }} posts found </b>
                 </span>
             </nav>
         {% endif %}

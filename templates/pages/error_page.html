@@ -43,7 +43,7 @@
         </nav>
 
         <main class="py-5 mt-5">
-            <div class="d-flex justify-content-center">
+            <div class="d-flex justify-content-center mt-5">
                 <img class="rounded" src="{{ url_for("static", path='images/error-404.png') }}" alt="" width="215" height="235">
                 
                 <div class="error mt-2 fw-bolder text-center animate__animated animate__flash animate__delay-3s animate__slower animate__infinite">
@@ -52,12 +52,8 @@
             </div>
 
             <div class="row mt-5 fs-2 text-center fw-lighter text-dark ">
-                <div class="animate__animated animate__fadeInUp animate__delay-2s">
-                    {{result.detail}}
-                </div>
-
                 <div class="animate__animated animate__fadeInUp animate animate__slow animate__delay-3s">
-                    The page you try to reach does not exist <br> Or the request is invalid!!
+                    {{result.detail[1] | safe}}
                 </div>
             </div>
         </main>

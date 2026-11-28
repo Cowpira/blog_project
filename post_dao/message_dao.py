@@ -1,8 +1,8 @@
-from sqlalchemy.orm import aliased, selectinload, Session
+from sqlalchemy.orm import aliased, joinedload, selectinload, Session
 from datetime import datetime, timezone
 from sqlalchemy import and_, exists, func, select, delete, or_
 from data_model.models import Message, Person, Developer 
-from services import http_responses
+from services import http_responses, helper
 
 
 # function to increase person totals messages
@@ -30,6 +30,7 @@ def subtract_total_msg(user_in, db: Session):
 
         db.add(user_found)
         db.commit()
+        db.refresh(user_found)
 
 
 
@@ -66,23 +67,19 @@ async def update_msg_viwed(user_in, msg_id, db: Session):
 
         
 # function to list all messages to the employee or user online
-async def list_messages(user_id, msg_by, db: Session):
+async def list_messages(user_id, msg_by, page, total_items, db: Session):
     ReplyDateAlias= aliased(Message)
 
     # subquery to get all latest reply date in a message chat thread
-    latest_replies= (select(
-            ReplyDateAlias.Parent_Id.label("parent_id"),
-            func.max(ReplyDateAlias.Send_Date).label("last_reply_date"),
-        ).where(
-            ReplyDateAlias.Parent_Id.is_not(None)
-        )
-        .group_by(ReplyDateAlias.Parent_Id).subquery()
+    latest_replies_subq= (select(
+        func.max(ReplyDateAlias.Created))
+        .where(ReplyDateAlias.Parent_Id == Message.Id)
+        .correlate(Message)
+        .scalar_subquery()
     )
 
-    # sort by newest reply date if replies exist, otherwise by message Send_Date
-    latest_activity= func.coalesce(
-        latest_replies.c.last_reply_date, Message.Send_Date
-    )
+    # sort by newest reply date if replies exist, otherwise by message Created Date
+    latest_activity= func.coalesce(latest_replies_subq, Message.Created)
 
     if msg_by == 'chats':
         query= (select(Message)
@@ -92,8 +89,6 @@ async def list_messages(user_id, msg_by, db: Session):
                 or_(Message.Person_Id == user_id, Message.To == user_id),
             )
         )
-        msg= "You have not chat yet!"
-
     elif msg_by == 'employee':
         query= (select(Message).join(Person, Message.Person_Id == Person.Id)
             .where(
@@ -102,8 +97,6 @@ async def list_messages(user_id, msg_by, db: Session):
                 Person.Type == 'employeer',
             )
         )
-        msg= "You have no message from <br> Employees"
-
     elif msg_by == 'unread':
         UnreadReply= aliased(Message)
         has_unread_reply= exists(
@@ -113,18 +106,14 @@ async def list_messages(user_id, msg_by, db: Session):
                 UnreadReply.Viewed == False,
             )
         )
-
         query= (select(Message)
-            .where(
-                Message.Parent_Id.is_(None), 
+            .where(Message.Parent_Id.is_(None), 
                 or_(
                     and_(Message.To == user_id, Message.Viewed == False),
                     has_unread_reply,
                 ),
             )
         )
-        msg= "You have no unread message!"
-    
     elif msg_by== 'dev':
         Reply= aliased(Message)
         ReplySender= aliased(Person)
@@ -138,7 +127,6 @@ async def list_messages(user_id, msg_by, db: Session):
                 ReplySender.Type == 'developer',
             )
         )
-
         query= (
             select(Message)
             .outerjoin(Person, Message.Person_Id == Person.Id)
@@ -149,32 +137,22 @@ async def list_messages(user_id, msg_by, db: Session):
                 ),
             )
         )
-        msg= "You have no message from any <br> Developers!"
-
     else:
         query= select(Message).where(
             Message.Parent_Id.is_(None),
             or_(Message.Person_Id == user_id, Message.To == user_id),
         )
-        msg= "There is no message for you!"
-
 
     # attach latest reply, eager load replies, sort newest activity first
-    query= (
-        query.outerjoin(
-            latest_replies, Message.Id == latest_replies.c.parent_id
-        )
-        .options(selectinload(Message.replies))
-        .order_by(latest_activity.desc())
+    query= (query.options(
+            joinedload(Message.msg_sender),
+            selectinload(Message.replies).joinedload(Message.msg_sender),
+        ).order_by(latest_activity.desc(), Message.Id.desc())
     )
 
-    # getting a list of messages
-    messages= db.scalars(query).all()
-
-    if messages:
-        return messages
-    else:
-        return http_responses.status_204_no_content("bi bi-chat-square-text", msg)
+    # getting messages data set
+    data_set= helper.global_data_pagination(query, page, total_items, db)
+    return data_set
 
 
 
@@ -183,7 +161,7 @@ async def send_message(msg, sender, msg_id, msg_to, parent_id, system, db: Sessi
     try:
         new_msg= Message(
             Message_Content= msg,
-            Send_Date= datetime.now(timezone.utc),
+            Created= datetime.now(timezone.utc),
             System_Message= system,
             Viewed= 0,
             To= msg_to,
@@ -224,7 +202,7 @@ async def reply_message(msg, user_in, msg_id, msg_to, system, db: Session):
             if parent_msg.Viewed == 0 and parent_msg.To == user_in.Id:
                 sender_unread= True
             elif parent_msg.replies:
-                last_reply= max(parent_msg.replies, key= lambda r: r.Send_Date)
+                last_reply= max(parent_msg.replies, key= lambda r: r.Created)
 
                 if last_reply.To == user_in.Id and last_reply.Viewed == 0:
                     sender_unread= True
@@ -244,7 +222,7 @@ async def reply_message(msg, user_in, msg_id, msg_to, system, db: Session):
         # save new reply 
         new_msg= Message(
             Message_Content= msg,
-            Send_Date= datetime.now(timezone.utc),
+            Created= datetime.now(timezone.utc),
             System_Message= system,
             Viewed= 0,
             To= msg_to,
@@ -304,7 +282,7 @@ async def count_chats(user_id, db: Session):
 # function to delete a message by id
 async def delete_message_by_id(msg_id, user_in, db: Session):
     try:
-        query= delete(Message).where(Message.To == user_in.Id, Message.Id == msg_id)
+        query= delete(Message).where(Message.Id == msg_id)
         add_total_messages(user_in, db)
         
         db.execute(query)

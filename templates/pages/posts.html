@@ -6,27 +6,24 @@
 {% endblock %}
 
 {% block content %}
-    <!-- include alert page to handle alert messages -->
-    {% if result and result.status_code %}
-        {% include "alerts.html" ignore missing with context %}
-    {% endif %}
-    
     <main class="container-fluid start-content">
-        {% if posts %}    
+        <span>{{result}}</span>
+        {% if posts %}  
             <!-- toolbar for limit items and search post -->
-            <form class="row justify-content-around py-3 needs-validation" novalidate action="{{ url_for("search_posts") }}" method="GET"
-                style="background-color: rgba(36, 36, 36, 0.895);">
-                
-                <div class="col-3 mt-1">
-                    <a href="#" class="fp-buttons fp-orange-btn dropdown-toggle" type="button" id="dropdownMenuCheck" 
+            <div class="row justify-content-around py-2" style="background-color: rgba(36, 36, 36, 0.895);">
+                <div class="col-3 mt-2" data-pagination-limit data-storage-key="total_items" 
+                    data-radio-name="posts" data-current-limit="{{ posts.get('items_per_page', 4) }}" 
+                    data-url-template="{{ website_url }}/posts?page=1&list={limit}">
+                    
+                    <a href="#" class="fp-buttons fp-orange-btn dropdown-toggle" type="button" id="dropdown_post_limit" 
                         data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">View
                     </a>
 
-                    <ul class="dropdown-menu col-3" aria-labelledby="dropdownMenuCheck">
-                        {% for limit in limit_items %}
+                    <ul class="dropdown-menu col-3" aria-labelledby="dropdown_post_limit">
+                        {% for limit in allowed_limit %}
                             <div class="form-check d-flex justify-content-center">
-                                <input class="form-check-input" type="radio" name="posts" value="{{ limit }}" id="limit_post_{{ limit }}"
-                                    {% if limit == posts.get('items_per_page') %}checked{% endif %}>
+                                <input class="form-check-input" type="radio" name="posts" value="{{ limit }}" 
+                                    id="limit_post_{{ limit }}" {% if limit == posts.get('items_per_page') %}checked{% endif %}>
 
                                 <p class="small-texts fw-light text-light ms-2" for="limit_post_{{ limit }}">
                                     {{ limit }} posts
@@ -47,130 +44,114 @@
                 </div>
 
                 <!-- seach field -->
-                <div class="col-8 col-sm-5 col-md-4">
-                    <div class="input-group input-group-sm">
-                        <input type="text" class="form-control search-input search_obj" name="search_post" maxlength="50" id="search"
-                            placeholder="Search by title, tag or developer..." required>
+                <div class="col-8 col-sm-5 col-md-4 mt-1">
+                    <form class="row justify-content-around needs-validation" novalidate 
+                        action="{{ url_for("post_search") }}" method="GET">
                         
-                        <!-- inputs used only to send parameters not visible for end users -->
-                        <input type="hidden" name="author_id" value="0">
-                        <input type="hidden" name="page" value="1">
-                        <input type="hidden" name="list" value="{{ posts.get('items_per_page') }}">
+                        <div class="input-group input-group-sm">
+                            <input type="text" class="form-control search-input search_obj" name="input_param"
+                                value="{{ param or '' }}" maxlength="50" id="search" required 
+                                placeholder="Search by title, tag or developer...">
 
-                        <button class="col-3 fp-buttons fp-orange-btn p-0 text-center" type="submit" id="search_btn">
-                            <i class="bi bi-search fw-bolder" style="font-size: 1.1rem;"></i>
-                        </button>
-                    </div>
-                </div>
+                            <!-- inputs used only to send parameters not visible for end users -->
+                            <input type="hidden" name="list" value="{{ posts.get('items_per_page') }}">
 
-                {% if result %}
-                    <div class="col-12 smaller-texts text-warning text-center animate__animated animate__slideInDown animate__slow">
-                        {{ result }}
-                    </div>
-                {% endif %}
-            </form>
-
-            <!-- TAGS SLIDE MENU -->
-            <div class="tags-carousel">
-                <div class="tags-list">
-                    {% for language in languages %}
-                        {% set lang = language | lower | replace("#", "") | replace("+", "p") | replace(" ", "") %} 
-                        
-                        <a class="langs {{ lang }}" href="{{ url_for("search_posts") }}?tag={{ lang | urlencode }}&page=1&list={{ total_items }}"> 
-                            <img class="rounded mb-1" alt="{{ lang }} icon" width="25" height="25" loading="lazy"
-                                src="{{ url_for('static', path='/images/' ~ lang ~ '.png') }}">
-                            <span class="smaller-texts">{{ lang }}</span>
-                        </a>
-                    {% endfor %}
-                </div>
-                <div aria-hidden class="tags-list">
-                    {% for language in languages %}
-                        {% set lang = language | lower | replace("#", "") | replace("+", "p") | replace(" ", "") %} 
-
-                        <a class="langs {{ lang}}" href="{{ url_for("search_posts") }}?tag={{ lang | urlencode }}&page=1&list={{ total_items }}">
-                            <img class="rounded mb-1" alt="{{ lang }} icon" width="25" height="25" loading="lazy"
-                                src="{{ url_for('static', path='/images/' ~ lang ~ '.png') }}"><br>
-                            <span class="smaller-texts">{{ lang }}</span>
-                        </a>
-                    {% endfor %}
+                            <button class="col-3 fp-buttons fp-orange-btn p-0 text-center" type="submit" id="search_btn">
+                                <i class="bi bi-search fw-bolder" style="font-size: 1.1rem;"></i>
+                            </button>
+                        </div>
+                    </form>
+                    
+                    {% if msg %}
+                        <span id="search_alert" class="col text-warning fw-bold text-center animate__animated 
+                        animate__fadeIn animate__slow" style="font-size: 11px;">
+                            {{ msg }}
+                        </span>
+                    {% endif %}
                 </div>
             </div>
 
-            <!-- paginating posts -->
-            {% if posts.get('items_per_page', 0) > limit_items[-1] + 1 %}
-                <div class="py-3">
-                    <div id="error_limit" class="col-12 text-center text-warning py-5">
-                        <div class="animate__animated animate__bounce animate__slower animate__repeat-2">
-                            <i class="bi bi-grid-3x3-gap-fill" style="font-size: 7rem;"></i>
-                        </div>
-                        
-                        <span class="page_title animate__animated animate__fadeInUp animate__delay-1s animate__slow">
-                            {{ posts.get('items_per_page') }} items per page not permitted!
-                        </span>
-                    </div>
-                </div>
-            {% else %}
-                <!-- including page that share content with posts found -->
-                <div class="row d-flex justify-content-center">
-                    {% include 'posts_layout.html' %}
-                </div>
-            
-                <!-- pagination block -->
-                {% if posts.get('cur_page') not in posts.get('total', []) %}
-                    <div class="py-5">
-                        <div id="error_404" class="col-12 text-center text-danger py-5">
-                            <div class="animate__animated animate__bounce animate__slower animate__repeat-2">
-                                <i class="bi bi-file-earmark-excel-fill " style="font-size: 7rem;"></i>
-                            </div>
-                            
-                            <h1 class="page_title animate__animated animate__fadeInUp animate__delay-1s animate__slow">
-                                Page {{ posts.get('cur_page') }} not found!
-                            </h1>
-                        </div>
-                    </div>
-                {% elif posts.get('total')|length > 1 %}
-                    <nav class="mt-5 mb-1">
-                        <ul class="pagination justify-content-center">
-                            {% if posts.get('cur_page') >= 2 %}
-                                <li class="page-item">
-                                    <a class="page-link" href="{{ url_for("list_posts") }}?page={{ posts.get('cur_page', 1) -1 }}&list={{ posts.get('items_per_page', 10) }}">
-                                        Previous
-                                    </a>
-                                </li>
-                            {% else %}
-                                <li class="page-item disabled">
-                                    <span class="page-link">Previous</span>
-                                </li>
-                            {% endif %}
+            <!-- TAGS SLIDE MENU -->
+            {% if posts and posts.get('data_set')|length >= 1 %}
+                <div class="tags-carousel">
+                    <div class="tags-list">
+                        {% for lang in languages %}
+                            <a class="langs" href="{{ url_for("post_search") }}?tag={{ lang | urlencode }}&list={{ posts.get('items_per_page', 6) }}"> 
+                                <img class="rounded mb-1" alt="{{ lang }} icon" width="25" height="25" loading="lazy"
+                                    src="{{ url_for('static', path='/images/' ~ lang ~ '.png') }}">
                                 
-                            {% for page in posts.get('total') %}
-                                <li class="page-item {% if page == posts.get('cur_page') %}page-active{% endif %}">
-                                    <a class="page-link {% if page == posts.get('cur_page') %}page-active{% endif %}" 
-                                        href="{{ url_for("list_posts") }}?page={{ page }}&list={{ posts.get('items_per_page', 10) }}">
-                                        {{page}}
-                                    </a>
-                                </li>
-                            {% endfor %}
-                            
-                            {% if posts.get('cur_page') == posts.get('total')|length %}
-                                <li class="page-item disabled">
-                                    <span class="page-link">Next</span>
-                                </li>
-                            {% else %}
-                                <li class="page-item">
-                                    <a class="page-link" href="{{ url_for("list_posts") }}?page={{ posts.get('cur_page',1) + 1 }}&list={{ posts.get('items_per_page', 10) }}">
-                                        Next
-                                    </a> 
-                                </li>
-                            {% endif %}
-                        </ul>
+                                <span class="smaller-texts">
+                                    {% if lang == 'C_sharp' %}C#{% elif lang == 'C_pp' %}C++{% else %}{{ lang }}{% endif %} 
+                                </span>
+                            </a>
+                        {% endfor %}
+                    </div>
 
-                        <span class="d-flex justify-content-center fs-6 fw-lighter">
-                            Page: <b class="px-2"> {{ posts.get('cur_page', 1) }} </b> out of <b class="px-2"> {{ posts.get('total', [])|length }}.</b>
-                            &nbsp;&nbsp; Total of &nbsp;<b>{{ posts.get('items_found', 0) }}</b> &nbsp; posts found.
-                        </span>
-                    </nav>
-                {% endif %}
+                    <div aria-hidden class="tags-list">
+                        {% for lang in languages %}
+                            <a class="langs" href="{{ url_for("post_search") }}?tag={{ lang | urlencode }}&list={{ posts.get('items_per_page', 6) }}">
+                                <img class="rounded mb-1" alt="{{ lang }} icon" width="25" height="25" loading="lazy"
+                                    src="{{ url_for('static', path='/images/' ~ lang ~ '.png') }}"><br>
+                                
+                                <span class="smaller-texts">
+                                    {% if lang == 'c_sharp' %}C#{% elif lang == 'c_pp' %}C++{% else %}{{ lang }}{% endif %}
+                                </span>
+                            </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+
+            <!-- including page that share content with posts found -->
+            <div class="row d-flex justify-content-center">
+                {% for post in posts.get('data_set', []) %}
+                    {% include 'posts_layout.html' %}
+                {% endfor %}
+            </div>
+        
+            <!-- pagination block -->
+            {% if posts.get('total')|length > 1 %}
+                <nav class="mt-5 mb-1">
+                    <ul class="pagination justify-content-center">
+                        {% if posts.get('cur_page') >= 2 %}
+                            <li class="page-item">
+                                <a class="page-link" href="{{ url_for("list_posts") }}?page={{ posts.get('cur_page', 1) -1 }}&list={{ posts.get('items_per_page', 6) }}">
+                                    Previous
+                                </a>
+                            </li>
+                        {% else %}
+                            <li class="page-item disabled">
+                                <span class="page-link">Previous</span>
+                            </li>
+                        {% endif %}
+                            
+                        {% for page in posts.get('total') %}
+                            <li class="page-item {% if page == posts.get('cur_page') %}page-active{% endif %}">
+                                <a class="page-link {% if page == posts.get('cur_page') %}page-active{% endif %}" 
+                                    href="{{ url_for("list_posts") }}?page={{ page }}&list={{ posts.get('items_per_page', 6) }}">
+                                    {{page}}
+                                </a>
+                            </li>
+                        {% endfor %}
+                        
+                        {% if posts.get('cur_page') == posts.get('total')|length %}
+                            <li class="page-item disabled">
+                                <span class="page-link">Next</span>
+                            </li>
+                        {% else %}
+                            <li class="page-item">
+                                <a class="page-link" href="{{ url_for("list_posts") }}?page={{ posts.get('cur_page', 1) + 1 }}&list={{ posts.get('items_per_page', 6) }}">
+                                    Next
+                                </a> 
+                            </li>
+                        {% endif %}
+                    </ul>
+
+                    <span class="d-flex justify-content-center fs-6 fw-lighter">
+                        Page <b class="px-2"> {{ posts.get('cur_page', 1) }} </b> of <b class="px-2"> {{ posts.get('total', [])|length }}</b>
+                        - &nbsp;<b>{{ posts.get('items_found', 0) }} posts total </b>
+                    </span>
+                </nav>
             {% endif %}
         {% else %}
             <div class="row text-center py-5">
@@ -183,34 +164,4 @@
             </div>
         {% endif %}
     </main>
-
-    <script>
-        //get the value user selected to load total items per page
-        document.addEventListener('DOMContentLoaded', function() {
-            const radio_selected = document.querySelectorAll('input[name="posts"]');
-
-            radio_selected.forEach(function(radio) {
-                radio.addEventListener('change', function() {
-                    if (this.checked) {
-                        localStorage.clear;
-                        const total_posts = this.value;
-                        localStorage.setItem('total_posts', total_posts);
-                        window.location.href = "{{ website_url }}/posts?page=1&list="+localStorage.getItem('total_posts');
-                        return localStorage;
-                    }
-                });
-            });
-        });
-
-        // keep total items radio selected after reload the page
-        window.addEventListener('load', function() {
-            const storedValue = localStorage.getItem('total_posts');
-            if (storedValue) {
-                const radioToSelect = document.querySelector(`input[type="radio"][name="posts"][value="${storedValue}"]`);
-                if (radioToSelect) {
-                    radioToSelect.checked = true;
-                }
-            }
-        });
-    </script>
 {% endblock %}

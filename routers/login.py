@@ -34,8 +34,10 @@ async def load_index_page(request, cur_user, result, db):
     developers= await developers_dao.get_random_developers(db)
     companies= await helper.get_ten_companies(db)
     
-    return helper.templates.TemplateResponse('index.html', {'request': request, 'user_in': cur_user, 'result': result, 
-                                                            'users': developers, 'companies': companies, 'total_items':helper.total_items})
+    return helper.templates.TemplateResponse(
+        'index.html', {'request': request, 'user_in': cur_user, 'result': result, 
+                    'developers': developers, 'companies': companies}
+    )
 
 
 

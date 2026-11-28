@@ -1,18 +1,15 @@
 from services import authentication, helper, image_utils, auth_settings, http_responses
 from routers import send_emails
-from post_dao import portfolio_dao, message_dao
+from post_dao import message_dao
 from data_model.models import Developer, Work, Person
 from sqlalchemy import func, or_, select
 from sqlalchemy.orm import Session, joinedload
 from datetime import datetime, timezone
 
 
-
 # function to list users
-async def list_users(db: Session):
-    query= select(Developer)
-
-    return db.execute(query).scalars().all()
+async def list_users(page, items_total, db: Session):
+    return helper.global_data_pagination(Developer, page, items_total, db)
 
 
 # function to retrieve 3 random developer from developers in DB
@@ -230,21 +227,25 @@ async def developer_by_id(dev_id, db: Session):
 
 
 # function to search a developer by name or email
-async def search_user(param, db: Session):
+async def search_user(page, items_total, param, db: Session):
     search_param= f"%{param}%"
 
-    query= select(Developer, Work.Company1.label("work_company")) \
-    .join(Work, Developer.Id == Work.dev_id).filter(
-        or_(
-            Developer.First_Name.ilike(search_param),
-            Developer.Email.ilike(search_param),
-            Developer.Cod_Title.ilike(search_param),
-            Developer.Cod_Lang.ilike(search_param),
-            Work.Company1.ilike(search_param)
-            
+    query= (
+        select(Developer)
+        .outerjoin(Work, Developer.Id == Work.dev_id) 
+        .options(joinedload(Developer.works))
+        .where(
+            or_(
+                Developer.First_Name.ilike(search_param),
+                Developer.Email.ilike(search_param),
+                Developer.Cod_Title.ilike(search_param),
+                Developer.Cod_Lang.ilike(search_param),
+                Work.Company1.ilike(search_param),
+            )
         )
     )
-    return db.execute(query).scalars().all()
+
+    return helper.global_data_pagination(query, page, items_total, db)
 
 
 

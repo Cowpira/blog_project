@@ -1,5 +1,7 @@
 import time, uuid
 from fastapi import BackgroundTasks, Depends, FastAPI, Request, Response
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 from services import db_connection, helper, http_responses
 from services.authentication import get_current_user
@@ -59,8 +61,9 @@ async def rate_limit_exeption_handler(request:Request, exc: RateLimitExceeded):
     current_path = request.url.path
     result= http_responses.status_429_limit_request(current_path)
 
-    return helper.templates.TemplateResponse('limit_request.html', {'request': request, 'result': result, 
-                                                                    'user_in': ''})
+    return helper.templates.TemplateResponse(
+        'limit_request.html', {'request': request, 'result': result, 'user_in': ''}
+    )
 
 
 # router to index page
@@ -129,11 +132,37 @@ async def logout(request: Request, response: Response, cur_user: Person= Depends
 
 
 
-# handeling routers that does not exit
-@app.exception_handler(StarletteHTTPException)
-async def http_exception_handler(request: Request, exc: StarletteHTTPException):
-    return helper.templates.TemplateResponse("error_page.html", {'request': request, 'result': exc}) 
+# handling routers that does not exit
+# @app.exception_handler(StarletteHTTPException)
+# async def http_exception_handler(request: Request, exc: StarletteHTTPException):
+#     if request.method == 'GET':
+#         error_obj= http_responses.status_404_not_found(
+#             "bi bi-shield-exclamation",
+#             "Not Found <br> The page you tried to reach does not exist <br> Or the request is invalid!!"
+#         )
 
+#         return helper.templates.TemplateResponse(
+#             "error_page.html", {'request': request, 'result': error_obj}) 
+
+#     # Keep standard JSON 400 response for POST/PUT forms or API requests
+#     return JSONResponse(status_code=400, content={"detail": exc.detail})
+
+
+# handling invalid parameter requests
+# @app.exception_handler(RequestValidationError)
+# async def validation_exception_handler(request: Request, exc: RequestValidationError):
+#     if request.method == "GET":
+#         error_obj = http_responses.status_406_not_acceptable(
+#             "bi bi-link-45deg",
+#             "Invalid URL parameter <br> Please check the URL and try again!!"
+#         )
+
+#         return helper.templates.TemplateResponse(
+#             "error_page.html",{"request": request, "result": error_obj}
+#         )
+
+#     # Keep standard JSON 422 response for POST/PUT forms or API requests
+#     return JSONResponse(status_code=422, content={"detail": exc.errors()})
 
 ######################################################################################################################
 ###########################################  FUTURE PROGRAMMERS ROUTERS ##############################################
@@ -148,7 +177,7 @@ app.include_router(post.search_post_api, tags=['Search'], prefix='/search_post')
 
 # ROUTER FOR UNAUTHENTICATED USERS
 app.include_router(employeer.public_api, tags=['Public'], prefix='/employeer')
-app.include_router(developers.public_api, tags=['Public'], prefix='/users')
+app.include_router(developers.public_api, tags=['Public'], prefix='/develoeprs')
 app.include_router(post.public_api, tags=['Public'], prefix='/posts')
 app.include_router(jobs.public_api, tags=['Public'], prefix='/jobs')
 

@@ -1,4 +1,9 @@
 {% block content %}
+    <style>
+        .accordion-button::before {background-image: none;}
+        .accordion-button::after { background-image: none; }
+        .accordion-button:not(.collapsed)::after { background-image: none;}
+    </style>
     <div class="modal gen-mdl" id="mdl-answer-post-{{post.Id}}" data-bs-backdrop="static" style="overflow-y: scroll;"
         data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticAnswerPost" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
@@ -27,7 +32,7 @@
                                 aria-expanded="false" aria-controls="collapse-answer">
                                 
                                 <div class="col-12 post_title text-light fw-light text-center">
-                                    <p class="mt-2 animate__animated animate__flipInX animate__duration-1s animate__delay-1s">
+                                    <p class="animate__animated animate__flipInX animate__duration-1s animate__delay-1s">
                                         {{post.Title}}
                                     </p>
                                     

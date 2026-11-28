@@ -2,14 +2,14 @@
     <div class="dev_card py-2">
         <div class="text-center pt-2 px-3 w-100">
             <div class="profile-container">
-                <img class="user_img card-img-top mt-1" src="{{ url_for('uploaded_dev_images', path=user.Image) }}" 
-                    alt="{{ user.First_Name }}">
+                <img class="user_img card-img-top mt-1" alt="{{ dev.First_Name }}"
+                src="{{ url_for('uploaded_dev_images', path=dev.Image) }}">
                 
                 <!-- SVG for circular text -->
                 <svg viewBox="0 0 200 190" class="circular-text">
                     <path id="textCircle" d="M 98, 80 m -100, 0 a 4,4 0 1,1 154,0 a 6,8 0 1,1 -140,0" fill="transparent"/>
                     
-                    {% set dev_name = user.First_Name.split(" ") %}
+                    {% set dev_name = dev.First_Name.split(" ") %}
                     <text class="animate__animated animate__flipInY animate__slow">
                         <textPath href="#textCircle" startOffset="33%" text-anchor="bottom">
                             {{ dev_name[0] }}
@@ -19,22 +19,22 @@
             </div>
             
             <div class="row text-dark text-center mt-2">
-                {% if user.Cod_Title %}
-                    <span class="fs-6 fw-bolder fp-font">{{ user.Cod_Title }}</span>
+                {% if dev.Cod_Title %}
+                    <span class="fs-6 fw-bolder fp-font">{{ dev.Cod_Title }}</span>
                 {% else %}
                     <span class="fs-6 fw-bolder">Developer</span>
                 {% endif %}
 
                 <div class="container text-center mb-3">
-                    <span {% if 'C#' in user.Cod_Lang  or '.NET' in user.Cod_Lang  %} class="language-badges badge bg-c fs-6"
-                        {% elif user.Cod_Lang == 'Back-End' %} class="language-badges badge bg-backend fs-6"
-                        {% else %} class="language-badges badge bg-{{ user.Cod_Lang| trim(' ') |lower }} fs-6" {% endif %}>
-                        {{ user.Cod_Lang }}
+                    <span {% if 'C#' in dev.Cod_Lang  or '.NET' in dev.Cod_Lang  %} class="language-badges badge bg-c fs-6"
+                        {% elif dev.Cod_Lang == 'Back-End' %} class="language-badges badge bg-backend fs-6"{% else %} 
+                        class="language-badges badge bg-{{ dev.Cod_Lang| trim(' ') |lower }} fs-6" {% endif %}>
+                        {{ dev.Cod_Lang }}
                     </span>
 
-                    {% if user.Years_Exp %}
+                    {% if dev.Years_Exp %}
                         <span class="ms-3 text-dark fw-bolder fs-5">
-                            {{ user.Years_Exp }} 
+                            {{ dev.Years_Exp }} 
                             <span class="fw-light smaller-texts text-muted">years exp</span>
                         </span>
                     {% endif %}
@@ -48,8 +48,8 @@
                 <span class="smaller-texts fw-lighter text-dark mt-1">Work at</span> 
                 
                 <small class="text-orange fp-font fw-bold small-texts">
-                    {% if user.works.Company1 %} 
-                        {{ user.works.Company1 }}
+                    {% if dev.works.Company1 %} 
+                        {{ dev.works.Company1 }}
                     {% else %}
                         Unemployed
                     {% endif %}
@@ -57,8 +57,8 @@
             
                 <span class="smaller-texts fw-lighter text-dark">As</span>
                 <small class="text-orange fp-font fw-bold small-texts mb-2">
-                    {% if user.works.Position1 %}
-                        {{ user.works.Position1 }}
+                    {% if dev.works.Position1 %}
+                        {{ dev.works.Position1 }}
                     {% else %}
                         None
                     {% endif %}
@@ -69,9 +69,9 @@
             <div class="d-flex justify-content-center align-items-center">
                 <div class="mb-3" {% if user_in %} data-bs-toggle="tooltip" class="d-inline-block mb-3" 
                     data-bs-animation="false" data-bs-placement="top" 
-                    title="Question by {{ user.First_Name.split(' ')[0] }} {% endif %}">
+                    title="Question by {{ dev.First_Name.split(' ')[0] }} {% endif %}">
                     
-                    <a href="{{ url_for('search_posts') }}?tag=Null&author_id={{ user.Id }}&page=1&list=4" 
+                    <a href="{{ url_for('post_search') }}?author_id={{ dev.Id }}" 
                         class="fp-buttons fp-teal-btn">
                         <i class="bi bi-file-earmark-text" style="font-size: .9rem;"></i> 
                         {% if not user_in %} Questions {% endif %} 
@@ -80,7 +80,7 @@
                 </div>
 
                 <!-- if user in is the same as the user ID show profile and edit buttons  -->
-                {% if user_in and user_in.Id == user.Id %}
+                {% if user_in and user_in.Id == dev.Id %}
                     <div class="mb-3">
                         <a href="{{ url_for('dev_account') }}" class="fp-buttons fp-gray-btn">
                             <i class="bi bi-person-badge" style="font-size: .9rem;"></i> Profile
@@ -93,7 +93,7 @@
                     </div>
                 {% elif user_in or user_in.Type == 'employeer' %}
                     <div class="mb-3">
-                        <a href="#" class="fp-buttons fp-orange-btn open-resume" data-id="{{ user.Id }}">
+                        <a href="#" class="fp-buttons fp-orange-btn open-resume" data-id="{{ dev.Id }}">
                             <i class="bi bi-person-lines-fill" style="font-size: .9rem;"></i> Resume
                         </a>
                     </div>
@@ -101,13 +101,13 @@
                 {% endif %}
 
                 <!-- show message button for developers that isn't the developer account owner -->
-                {% if user_in and user_in.Id != user.Id %}
+                {% if user_in and user_in.Id != dev.Id %}
                     <div data-bs-toggle="tooltip" class="d-inline-block mb-3" data-bs-animation="false" 
-                        data-bs-placement="top" title="Message {{ user.First_Name.split(' ')[0] }}">
+                        data-bs-placement="top" title="Message {{ dev.First_Name.split(' ')[0] }}">
                         
                         <a href="#" class="fp-buttons fp-blue-btn" data-bs-toggle="modal" 
-                            data-bs-target="#global-send-msg" data-bs-id="{{ user.Id }}" 
-                            data-bs-name="{{ user.First_Name }}">
+                            data-bs-target="#global-send-msg" data-bs-id="{{ dev.Id }}" 
+                            data-bs-name="{{ dev.First_Name }}">
 
                             &nbsp;<i class="bi bi-chat-right-dots" style="font-size: .9rem;"></i> &nbsp;
                         </a>

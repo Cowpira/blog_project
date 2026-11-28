@@ -20,21 +20,25 @@
                 </div>
                 
                 <div class="modal-body">
-                    <!-- defining the correct receiver (logic of BACKEND NO JINJA2) -->
-                    {% set out_sender = msg.replies[0].msg_sender if msg.replies and msg.replies[0].msg_sender.Id != user_in.Id else msg.msg_sender %}
+                    <!-- defining the correct receiver -->
+                    {% set msg_receiver = msg.get_chat_partner(user_in.Id) %}
                     
                     <!-- messags metadata -->
                     <div class="container-fluid mb-3">
                         <div class="row justify-content-between align-items-center px-4">
                             <div class="col-auto">
-                                <p class="fw-light text-dark m-0 small"> 
-                                    Chat with: <b class="fw-bolder fs-6 text-marine">{{ out_sender.First_Name }}</b>
+                                <p class="fw-light text-dark m-0 small">
+                                    
+                                    {% if msg_receiver %}
+                                        Chat with: 
+                                        <b class="fw-bolder fs-6 text-marine"> {{ msg_receiver.First_Name }}</b>
+                                    {% endif %}
                                 </p>
                             </div>
 
                             <div class="col-auto">
                                 <span class="badge rounded-pill bg-warning text-dark smaller-texts">
-                                    On: {{msg.Send_Date.strftime('%B, %d %Y @ %H:%M')}}
+                                    On: {{msg.Created.strftime('%B, %d %Y @ %H:%M')}}
                                 </span>
                             </div>
                         </div>
@@ -55,7 +59,7 @@
                                 blue_pointer {% endif %}"></span>
                         
                             <small class="text-muted fw-lighter mx-3" style="font-size: .60rem;">
-                                {{msg.msg_sender.First_Name}} • {{msg.Send_Date.strftime('%b %d, %H:%M')}}
+                                {{msg.msg_sender.First_Name}} • {{msg.Created.strftime('%b %d, %H:%M')}}
                             </small>
                         </div>
                     </div>
@@ -76,7 +80,7 @@
                                             {% else %}blue_pointer{% endif %}"></span>
                             
                                     <small class="text-muted fw-lighter mt-2 mx-2" style="font-size: .60rem;">
-                                        {{reply.msg_sender.First_Name}} • {{reply.Send_Date.strftime('%b %d, %H:%M')}}
+                                        {{reply.msg_sender.First_Name}} • {{reply.Created.strftime('%b %d, %H:%M')}}
                                     </small>
                                 </div>
                             </div>
@@ -84,7 +88,7 @@
                     {% endif %}
                 </div>
 
-                {% set destination_id = msg.Person_Id if msg.Person_Id != user_in.Id else out_sender.Id %}
+                {% set destination_id = msg.Person_Id if msg.Person_Id != user_in.Id else msg.To %}
 
                 <div class="modal-footer">
                     <form class="col-12 needs-validation" method="post" novalidate
